@@ -1,5 +1,5 @@
 
-all : cmake gcc openmpi boost openblas
+all : cmake gcc llvm openmpi boost openblas
 
 clean :
 	rm -rf log
