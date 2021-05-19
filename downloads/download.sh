@@ -21,3 +21,7 @@ wget "https://github.com/flame/blis/archive/refs/tags/0.8.1.tar.gz"
 mv 0.8.1.tar.gz blis-0.8.1.tar.gz
 
 wget "https://github.com/llvm/llvm-project/archive/llvmorg-9.0.0.zip"
+
+
+wget "https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/llvm-project-12.0.0.src.tar.xz"
+mv llvm-project-12.0.0.src.tar.xz llvm-12.0.0.tar.xy
