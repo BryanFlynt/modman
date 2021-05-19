@@ -1,3 +1,5 @@
-downloads/*.gz
-downloads/*.bz2
-downloads/*.zip
+apps
+build
+downloads/*.tar.*
+log
+modulefiles

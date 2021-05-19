@@ -35,19 +35,19 @@ cd ${LIB_BUILD_DIR}
 tar --strip-components 1 -xzvf ${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.gz
 
 # GCC also needs ISL
-tar -xjvf ${TAR_DIR}/isl-${isl_version}.tar.bz2
+tar -xvf ${TAR_DIR}/isl-${isl_version}.tar.*
 ln -s isl-${isl_version} isl
 
 # GCC also needs GMP
-tar -xjvf ${TAR_DIR}/gmp-${gmp_version}.tar.bz2
+tar -xvf ${TAR_DIR}/gmp-${gmp_version}.tar.*
 ln -s gmp-${gmp_version} gmp
 
 # GCC also needs MPFR
-tar -xjvf ${TAR_DIR}/mpfr-${mpfr_version}.tar.bz2
+tar -xvf ${TAR_DIR}/mpfr-${mpfr_version}.tar.*
 ln -s mpfr-${mpfr_version} mpfr
 
 # GCC also needs MPC
-tar -xzvf ${TAR_DIR}/mpc-${mpc_version}.tar.gz
+tar -xvf ${TAR_DIR}/mpc-${mpc_version}.tar.*
 ln -s mpc-${mpc_version} mpc
 
 # Do an out of source build by making a temporary build directory
