@@ -118,3 +118,14 @@ oneapi-2021.2.0 : ${MODULE_DIR}/base/oneapi/2021.2.0.lua
 
 ${MODULE_DIR}/base/oneapi/2021.2.0.lua :
 	${SRC_DIR}/build.sh oneapi 2021.2.0
+
+# -----------------------------------------------
+# VSCode 
+# -----------------------------------------------
+
+vscode : vscode-1.56.2
+
+vscode-1.56.2 : ${MODULE_DIR}/base/vscode/1.56.2.lua
+
+${MODULE_DIR}/base/vscode/1.56.2.lua :
+	${SRC_DIR}/build.sh vscode 1.56.2
