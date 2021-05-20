@@ -32,7 +32,7 @@ cd ${LIB_BUILD_DIR}
 tar --strip-components 1 -xzvf ${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.gz
 
 # Build it
-make USE_OPENMP=1 PREFIX=${LIB_INSTALL_DIR}
+make USE_OPENMP=1 PREFIX=${LIB_INSTALL_DIR} 
 make USE_OPENMP=1 PREFIX=${LIB_INSTALL_DIR} install
 
 # Create Module File

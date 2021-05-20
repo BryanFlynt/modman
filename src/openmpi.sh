@@ -33,11 +33,11 @@ tar --strip-components 1 -xjvf ${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.bz2
 
 # Configure (Detecting if SLURM is installed)
 if ! [ -x "$(command -v sbatch)" ]; then
-    ./configure --prefix=${LIB_INSTALL_DIR} --enable-mpi-cxx --enable-cxx-exceptions --enable-mpi-fortran=all
+    ./configure --prefix=${LIB_INSTALL_DIR} --enable-mpi-cxx --enable-cxx-exceptions --enable-mpi-fortran=usempi
 else
     slurm_command=$(command -v sbatch)
     pmi_path=${slurm_command%/*/*}
-    ./configure --prefix=${LIB_INSTALL_DIR} --enable-mpi-cxx --enable-cxx-exceptions --enable-mpi-fortran=all --with-pmi=${pmi_path}
+    ./configure --prefix=${LIB_INSTALL_DIR} --enable-mpi-cxx --enable-cxx-exceptions --enable-mpi-fortran=usempi --with-pmi=${pmi_path}
 fi
 
 # Build

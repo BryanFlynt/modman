@@ -25,3 +25,6 @@ wget "https://github.com/llvm/llvm-project/archive/llvmorg-9.0.0.zip"
 
 wget "https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/llvm-project-12.0.0.src.tar.xz"
 mv llvm-project-12.0.0.src.tar.xz llvm-12.0.0.tar.xy
+
+wget "https://registrationcenter-download.intel.com/akdlm/irc_nas/17769/l_BaseKit_p_2021.2.0.2883_offline.sh"
+mv l_BaseKit_p_2021.2.0.2883_offline.sh oneapi-2021.2.0.sh
