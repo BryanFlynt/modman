@@ -129,3 +129,25 @@ vscode-1.56.2 : ${MODULE_DIR}/base/vscode/1.56.2.lua
 
 ${MODULE_DIR}/base/vscode/1.56.2.lua :
 	${SRC_DIR}/build.sh vscode 1.56.2
+
+# -----------------------------------------------
+# GPTL 
+# -----------------------------------------------
+
+gptl : gptl-8.0.3-gcc-11.1.0 gptl-8.0.3-openmpi-4.1.1-gcc-11.1.0
+
+gptl-8.0.3-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/gptl/8.0.3.lua
+
+${MODULE_DIR}/compiler/gcc/11.1.0/gptl/8.0.3.lua :
+	${SRC_DIR}/build.sh gptl 8.0.3 gcc 11.1.0
+
+gptl-8.0.3-openmpi-4.1.1-gcc-11.1.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/gptl/8.0.3.lua
+
+${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/gptl/8.0.3.lua :
+	${SRC_DIR}/build.sh gptl 8.0.3 gcc 11.1.0 openmpi 4.1.1
+
+# Something not working here
+gptl-8.0.3-openmpi-4.1.1-llvm-12.0.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/gptl/8.0.3.lua
+
+${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/gptl/8.0.3.lua :
+	${SRC_DIR}/build.sh gptl 8.0.3 llvm 12.0.0 openmpi 4.1.1
