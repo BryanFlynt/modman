@@ -1,5 +1,5 @@
 
-all : cmake gcc llvm openmpi boost openblas blis
+all : cmake gcc llvm hwloc ucx libevent openmpi boost openblas blis
 
 clean :
 	rm -rf log
@@ -151,3 +151,51 @@ gptl-8.0.3-openmpi-4.1.1-llvm-12.0.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0
 
 ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/gptl/8.0.3.lua :
 	${SRC_DIR}/build.sh gptl 8.0.3 llvm 12.0.0 openmpi 4.1.1
+
+# -----------------------------------------------
+# HWLOC 
+# -----------------------------------------------
+
+hwloc : hwloc-2.4.1-gcc-11.1.0 hwloc-2.4.1-llvm-12.0.0
+
+hwloc-2.4.1-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/hwloc/2.4.1.lua
+
+${MODULE_DIR}/compiler/gcc/11.1.0/hwloc/2.4.1.lua :
+	${SRC_DIR}/build.sh hwloc 2.4.1 gcc 11.1.0
+
+hwloc-2.4.1-llvm-12.0.0 : ${MODULE_DIR}/compiler/llvm/12.0.0/hwloc/2.4.1.lua
+
+${MODULE_DIR}/compiler/llvm/12.0.0/hwloc/2.4.1.lua :
+	${SRC_DIR}/build.sh hwloc 2.4.1 llvm 12.0.0
+
+# -----------------------------------------------
+# UCX
+# -----------------------------------------------
+
+ucx : ucx-1.10.1-gcc-11.1.0 ucx-1.10.1-llvm-12.0.0
+
+ucx-1.10.1-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/ucx/1.10.1.lua
+
+${MODULE_DIR}/compiler/gcc/11.1.0/ucx/1.10.1.lua :
+	${SRC_DIR}/build.sh ucx 1.10.1 gcc 11.1.0
+
+ucx-1.10.1-llvm-12.0.0 : ${MODULE_DIR}/compiler/llvm/12.0.0/ucx/1.10.1.lua
+
+${MODULE_DIR}/compiler/llvm/12.0.0/ucx/1.10.1.lua :
+	${SRC_DIR}/build.sh ucx 1.10.1 llvm 12.0.0
+
+# -----------------------------------------------
+# libevent
+# -----------------------------------------------
+
+libevent : libevent-2.1.12-gcc-11.1.0 libevent-2.1.12-llvm-12.0.0
+
+libevent-2.1.12-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/libevent/2.1.12.lua
+
+${MODULE_DIR}/compiler/gcc/11.1.0/libevent/2.1.12.lua :
+	${SRC_DIR}/build.sh libevent 2.1.12 gcc 11.1.0
+
+libevent-2.1.12-llvm-12.0.0 : ${MODULE_DIR}/compiler/llvm/12.0.0/libevent/2.1.12.lua
+
+${MODULE_DIR}/compiler/llvm/12.0.0/libevent/2.1.12.lua :
+	${SRC_DIR}/build.sh libevent 2.1.12 llvm 12.0.0

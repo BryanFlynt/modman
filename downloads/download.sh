@@ -34,3 +34,10 @@ mv code-stable-x64*.tar.gz vscode-1.56.2.tar.gz
 
 
 wget "https://github.com/jmrosinski/GPTL/releases/download/v8.0.3/gptl-8.0.3.tar.gz"
+
+wget "https://download.open-mpi.org/release/hwloc/v2.4/hwloc-2.4.1.tar.bz2"
+
+wget "https://github.com/openucx/ucx/releases/download/v1.10.1/ucx-1.10.1.tar.gz"
+
+wget "https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz"
+mv libevent-2.1.12-stable.tar.gz libevent-2.1.12.tar.gz

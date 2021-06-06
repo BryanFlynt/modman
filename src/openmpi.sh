@@ -15,6 +15,9 @@ export COMPILER_VERSION=$3
 # Load build environment
 module purge
 module load ${COMPILER}/${COMPILER_VERSION}
+module load hwloc
+module load ucx
+module load libevent
 
 # Make full path names to locations
 LIB_BUILD_DIR=${BUILD_DIR}/${PKG}/${PKG_VERSION}/${COMPILER}/${COMPILER_VERSION}
@@ -29,15 +32,33 @@ mkdir -p ${LIB_BUILD_DIR}
 cd ${LIB_BUILD_DIR}
 
 # Unpack the Source
-tar --strip-components 1 -xjvf ${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.bz2
+tar --strip-components 1 -xvf ${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.*
 
 # Configure (Detecting if SLURM is installed)
 if ! [ -x "$(command -v sbatch)" ]; then
-    ./configure --prefix=${LIB_INSTALL_DIR} --enable-mpi-cxx --enable-cxx-exceptions --enable-mpi-fortran=usempi
+    ./configure --prefix=${LIB_INSTALL_DIR}               \
+                --enable-mpi-cxx                          \
+                --enable-cxx-exceptions                   \
+                --enable-mpi-fortran=usempi               \
+                --with-hwloc=${HWLOC_ROOT}                \
+                --with-ucx=${UCX_ROOT}                    \
+                --with-libevent=${LIBEVENT_ROOT}          \
+                --without-verbs                           \
+                -enable-mca-no-build=btl-uct   
 else
     slurm_command=$(command -v sbatch)
     pmi_path=${slurm_command%/*/*}
-    ./configure --prefix=${LIB_INSTALL_DIR} --enable-mpi-cxx --enable-cxx-exceptions --enable-mpi-fortran=usempi --with-pmi=${pmi_path}
+    ./configure --prefix=${LIB_INSTALL_DIR}               \
+                --enable-mpi-cxx                          \
+                --enable-cxx-exceptions                   \
+                --enable-mpi-fortran=usempi               \
+                --with-slurm                              \
+                --with-pmi=${pmi_path}                    \
+                --with-pmi-libdir=${pmi_path}/lib         \
+                --with-hwloc=${HWLOC_ROOT}                \
+                --with-ucx=${UCX_ROOT}                    \
+                --with-libevent=${LIBEVENT_ROOT}          \
+                --without-verbs
 fi
 
 # Build
