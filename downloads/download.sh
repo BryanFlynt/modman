@@ -41,3 +41,8 @@ wget "https://github.com/openucx/ucx/releases/download/v1.10.1/ucx-1.10.1.tar.gz
 
 wget "https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz"
 mv libevent-2.1.12-stable.tar.gz libevent-2.1.12.tar.gz
+
+wget --content-disposition "https://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v5.9&type=binary&os=Linux&downloadFile=ParaView-5.9.1-MPI-Linux-Python3.8-64bit.tar.gz"
+mv ParaView-5.9.1-MPI-Linux-Python3.8-64bit.tar.gz paraview-5.9.1.tar.gz
+
+

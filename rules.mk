@@ -1,5 +1,5 @@
 
-all : cmake gcc llvm hwloc ucx libevent openmpi boost openblas blis
+all : cmake paraview gcc llvm hwloc ucx libevent openmpi boost openblas gptl blis
 
 clean :
 	rm -rf log
@@ -19,6 +19,17 @@ cmake-3.20.2 : ${MODULE_DIR}/base/cmake/3.20.2.lua
 
 ${MODULE_DIR}/base/cmake/3.20.2.lua:
 	${SRC_DIR}/build.sh cmake 3.20.2
+
+# -----------------------------------------------
+# Paraview
+# -----------------------------------------------
+
+paraview : paraview-5.9.1
+
+paraview-5.9.1 : ${MODULE_DIR}/base/paraview/5.9.1.lua
+
+${MODULE_DIR}/base/paraview/5.9.1.lua:
+	${SRC_DIR}/build.sh paraview 5.9.1
 
 # -----------------------------------------------
 # GCC
