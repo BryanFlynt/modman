@@ -210,3 +210,14 @@ libevent-2.1.12-llvm-12.0.0 : ${MODULE_DIR}/compiler/llvm/12.0.0/libevent/2.1.12
 
 ${MODULE_DIR}/compiler/llvm/12.0.0/libevent/2.1.12.lua :
 	${SRC_DIR}/build.sh libevent 2.1.12 llvm 12.0.0
+
+# -----------------------------------------------
+# CUDA
+# -----------------------------------------------
+
+cuda : cuda-11.3.1
+
+cuda-11.3.1 : ${MODULE_DIR}/base/cuda/11.3.1.lua
+
+${MODULE_DIR}/base/cuda/11.3.1.lua :
+	${SRC_DIR}/build.sh cuda 11.3.1

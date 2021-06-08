@@ -45,4 +45,6 @@ mv libevent-2.1.12-stable.tar.gz libevent-2.1.12.tar.gz
 wget --content-disposition "https://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v5.9&type=binary&os=Linux&downloadFile=ParaView-5.9.1-MPI-Linux-Python3.8-64bit.tar.gz"
 mv ParaView-5.9.1-MPI-Linux-Python3.8-64bit.tar.gz paraview-5.9.1.tar.gz
 
+wget https://developer.download.nvidia.com/compute/cuda/11.3.1/local_installers/cuda_11.3.1_465.19.01_linux.run
+p="cuda*"; old_name=$(ls | grep $p); new_name=$(ls | grep $p | sed 's/_/-/g'); mv $old_name $new_name
 
