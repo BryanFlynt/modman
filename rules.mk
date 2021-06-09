@@ -1,5 +1,5 @@
 
-all : cmake paraview gcc llvm hwloc ucx libevent openmpi boost openblas gptl blis
+all : cmake paraview gcc llvm nvptx hwloc ucx libevent openmpi boost openblas gptl blis
 
 clean :
 	rm -rf log
@@ -221,3 +221,14 @@ cuda-11.3.1 : ${MODULE_DIR}/base/cuda/11.3.1.lua
 
 ${MODULE_DIR}/base/cuda/11.3.1.lua :
 	${SRC_DIR}/build.sh cuda 11.3.1
+
+# -----------------------------------------------
+# NVPTX
+# -----------------------------------------------
+
+nvptx : nvptx-11.1.0
+
+nvptx-11.1.0 : ${MODULE_DIR}/base/nvptx/11.1.0.lua
+
+${MODULE_DIR}/base/nvptx/11.1.0.lua:
+	${SRC_DIR}/build.sh nvptx 0.0.0 gcc 11.1.0

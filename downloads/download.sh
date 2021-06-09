@@ -48,3 +48,12 @@ mv ParaView-5.9.1-MPI-Linux-Python3.8-64bit.tar.gz paraview-5.9.1.tar.gz
 wget https://developer.download.nvidia.com/compute/cuda/11.3.1/local_installers/cuda_11.3.1_465.19.01_linux.run
 p="cuda*"; old_name=$(ls | grep $p); new_name=$(ls | grep $p | sed 's/_/-/g'); mv $old_name $new_name
 
+git clone https://github.com/MentorEmbedded/nvptx-tools
+tar zcvf nvptx-tools-0.0.0.tar.gz nvptx-tools
+rm -rf nvptx-tools
+
+git clone https://github.com/MentorEmbedded/nvptx-newlib
+tar zcvf nvptx-newlib-0.0.0.tar.gz nvptx-newlib
+rm -rf nvptx-newlib
+
+

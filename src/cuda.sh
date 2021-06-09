@@ -52,4 +52,6 @@ prepend_path("PATH",            "${LIB_INSTALL_DIR}/bin")
 -- Environment Variables
 prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/lib64")
 prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib64")
+
+setenv("CUDA_ROOT",             "${LIB_INSTALL_DIR}")
 EOF
