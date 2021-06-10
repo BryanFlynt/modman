@@ -114,16 +114,15 @@ make install
 
 # Create Module File
 mkdir -p ${MODULE_DIR}/base/${PKG}
-cat << EOF > ${MODULE_DIR}/base/${PKG}/${PKG_VERSION}.lua
+cat << EOF > ${MODULE_DIR}/base/${PKG}/${COMPILER_VERSION}.lua
 
-help([[ ${PKG} version ${PKG_VERSION} ]])
+help([[ ${PKG} version ${COMPILER_VERSION} ]])
 family("compiler")
 
 -- Conflicting modules
-conflict("llvm")
 
 -- Modulepath for packages built by this compiler
-prepend_path("MODULEPATH", "${MODULE_DIR}/compiler/${PKG}/${PKG_VERSION}")
+prepend_path("MODULEPATH", "${MODULE_DIR}/compiler/${PKG}/${COMPILER_VERSION}")
 
 -- Environment Paths
 prepend_path("PATH",            "${LIB_INSTALL_DIR}/bin")
