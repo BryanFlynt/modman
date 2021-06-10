@@ -1,4 +1,6 @@
 
+.PHONY: clean cleanall
+
 all : cmake paraview gcc llvm nvptx hwloc ucx libevent openmpi boost openblas gptl blis
 
 clean :
@@ -72,34 +74,44 @@ openmpi : openmpi-4.1.1-gcc-11.1.0 openmpi-4.1.1-llvm-12.0.0 openmpi-4.1.1-nvptx
 
 openmpi-4.1.1-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/openmpi/4.1.1.lua
 
-${MODULE_DIR}/compiler/gcc/11.1.0/openmpi/4.1.1.lua : gcc-11.1.0 hwloc-2.4.1-gcc-11.1.0 ucx-1.10.1-gcc-11.1.0 libevent-2.1.12-gcc-11.1.0
+${MODULE_DIR}/compiler/gcc/11.1.0/openmpi/4.1.1.lua :
 	${SRC_DIR}/build.sh openmpi 4.1.1 gcc 11.1.0
 
 openmpi-4.1.1-llvm-12.0.0 : ${MODULE_DIR}/compiler/llvm/12.0.0/openmpi/4.1.1.lua
 
-${MODULE_DIR}/compiler/llvm/12.0.0/openmpi/4.1.1.lua : llvm-12.0.0 hwloc-2.4.1-llvm-12.0.0 ucx-1.10.1-llvm-12.0.0 libevent-2.1.12-llvm-12.0.0
+${MODULE_DIR}/compiler/llvm/12.0.0/openmpi/4.1.1.lua :
 	${SRC_DIR}/build.sh openmpi 4.1.1 llvm 12.0.0
 
 openmpi-4.1.1-nvptx-11.1.0 : ${MODULE_DIR}/compiler/nvptx/11.1.0/openmpi/4.1.1.lua
 
-${MODULE_DIR}/compiler/nvptx/11.1.0/openmpi/4.1.1.lua : nvptx-11.1.0 hwloc-2.4.1-nvptx-11.1.0 ucx-1.10.1-nvptx-11.1.0 libevent-2.1.12-nvptx-11.1.0
+${MODULE_DIR}/compiler/nvptx/11.1.0/openmpi/4.1.1.lua :
 	${SRC_DIR}/build.sh openmpi 4.1.1 nvptx 11.1.0
 
 # -----------------------------------------------
 # Boost
 # -----------------------------------------------
 
-boost : boost-1.76.0-gcc-11.1.0 boost-1.76.0-openmpi-4.1.1-gcc-11.1.0
+boost : boost-1.76.0-gcc-11.1.0 boost-1.76.0-openmpi-4.1.1-gcc-11.1.0 boost-1.76.0-nvptx-11.1.0 boost-1.76.0-openmpi-4.1.1-nvptx-11.1.0
 
 boost-1.76.0-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/boost/1.76.0.lua
 
-${MODULE_DIR}/compiler/gcc/11.1.0/boost/1.76.0.lua : gcc-11.1.0
+${MODULE_DIR}/compiler/gcc/11.1.0/boost/1.76.0.lua :
 	${SRC_DIR}/build.sh boost 1.76.0 gcc 11.1.0
 
 boost-1.76.0-openmpi-4.1.1-gcc-11.1.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/boost/1.76.0.lua
 
-${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/boost/1.76.0.lua : openmpi-4.1.1-gcc-11.1.0
+${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/boost/1.76.0.lua :
 	${SRC_DIR}/build.sh boost 1.76.0 gcc 11.1.0 openmpi 4.1.1
+
+boost-1.76.0-nvptx-11.1.0 : ${MODULE_DIR}/compiler/nvptx/11.1.0/boost/1.76.0.lua
+
+${MODULE_DIR}/compiler/nvptx/11.1.0/boost/1.76.0.lua :
+	${SRC_DIR}/build.sh boost 1.76.0 nvptx 11.1.0
+
+boost-1.76.0-openmpi-4.1.1-nvptx-11.1.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/nvptx/11.1.0/boost/1.76.0.lua
+
+${MODULE_DIR}/mpi/openmpi/4.1.1/nvptx/11.1.0/boost/1.76.0.lua :
+	${SRC_DIR}/build.sh boost 1.76.0 nvptx 11.1.0 openmpi 4.1.1
 
 # -----------------------------------------------
 # OpenBLAS
@@ -109,14 +121,14 @@ openblas : openblas-0.3.15-gcc-11.1.0
 
 openblas-0.3.15-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/openblas/0.3.15.lua
 
-${MODULE_DIR}/compiler/gcc/11.1.0/openblas/0.3.15.lua : gcc-11.1.0
+${MODULE_DIR}/compiler/gcc/11.1.0/openblas/0.3.15.lua :
 	${SRC_DIR}/build.sh openblas 0.3.15 gcc 11.1.0
 
 # Something wonky here
 # OpenBLAS uses gfortran with flang flags even when FC is specified
 openblas-0.3.15-llvm-12.0.0 : ${MODULE_DIR}/compiler/llvm/12.0.0/openblas/0.3.15.lua
 
-${MODULE_DIR}/compiler/llvm/12.0.0/openblas/0.3.15.lua : llvm-12.0.0
+${MODULE_DIR}/compiler/llvm/12.0.0/openblas/0.3.15.lua :
 	${SRC_DIR}/build.sh openblas 0.3.15 llvm 12.0.0
 
 # -----------------------------------------------
@@ -127,12 +139,12 @@ blis : blis-0.8.1-gcc-11.1.0 blis-0.8.1-llvm-12.0.0
 
 blis-0.8.1-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/blis/0.8.1.lua
 
-${MODULE_DIR}/compiler/gcc/11.1.0/blis/0.8.1.lua : gcc-11.1.0
+${MODULE_DIR}/compiler/gcc/11.1.0/blis/0.8.1.lua :
 	${SRC_DIR}/build.sh blis 0.8.1 gcc 11.1.0
 
 blis-0.8.1-llvm-12.0.0 : ${MODULE_DIR}/compiler/llvm/12.0.0/blis/0.8.1.lua
 
-${MODULE_DIR}/compiler/llvm/12.0.0/blis/0.8.1.lua : llvm-12.0.0
+${MODULE_DIR}/compiler/llvm/12.0.0/blis/0.8.1.lua :
 	${SRC_DIR}/build.sh blis 0.8.1 llvm 12.0.0
 
 # -----------------------------------------------
@@ -161,27 +173,27 @@ ${MODULE_DIR}/base/vscode/1.56.2.lua :
 # GPTL 
 # -----------------------------------------------
 
-gptl : gptl-8.0.3-gcc-11.1.0 gptl-8.0.3-llvm-12.0.0 gptl-8.0.3-openmpi-4.1.1-gcc-11.1.0 gptl-8.0.3-openmpi-4.1.1-llvm-12.0.0
+gptl : gptl-8.0.3-gcc-11.1.0 gptl-8.0.3-openmpi-4.1.1-gcc-11.1.0
 
 gptl-8.0.3-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/gptl/8.0.3.lua
 
-${MODULE_DIR}/compiler/gcc/11.1.0/gptl/8.0.3.lua : gcc-11.1.0
+${MODULE_DIR}/compiler/gcc/11.1.0/gptl/8.0.3.lua :
 	${SRC_DIR}/build.sh gptl 8.0.3 gcc 11.1.0
-
-gptl-8.0.3-llvm-12.0.0 : ${MODULE_DIR}/compiler/llvm/12.0.0/gptl/8.0.3.lua
-
-${MODULE_DIR}/compiler/llvm/12.0.0/gptl/8.0.3.lua : llvm-12.0.0
-	${SRC_DIR}/build.sh gptl 8.0.3 llvm 12.0.0
 
 gptl-8.0.3-openmpi-4.1.1-gcc-11.1.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/gptl/8.0.3.lua
 
-${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/gptl/8.0.3.lua : openmpi-4.1.1-gcc-11.1.0
+${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/gptl/8.0.3.lua :
 	${SRC_DIR}/build.sh gptl 8.0.3 gcc 11.1.0 openmpi 4.1.1
 
-# Something not working here
+## LLVM will not build GPTL because of a configuration error
+gptl-8.0.3-llvm-12.0.0 : ${MODULE_DIR}/compiler/llvm/12.0.0/gptl/8.0.3.lua
+
+${MODULE_DIR}/compiler/llvm/12.0.0/gptl/8.0.3.lua :
+	${SRC_DIR}/build.sh gptl 8.0.3 llvm 12.0.0
+
 gptl-8.0.3-openmpi-4.1.1-llvm-12.0.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/gptl/8.0.3.lua
 
-${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/gptl/8.0.3.lua : openmpi-4.1.1-llvm-12.0.0
+${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/gptl/8.0.3.lua :
 	${SRC_DIR}/build.sh gptl 8.0.3 llvm 12.0.0 openmpi 4.1.1
 
 # -----------------------------------------------
@@ -257,5 +269,4 @@ cuda-11.3.1 : ${MODULE_DIR}/base/cuda/11.3.1.lua
 
 ${MODULE_DIR}/base/cuda/11.3.1.lua :
 	${SRC_DIR}/build.sh cuda 11.3.1
-
 

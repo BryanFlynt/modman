@@ -42,6 +42,9 @@ case ${COMPILER} in
     "gcc" )
         toolset=gcc
         ;;
+    "nvptx" )
+        toolset=gcc
+        ;;
     "intel" )
         toolset=intel-linux
         ;;
