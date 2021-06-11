@@ -27,7 +27,10 @@ wget "https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/llvm
 mv llvm-project-12.0.0.src.tar.xz llvm-12.0.0.tar.xy
 
 wget "https://registrationcenter-download.intel.com/akdlm/irc_nas/17769/l_BaseKit_p_2021.2.0.2883_offline.sh"
-mv l_BaseKit_p_2021.2.0.2883_offline.sh oneapi-2021.2.0.sh
+mv l_BaseKit_p_2021.2.0.2883_offline.sh oneapi_base-2021.2.0.sh
+
+wget "https://registrationcenter-download.intel.com/akdlm/irc_nas/17764/l_HPCKit_p_2021.2.0.2997_offline.sh"
+mv l_HPCKit_p_2021.2.0.2997_offline.sh oneapi_hpc-2021.2.0.sh
 
 wget --content-disposition "https://code.visualstudio.com/sha/download?build=stable&os=linux-x64"
 mv code-stable-x64*.tar.gz vscode-1.56.2.tar.gz

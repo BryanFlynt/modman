@@ -26,8 +26,11 @@ rm -rf ${LIB_INSTALL_DIR}
 mkdir -p ${LIB_BUILD_DIR}
 cd ${LIB_BUILD_DIR}
 
-# Run the Script
-${TAR_DIR}/${PKG}-${PKG_VERSION}.sh -a --action=install --install-dir=${LIB_INSTALL_DIR} --components=all --eula=accept --intel-sw-improvement-program-consent=decline --silent
+# Run the Script (Base ToolKit)
+bash ${TAR_DIR}/${PKG}_base-${PKG_VERSION}.sh -a --action=install --install-dir=${LIB_INSTALL_DIR} --components=all --eula=accept --intel-sw-improvement-program-consent=decline --silent
+
+# Run the Script (HPC Toolkit)
+bash ${TAR_DIR}/${PKG}_hpc-${PKG_VERSION}.sh -a --action=install --install-dir=${LIB_INSTALL_DIR} --components=all --eula=accept --intel-sw-improvement-program-consent=decline --silent
 
 # Advisor Module
 mkdir -p ${MODULE_DIR}/base/advisor
@@ -88,6 +91,8 @@ prepend_path("MANPATH",           "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/do
 setenv("CPP", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/icpx")
 setenv("CC",  "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/icx")
 setenv("CXX", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/icpx")
+setenv("FPP", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/fpp")
+setenv("FC",  "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/ifx")
 setenv("INTEL_TARGET_ARCH", "intel64")
 EOF
 
@@ -111,15 +116,18 @@ end
 if os.getenv("CXX") then
     setenv("I_MPI_CXX", os.getenv("CXX"))
 end
+if os.getenv("FC") then
+    setenv("I_MPI_FC", os.getenv("FC"))
+end
 
 -- Setup environment variables
 setenv("MPI_ROOT",             "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}")
 setenv("MPI_C_COMPILER",       "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}/bin/mpiicc")
 setenv("MPI_CXX_COMPILER",     "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}/bin/mpiicpc")
--- setenv("MPI_Fortran_COMPILER", "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}/bin/mpiifort")
+setenv("MPI_Fortran_COMPILER", "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}/bin/mpiifort")
 
 -- Should be then re-set serial vars ???
 setenv("CC",  "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}/bin/mpiicc")
 setenv("CXX", "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}/bin/mpiicpc")
--- setenv("FC",  "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}/bin/mpiifort")
+setenv("FC",  "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}/bin/mpiifort")
 EOF
