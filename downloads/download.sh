@@ -61,3 +61,6 @@ rm -rf nvptx-newlib
 wget https://developer.download.nvidia.com/hpc-sdk/21.5/nvhpc_2021_215_Linux_x86_64_cuda_11.3.tar.gz
 mv nvhpc_2021_215_Linux_x86_64_cuda_11.3.tar.gz nvhpc-11.3.0.tar.gz
 
+
+wget https://repo.anaconda.com/archive/Anaconda3-2021.05-Linux-x86_64.sh
+mv Anaconda3-2021.05-Linux-x86_64.sh anaconda-2021.5.sh

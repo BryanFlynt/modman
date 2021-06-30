@@ -3,4 +3,5 @@
 *.tar.xy
 oneapi*
 *.run
+anaconda*
 

@@ -1,7 +1,7 @@
 
 .PHONY: clean cleanall
 
-all : cmake paraview gcc llvm nvptx pgi hwloc ucx libevent openmpi boost openblas gptl blis
+all : cmake paraview gcc llvm nvptx pgi hwloc ucx libevent openmpi boost openblas gptl blis anaconda
 
 clean :
 	rm -rf log
@@ -320,3 +320,15 @@ pgi-21.5 : ${MODULE_DIR}/base/pgi/21.5.lua
 
 ${MODULE_DIR}/base/pgi/21.5.lua :
 	${SRC_DIR}/build.sh pgi 21.5
+
+# -----------------------------------------------
+# Anaconda Python
+# -----------------------------------------------
+
+anaconda : anaconda-2021.5
+
+anaconda-2021.5 : ${MODULE_DIR}/base/anaconda/2021.5.lua
+
+${MODULE_DIR}/base/anaconda/2021.5.lua :
+	${SRC_DIR}/build.sh anaconda 2021.5
+
