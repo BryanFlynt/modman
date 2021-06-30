@@ -22,7 +22,6 @@ mv 0.8.1.tar.gz blis-0.8.1.tar.gz
 
 wget "https://github.com/llvm/llvm-project/archive/llvmorg-9.0.0.zip"
 
-
 wget "https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/llvm-project-12.0.0.src.tar.xz"
 mv llvm-project-12.0.0.src.tar.xz llvm-12.0.0.tar.xy
 
@@ -59,4 +58,6 @@ git clone https://github.com/MentorEmbedded/nvptx-newlib
 tar zcvf nvptx-newlib-0.0.0.tar.gz nvptx-newlib
 rm -rf nvptx-newlib
 
+wget https://developer.download.nvidia.com/hpc-sdk/21.5/nvhpc_2021_215_Linux_x86_64_cuda_11.3.tar.gz
+mv nvhpc_2021_215_Linux_x86_64_cuda_11.3.tar.gz nvhpc-11.3.0.tar.gz
 

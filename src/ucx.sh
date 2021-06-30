@@ -31,6 +31,21 @@ cd ${LIB_BUILD_DIR}
 # Unpack the Source
 tar --strip-components 1 -xvf ${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.*
 
+# PGI has a bug which needs to be patched
+if [ "${COMPILER}" == "pgi" ]; then
+    if [ "${PKG_VERSION}" == "1.10.1" ]; then
+        echo "Patching for GPI"
+#        sed -i "14i BASE_CFLAGS=\"-g -Wall\" " ${LIB_BUILD_DIR}/config/m4/compiler.m4
+        sed -i "476i [--diag_suppress 1]," ${LIB_BUILD_DIR}/config/m4/compiler.m4
+        sed -i "476i [--diag_suppress 68]," ${LIB_BUILD_DIR}/config/m4/compiler.m4
+        sed -i "476i [--diag_suppress 111]," ${LIB_BUILD_DIR}/config/m4/compiler.m4
+        sed -i "476i [--diag_suppress 167]," ${LIB_BUILD_DIR}/config/m4/compiler.m4
+        sed -i "477i [--diag_suppress 188]," ${LIB_BUILD_DIR}/config/m4/compiler.m4
+        sed -i "477i [--diag_suppress 1144]," ${LIB_BUILD_DIR}/config/m4/compiler.m4
+        autoreconf -i
+    fi
+fi   
+
 # Configure and Check for NUMA
 cat > .test.h <<'EOM'
 #include <numa.h>
