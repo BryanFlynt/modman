@@ -131,3 +131,23 @@ setenv("CC",  "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}/bin/mpiicc")
 setenv("CXX", "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}/bin/mpiicpc")
 setenv("FC",  "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}/bin/mpiifort")
 EOF
+
+# MKL Module
+mkdir -p ${MODULE_DIR}/base/mkl
+cat << EOF > ${MODULE_DIR}/base/mkl/${PKG_VERSION}.lua
+help([[ MKL version ${PKG_VERSION} ]])
+family("blas")
+
+-- Conflicting modules
+
+-- Modulepath for packages built by this compiler
+
+-- Environment Paths
+prepend_path("PATH",            "${LIB_INSTALL_DIR}/mkl/${PKG_VERSION}/bin/intel64")
+prepend_path("CPATH",           "${LIB_INSTALL_DIR}/mkl/${PKG_VERSION}/include")
+prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/mkl/${PKG_VERSION}/lib/intel64")
+prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/mkl/${PKG_VERSION}/lib/intel64")
+
+prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/compiler/lib/intel64_lin")
+prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/compiler/lib/intel64_lin")
+EOF
