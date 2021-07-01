@@ -31,9 +31,13 @@ cd ${LIB_BUILD_DIR}
 # Unpack the Source
 tar --strip-components 1 -xzvf ${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.gz
 
+# Get number of cores on system
+NUM_HYPER_THREADS=$(grep -c ^processor /proc/cpuinfo)
+NUM_PHYSICAL_THREADS=$(grep ^cpu\\scores /proc/cpuinfo | uniq |  awk '{print $4}')
+
 # Build it
-make USE_OPENMP=1 PREFIX=${LIB_INSTALL_DIR} 
-make USE_OPENMP=1 PREFIX=${LIB_INSTALL_DIR} install
+make USE_OPENMP=1 NUM_THREADS=${NUM_HYPER_THREADS} PREFIX=${LIB_INSTALL_DIR} 
+make USE_OPENMP=1 NUM_THREADS=${NUM_HYPER_THREADS} PREFIX=${LIB_INSTALL_DIR} install
 
 # Create Module File
 mkdir -p ${MODULE_DIR}/compiler/${COMPILER}/${COMPILER_VERSION}/${PKG}
