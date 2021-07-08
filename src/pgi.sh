@@ -12,7 +12,7 @@ export PKG_VERSION=$1
 
 # Load build environment
 module purge
-module load gcc
+#module load gcc
 module load cuda
 
 # Make full path names to locations
@@ -43,10 +43,11 @@ export NVHPC_MPI_GPU_SUPPORT="false"
 # Run the install script
 ./install
 
-# Compiler Module
-gnu_c_compiler=${CC}
-gnu_bin_dir=$(dirname ${CC})
-gnu_base_name=$(dirname ${gnu_bin_dir})
+# Place a "siterc" file for system to operate with GCC
+cat << EOF > ${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/compilers/bin/siterc
+set PREOPTIONS=-D__GCC_ATOMIC_TEST_AND_SET_TRUEVAL=1;
+EOF
+
 
 mkdir -p ${MODULE_DIR}/base/${PKG}
 cat << EOF > ${MODULE_DIR}/base/${PKG}/${PKG_VERSION}.lua
@@ -60,15 +61,6 @@ conflict("oneapi")
 
 -- Modulepath for packages built by this compiler
 prepend_path("MODULEPATH", "${MODULE_DIR}/compiler/${PKG}/${PKG_VERSION}")
-
--- Point at Latest Compiler
-prepend_path("PATH",               "${gnu_base_name}/bin")
-prepend_path("LIBRARY_PATH",       "${gnu_base_name}/lib")
-prepend_path("LIBRARY_PATH",       "${gnu_base_name}/lib64")
-prepend_path("LD_LIBRARY_PATH",    "${gnu_base_name}/lib")
-prepend_path("LD_LIBRARY_PATH",    "${gnu_base_name}/lib64")
-prepend_path("CPLUS_INCLUDE_PATH", "${gnu_base_name}/include")
-
 
 -- Environment Paths
 prepend_path("PATH",            "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/compilers/bin")

@@ -332,3 +332,13 @@ anaconda-2021.5 : ${MODULE_DIR}/base/anaconda/2021.5.lua
 ${MODULE_DIR}/base/anaconda/2021.5.lua :
 	${SRC_DIR}/build.sh anaconda 2021.5
 
+# -----------------------------------------------
+# Intel TBB
+# -----------------------------------------------
+
+tbb : tbb-2021.3.0-gcc-11.1.0
+
+tbb-2021.3.0-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/tbb/2021.3.0.lua
+
+${MODULE_DIR}/compiler/gcc/11.1.0/tbb/2021.3.0.lua :
+	${SRC_DIR}/build.sh tbb 2021.3.0 gcc 11.1.0

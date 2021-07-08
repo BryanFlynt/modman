@@ -64,3 +64,6 @@ mv nvhpc_2021_215_Linux_x86_64_cuda_11.3.tar.gz nvhpc-11.3.0.tar.gz
 
 wget https://repo.anaconda.com/archive/Anaconda3-2021.05-Linux-x86_64.sh
 mv Anaconda3-2021.05-Linux-x86_64.sh anaconda-2021.5.sh
+
+wget https://github.com/oneapi-src/oneTBB/archive/refs/tags/v2021.3.0.tar.gz
+mv v2021.3.0.tar.gz tbb-2021.3.0.tar.gz
