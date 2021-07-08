@@ -1,7 +1,7 @@
 
 .PHONY: clean cleanall
 
-all : cmake paraview gcc llvm nvptx pgi hwloc ucx libevent openmpi boost openblas gptl blis anaconda
+all : cmake paraview gcc llvm nvptx pgi hwloc ucx libevent openmpi tbb boost openblas gptl blis anaconda
 
 clean :
 	rm -rf log
@@ -336,9 +336,14 @@ ${MODULE_DIR}/base/anaconda/2021.5.lua :
 # Intel TBB
 # -----------------------------------------------
 
-tbb : tbb-2021.3.0-gcc-11.1.0
+tbb : tbb-2021.3.0-gcc-11.1.0 tbb-2021.3.0-oneapi-2021.2.0
 
 tbb-2021.3.0-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/tbb/2021.3.0.lua
 
 ${MODULE_DIR}/compiler/gcc/11.1.0/tbb/2021.3.0.lua :
 	${SRC_DIR}/build.sh tbb 2021.3.0 gcc 11.1.0
+
+tbb-2021.3.0-oneapi-2021.2.0 : ${MODULE_DIR}/compiler/oneapi/2021.2.0/tbb/2021.3.0.lua
+
+${MODULE_DIR}/compiler/oneapi/2021.2.0/tbb/2021.3.0.lua :
+	${SRC_DIR}/build.sh tbb 2021.3.0 oneapi 2021.2.0

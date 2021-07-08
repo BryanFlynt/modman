@@ -77,12 +77,16 @@ prepend_path("LD_LIBRARY_PATH", "${gnu_base_name}/lib64")
 prepend_path("PATH",            "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/intel64")
 prepend_path("PATH",            "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin")
 prepend_path("CPATH",           "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/include")
+
 prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/lib")
+prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/lib/emu")
+prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/lib/x64")
+prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/compiler/lib/intel64_lin")
 
 prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/lib")
 prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/lib/emu")
 prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/lib/x64")
-prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/compiler/${PKG_VERSION}/linux/compiler/lib/intel64_lin")
+prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/compiler/lib/intel64_lin")
 
 prepend_path("OCL_ICD_FILENAMES", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/lib/x64/libintelocl.so")
 prepend_path("MANPATH",           "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/documentation/en/man/common")
