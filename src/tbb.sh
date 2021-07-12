@@ -68,7 +68,7 @@ prereq("${COMPILER}/${COMPILER_VERSION}")
 prepend_path("MODULEPATH", "${MODULE_DIR}/mpi/${PKG}/${PKG_VERSION}/${COMPILER}/${COMPILER_VERSION}")
 
 -- Environment Paths
-prepend_path("CPATH",           "${LIB_INSTALL_DIR}/include/oneapi")
+prepend_path("CPATH",           "${LIB_INSTALL_DIR}/include")
 prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/lib64")
 prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib64")
 
