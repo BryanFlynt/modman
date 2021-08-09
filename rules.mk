@@ -1,7 +1,7 @@
 
 .PHONY: clean cleanall
 
-all : cmake paraview gmsh gcc llvm nvptx nvhpc pgi hwloc ucx libevent openmpi tbb boost openblas gptl blis anaconda
+all : cmake paraview gmsh gcc llvm nvptx nvhpc hwloc ucx libevent openmpi tbb boost openblas gptl blis anaconda
 
 clean :
 	rm -rf log
@@ -322,18 +322,7 @@ ${MODULE_DIR}/base/cuda/11.3.1.lua :
 	${SRC_DIR}/build.sh cuda 11.3.1
 
 # -----------------------------------------------
-# PGI Compiler
-# -----------------------------------------------
-
-pgi : pgi-21.5
-
-pgi-21.5 : ${MODULE_DIR}/base/pgi/21.5.lua
-
-${MODULE_DIR}/base/pgi/21.5.lua :
-	${SRC_DIR}/build.sh pgi 21.5
-
-# -----------------------------------------------
-# NVHPC Compiler
+# NVHPC + PGI Compiler
 # -----------------------------------------------
 
 nvhpc : nvhpc-21.5

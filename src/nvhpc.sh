@@ -48,7 +48,9 @@ cat << EOF > ${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/compilers/bin/siterc
 set PREOPTIONS=-D__GCC_ATOMIC_TEST_AND_SET_TRUEVAL=1;
 EOF
 
-
+# -----------------------
+# NVHPS Module File
+# -----------------------
 mkdir -p ${MODULE_DIR}/base/${PKG}
 cat << EOF > ${MODULE_DIR}/base/${PKG}/${PKG_VERSION}.lua
 help([[ ${PKG} version ${PKG_VERSION} ]])
@@ -101,3 +103,64 @@ setenv("F90",         "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/compilers/
 setenv("F77",         "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/compilers/bin/nvfortran") 
 setenv("OPAL_PREFIX", "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/comm_libs/mpi")
 EOF
+
+
+
+
+# -----------------------
+# PGI Module File
+# -----------------------
+
+mkdir -p ${MODULE_DIR}/base/pgi
+cat << EOF > ${MODULE_DIR}/base/pgi/${PKG_VERSION}.lua
+help([[ pgi version ${PKG_VERSION} ]])
+family("compiler")
+
+-- Conflicting modules
+conflict("gcc")
+conflict("llvm")
+conflict("oneapi")
+conflict("nvptx")
+conflict("nvhpc")
+
+-- Modulepath for PGI Compiler
+prepend_path("MODULEPATH", "${MODULE_DIR}/compiler/pgi/${PKG_VERSION}")
+
+-- Temporary Variables (can use within file only)
+local nvhpc_home = pathJoin(${LIB_INSTALL_DIR},"Linux_x86_64",${PKG_VERSION})
+local nvhpc_math = pathJoin($nvhpc_home,"math_libs")
+local nvhpc_comp = pathJoin($nvhpc_home,"compilers")
+local nvhpc_comm = pathJoin($nvhpc_home,"comm_libs")
+
+-- Environment Paths
+prepend_path("PATH",            "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/cuda/bin")
+prepend_path("PATH",            "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/compilers/bin")
+prepend_path("PATH",            "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/comm_libs/mpi/bin")
+
+prepend_path("CPATH",           "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/math_libs/include")
+prepend_path("CPATH",           "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/comm_libs/mpi/include")
+prepend_path("CPATH",           "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/comm_libs/nccl/include")
+prepend_path("CPATH",           "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/comm_libs/nvshmem/include")
+
+prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/cuda/lib64")
+prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/cuda/extras/CUPTI/lib64")
+prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/compilers/lib")
+prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/math_libs/lib64")
+prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/comm_libs/mpi/lib")
+prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/comm_libs/nccl/lib")
+prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/comm_libs/nvshmem/lib")
+
+prepend_path("MANPATH",         "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/compilers/man")
+
+-- Environment Variables
+setenv("PGI",         "${LIB_INSTALL_DIR}")
+setenv("CPP",         "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/compilers/bin/pgcc -Mcpp")
+setenv("CC",          "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/compilers/bin/pgcc")
+setenv("CXX",         "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/compilers/bin/pgc++")
+setenv("FPP",         "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/compilers/bin/pgfortran")
+setenv("FC",          "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/compilers/bin/pgfortran")
+setenv("F90",         "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/compilers/bin/pgf90")
+setenv("F77",         "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/compilers/bin/pgf77") 
+setenv("OPAL_PREFIX", "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/comm_libs/mpi")
+EOF
+
