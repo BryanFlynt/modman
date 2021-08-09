@@ -1,7 +1,7 @@
 
 .PHONY: clean cleanall
 
-all : cmake paraview gcc llvm nvptx pgi hwloc ucx libevent openmpi tbb boost openblas gptl blis anaconda
+all : cmake paraview gmsh gcc llvm nvptx nvhpc pgi hwloc ucx libevent openmpi tbb boost openblas gptl blis anaconda
 
 clean :
 	rm -rf log
@@ -32,6 +32,17 @@ paraview-5.9.1 : ${MODULE_DIR}/base/paraview/5.9.1.lua
 
 ${MODULE_DIR}/base/paraview/5.9.1.lua:
 	${SRC_DIR}/build.sh paraview 5.9.1
+
+# -----------------------------------------------
+# GMSH
+# -----------------------------------------------
+
+gmsh : gmsh-4.8.4
+
+gmsh-4.8.4 : ${MODULE_DIR}/base/gmsh/4.8.4.lua
+
+${MODULE_DIR}/base/gmsh/4.8.4.lua:
+	${SRC_DIR}/build.sh gmsh 4.8.4
 
 # -----------------------------------------------
 # GCC
@@ -320,6 +331,17 @@ pgi-21.5 : ${MODULE_DIR}/base/pgi/21.5.lua
 
 ${MODULE_DIR}/base/pgi/21.5.lua :
 	${SRC_DIR}/build.sh pgi 21.5
+
+# -----------------------------------------------
+# NVHPC Compiler
+# -----------------------------------------------
+
+nvhpc : nvhpc-21.5
+
+nvhpc-21.5 : ${MODULE_DIR}/base/nvhpc/21.5.lua
+
+${MODULE_DIR}/base/nvhpc/21.5.lua :
+	${SRC_DIR}/build.sh nvhpc 21.5
 
 # -----------------------------------------------
 # Anaconda Python
