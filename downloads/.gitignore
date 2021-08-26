@@ -5,4 +5,5 @@ oneapi*
 *.run
 anaconda*
 *.tgz
+*.zip
 

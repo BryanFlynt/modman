@@ -1,7 +1,7 @@
 
 .PHONY: clean cleanall
 
-all : cmake paraview gmsh gcc llvm nvptx nvhpc hwloc ucx libevent openmpi tbb boost openblas gptl blis anaconda
+all : cmake paraview gmsh gcc llvm nvptx nvhpc hwloc ucx libevent openmpi tbb boost openblas gptl blis anaconda sycl hdf5
 
 clean :
 	rm -rf log
@@ -358,3 +358,44 @@ tbb-2021.3.0-oneapi-2021.2.0 : ${MODULE_DIR}/compiler/oneapi/2021.2.0/tbb/2021.3
 
 ${MODULE_DIR}/compiler/oneapi/2021.2.0/tbb/2021.3.0.lua :
 	${SRC_DIR}/build.sh tbb 2021.3.0 oneapi 2021.2.0
+
+# -----------------------------------------------
+# SYCL LLVM Compiler
+# -----------------------------------------------
+
+sycl : sycl-2021.8.16
+
+sycl-2021.8.16 : ${MODULE_DIR}/base/sycl/2021.8.16.lua
+
+${MODULE_DIR}/base/sycl/2021.8.16.lua :
+	${SRC_DIR}/build.sh sycl 2021.8.16
+
+# -----------------------------------------------
+# HDF5
+# -----------------------------------------------
+
+hdf5 : hdf5-1.12.1
+
+hdf5-1.12.1 : hdf5-1.12.1-gcc-11.1.0 hdf5-1.12.1-llvm-12.0.0 hdf5-1.12.1-openmpi-4.1.1-gcc-11.1.0 hdf5-1.12.1-openmpi-4.1.1-llvm-12.0.0
+
+hdf5-1.12.1-gcc-11.1.0 : ${MODULE_DIR}/gcc/11.1.0/hdf5/1.12.1.lua
+
+${MODULE_DIR}/gcc/11.1.0/hdf5/1.12.1.lua :
+	${SRC_DIR}/build.sh hdf5 1.12.1 gcc 11.1.0
+
+hdf5-1.12.1-llvm-12.0.0 : ${MODULE_DIR}/llvm/12.0.0/hdf5/1.12.1.lua
+
+${MODULE_DIR}/llvm/12.0.0/hdf5/1.12.1.lua :
+	${SRC_DIR}/build.sh hdf5 1.12.1 llvm 12.0.0
+
+hdf5-1.12.1-openmpi-4.1.1-gcc-11.1.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/hdf5/1.12.1.lua
+
+${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/hdf5/1.12.1.lua :
+	${SRC_DIR}/build.sh hdf5 1.12.1 gcc 11.1.0 openmpi 4.1.1
+
+hdf5-1.12.1-openmpi-4.1.1-llvm-12.0.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/hdf5/1.12.1.lua
+
+${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/hdf5/1.12.1.lua :
+	${SRC_DIR}/build.sh hdf5 1.12.1 llvm 12.0.0 openmpi 4.1.1
+
+

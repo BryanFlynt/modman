@@ -69,3 +69,10 @@ mv v2021.3.0.tar.gz tbb-2021.3.0.tar.gz
 
 wget https://gmsh.info/bin/Linux/gmsh-4.8.4-Linux64.tgz
 
+# LLVM with CUDA + SYCL
+wget https://github.com/intel/llvm/archive/refs/heads/sycl.tar.gz
+mv sycl.tar.gz sycl-2021.8.16.tar.gz
+
+# HDF5
+wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.12/hdf5-1.12.1/src/hdf5-1.12.1.tar.gz
+
