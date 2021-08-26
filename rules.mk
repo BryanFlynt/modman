@@ -1,7 +1,7 @@
 
 .PHONY: clean cleanall
 
-all : cmake paraview gmsh gcc llvm nvptx nvhpc hwloc ucx libevent openmpi tbb boost openblas gptl blis anaconda sycl hdf5
+all : cmake paraview gmsh gcc llvm nvptx nvhpc hwloc ucx libevent openmpi tbb boost openblas gptl blis anaconda sycl hdf5 netcdf
 
 clean :
 	rm -rf log
@@ -376,7 +376,7 @@ ${MODULE_DIR}/base/sycl/2021.8.16.lua :
 
 hdf5 : hdf5-1.12.1
 
-hdf5-1.12.1 : hdf5-1.12.1-gcc-11.1.0 hdf5-1.12.1-llvm-12.0.0 hdf5-1.12.1-openmpi-4.1.1-gcc-11.1.0 hdf5-1.12.1-openmpi-4.1.1-llvm-12.0.0
+hdf5-1.12.1 : hdf5-1.12.1-gcc-11.1.0 hdf5-1.12.1-openmpi-4.1.1-gcc-11.1.0
 
 hdf5-1.12.1-gcc-11.1.0 : ${MODULE_DIR}/gcc/11.1.0/hdf5/1.12.1.lua
 
@@ -398,4 +398,30 @@ hdf5-1.12.1-openmpi-4.1.1-llvm-12.0.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.
 ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/hdf5/1.12.1.lua :
 	${SRC_DIR}/build.sh hdf5 1.12.1 llvm 12.0.0 openmpi 4.1.1
 
+# -----------------------------------------------
+# NetCDF
+# -----------------------------------------------
 
+netcdf : netcdf-4.8.1
+
+netcdf-4.8.1 : netcdf-4.8.1-gcc-11.1.0 netcdf-4.8.1-openmpi-4.1.1-gcc-11.1.0
+
+netcdf-4.8.1-gcc-11.1.0 : ${MODULE_DIR}/gcc/11.1.0/netcdf/4.8.1.lua
+
+${MODULE_DIR}/gcc/11.1.0/netcdf/4.8.1.lua :
+	${SRC_DIR}/build.sh netcdf 4.8.1 gcc 11.1.0
+
+netcdf-4.8.1-llvm-12.0.0 : ${MODULE_DIR}/llvm/12.0.0/netcdf/4.8.1.lua
+
+${MODULE_DIR}/llvm/12.0.0/netcdf/4.8.1.lua :
+	${SRC_DIR}/build.sh netcdf 4.8.1 llvm 12.0.0
+
+netcdf-4.8.1-openmpi-4.1.1-gcc-11.1.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/netcdf/4.8.1.lua
+
+${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/netcdf/4.8.1.lua :
+	${SRC_DIR}/build.sh netcdf 4.8.1 gcc 11.1.0 openmpi 4.1.1
+
+netcdf-4.8.1-openmpi-4.1.1-llvm-12.0.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/netcdf/4.8.1.lua
+
+${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/netcdf/4.8.1.lua :
+	${SRC_DIR}/build.sh netcdf 4.8.1 llvm 12.0.0 openmpi 4.1.1

@@ -76,3 +76,9 @@ mv sycl.tar.gz sycl-2021.8.16.tar.gz
 # HDF5
 wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.12/hdf5-1.12.1/src/hdf5-1.12.1.tar.gz
 
+# NetCDF
+wget https://github.com/Unidata/netcdf-c/archive/refs/tags/v4.8.1.tar.gz
+mv v4.8.1.tar.gz netcdf-4.8.1.tar.gz
+
+
+

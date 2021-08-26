@@ -7,7 +7,7 @@ set -e
 set -x
 
 # Set the package name
-export PKG=hdf5
+export PKG=netcdf
 export PKG_VERSION=$1
 export COMPILER=$2
 export COMPILER_VERSION=$3
@@ -20,6 +20,7 @@ module load ${COMPILER}/${COMPILER_VERSION}
 if [ ! -z "${MPI_COMPILER}" ]; then
     module load ${MPI_COMPILER}/${MPI_COMPILER_VERSION}
 fi
+module load hdf5
 
 # Make full path names to locations
 LIB_BUILD_DIR=$(readlink -m ${BUILD_DIR}/${PKG}/${PKG_VERSION}/${MPI_COMPILER}/${MPI_COMPILER_VERSION}/${COMPILER}/${COMPILER_VERSION})
@@ -38,13 +39,14 @@ tar --strip-components 1 -xvf ${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.gz
 
 # Configure
 if [ ! -z "${MPI_COMPILER}" ]; then
-    ./configure --prefix=${LIB_INSTALL_DIR} --enable-fortran --enable-parallel
+    ./configure --prefix=${LIB_INSTALL_DIR} --enable-parallel
 else
-    ./configure --prefix=${LIB_INSTALL_DIR} --enable-fortran --enable-cxx 
+    ./configure --prefix=${LIB_INSTALL_DIR}
 fi
 
 # Build it
 make -j `nproc`
+make check
 make install
 
 # Create Module File
@@ -57,7 +59,7 @@ name_of_module=${location_of_module}/${PKG_VERSION}.lua
 mkdir -p ${location_of_module}
 cat << EOF > ${name_of_module}
 help([[ ${PKG} version ${PKG_VERSION} ]])
-family("hdf5")
+family("netcdf")
 
 -- Conflicts
 
@@ -72,6 +74,7 @@ EOF
 fi
 
 cat << EOF >> ${name_of_module}
+prereq(${HDF5_MODULE_VERSION})
 
 -- Modulepath for packages built with this library
 
@@ -82,6 +85,7 @@ prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/lib64")
 prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib64")
 
 -- Environment Variables
-setenv("HDF5_ROOT",             "${LIB_INSTALL_DIR}")
-setenv("HDF5_MODULE_VERSION",   "${PKG}/${PKG_VERSION}")
+setenv("NETCDF_DIR",              "${LIB_INSTALL_DIR}")
+setenv("NETCDF_ROOT",             "${LIB_INSTALL_DIR}")
+setenv("NETCDF_MODULE_VERSION",   "${PKG}/${PKG_VERSION}")
 EOF
