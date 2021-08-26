@@ -74,7 +74,7 @@ EOF
 fi
 
 cat << EOF >> ${name_of_module}
-prereq(${HDF5_MODULE_VERSION})
+prereq("${HDF5_MODULE_VERSION}")
 
 -- Modulepath for packages built with this library
 
