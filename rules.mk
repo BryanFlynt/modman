@@ -1,7 +1,7 @@
 
 .PHONY: clean cleanall
 
-all : cmake paraview gmsh gcc llvm nvptx nvhpc hwloc ucx libevent openmpi tbb boost openblas gptl blis anaconda sycl hdf5 netcdf
+all : cmake gcc llvm hwloc ucx libevent openmpi boost openblas gptl blis hdf5 netcdf
 
 clean :
 	rm -rf log
@@ -81,7 +81,7 @@ ${MODULE_DIR}/base/nvptx/11.1.0.lua:
 # OpenMPI
 # -----------------------------------------------
 
-openmpi : openmpi-4.1.1-gcc-11.1.0 openmpi-4.1.1-llvm-12.0.0 openmpi-4.1.1-nvptx-11.1.0
+openmpi : openmpi-4.1.1-gcc-11.1.0 openmpi-4.1.1-llvm-12.0.0
 
 openmpi-4.1.1-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/openmpi/4.1.1.lua
 
@@ -107,7 +107,7 @@ ${MODULE_DIR}/compiler/pgi/21.5/openmpi/4.1.1.lua :
 # Boost
 # -----------------------------------------------
 
-boost : boost-1.76.0-gcc-11.1.0 boost-1.76.0-openmpi-4.1.1-gcc-11.1.0 boost-1.76.0-nvptx-11.1.0 boost-1.76.0-openmpi-4.1.1-nvptx-11.1.0
+boost : boost-1.76.0-gcc-11.1.0 boost-1.76.0-openmpi-4.1.1-gcc-11.1.0
 
 boost-1.76.0-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/boost/1.76.0.lua
 
@@ -143,7 +143,7 @@ ${MODULE_DIR}/mpi/openmpi/4.1.1/pgi/21.5/boost/1.76.0.lua :
 # OpenBLAS
 # -----------------------------------------------
 
-openblas : openblas-0.3.15-gcc-11.1.0 openblas-0.3.15-pgi-21.5
+openblas : openblas-0.3.15-gcc-11.1.0
 
 openblas-0.3.15-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/openblas/0.3.15.lua
 
@@ -236,7 +236,7 @@ ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/gptl/8.0.3.lua :
 # HWLOC 
 # -----------------------------------------------
 
-hwloc : hwloc-2.4.1-gcc-11.1.0 hwloc-2.4.1-llvm-12.0.0 hwloc-2.4.1-nvptx-11.1.0
+hwloc : hwloc-2.4.1-gcc-11.1.0 hwloc-2.4.1-llvm-12.0.0
 
 hwloc-2.4.1-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/hwloc/2.4.1.lua
 
@@ -262,7 +262,7 @@ ${MODULE_DIR}/compiler/pgi/21.5/hwloc/2.4.1.lua :
 # UCX
 # -----------------------------------------------
 
-ucx : ucx-1.10.1-gcc-11.1.0 ucx-1.10.1-llvm-12.0.0 ucx-1.10.1-nvptx-11.1.0
+ucx : ucx-1.10.1-gcc-11.1.0 ucx-1.10.1-llvm-12.0.0
 
 ucx-1.10.1-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/ucx/1.10.1.lua
 
@@ -288,7 +288,7 @@ ${MODULE_DIR}/compiler/pgi/21.5/ucx/1.10.1.lua :
 # libevent
 # -----------------------------------------------
 
-libevent : libevent-2.1.12-gcc-11.1.0 libevent-2.1.12-llvm-12.0.0 libevent-2.1.12-nvptx-11.1.0
+libevent : libevent-2.1.12-gcc-11.1.0 libevent-2.1.12-llvm-12.0.0
 
 libevent-2.1.12-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/libevent/2.1.12.lua
 

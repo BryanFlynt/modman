@@ -46,7 +46,6 @@ fi
 
 # Build it
 make -j `nproc`
-make check
 make install
 
 # Create Module File
