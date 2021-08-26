@@ -81,6 +81,8 @@ prereq("${HDF5_MODULE_VERSION}")
 -- Environment Paths
 prepend_path("PATH",            "${LIB_INSTALL_DIR}/bin")
 prepend_path("CPATH",           "${LIB_INSTALL_DIR}/include")
+prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/lib")
+prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib")
 prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/lib64")
 prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib64")
 
