@@ -7,7 +7,7 @@ set -e
 set -x
 
 # Set the package name
-export PKG=netcdf
+export PKG=netcdf-f
 export PKG_VERSION=$1
 export COMPILER=$2
 export COMPILER_VERSION=$3
@@ -21,6 +21,7 @@ if [ ! -z "${MPI_COMPILER}" ]; then
     module load ${MPI_COMPILER}/${MPI_COMPILER_VERSION}
 fi
 module load hdf5
+module load netcdf-c
 
 # Make full path names to locations
 LIB_BUILD_DIR=$(readlink -m ${BUILD_DIR}/${PKG}/${PKG_VERSION}/${MPI_COMPILER}/${MPI_COMPILER_VERSION}/${COMPILER}/${COMPILER_VERSION})
@@ -46,7 +47,7 @@ fi
 
 # Build it
 make -j `nproc`
-make check
+#make check
 make install
 
 # Create Module File
@@ -59,7 +60,7 @@ name_of_module=${location_of_module}/${PKG_VERSION}.lua
 mkdir -p ${location_of_module}
 cat << EOF > ${name_of_module}
 help([[ ${PKG} version ${PKG_VERSION} ]])
-family("netcdf")
+family("netcdf_f")
 
 -- Conflicts
 
@@ -75,6 +76,7 @@ fi
 
 cat << EOF >> ${name_of_module}
 prereq("${HDF5_MODULE_VERSION}")
+prereq("${NETCDF_C_MODULE_VERSION}")
 
 -- Modulepath for packages built with this library
 
@@ -87,7 +89,7 @@ prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/lib64")
 prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib64")
 
 -- Environment Variables
-setenv("NETCDF_DIR",              "${LIB_INSTALL_DIR}")
-setenv("NETCDF_ROOT",             "${LIB_INSTALL_DIR}")
-setenv("NETCDF_MODULE_VERSION",   "${PKG}/${PKG_VERSION}")
+setenv("NETCDF_DIR",                "${LIB_INSTALL_DIR}")
+setenv("NETCDF_ROOT",               "${LIB_INSTALL_DIR}")
+setenv("NETCDF_F_MODULE_VERSION", "${PKG}/${PKG_VERSION}")
 EOF

@@ -439,29 +439,92 @@ ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/hdf5/1.12.1.lua :
 	${SRC_DIR}/build.sh hdf5 1.12.1 llvm 12.0.0 openmpi 4.1.1
 
 # -----------------------------------------------
+# NetCDF C
+# -----------------------------------------------
+
+netcdf-c : netcdf-c-4.8.1
+
+netcdf-c-4.8.1 : netcdf-c-4.8.1-gcc-11.1.0 netcdf-c-4.8.1-openmpi-4.1.1-gcc-11.1.0
+
+netcdf-c-4.8.1-gcc-11.1.0 : ${MODULE_DIR}/gcc/11.1.0/netcdf-c/4.8.1.lua
+
+${MODULE_DIR}/gcc/11.1.0/netcdf-c/4.8.1.lua :
+	${SRC_DIR}/build.sh netcdf-c 4.8.1 gcc 11.1.0
+
+netcdf-c-4.8.1-llvm-12.0.0 : ${MODULE_DIR}/llvm/12.0.0/netcdf-c/4.8.1.lua
+
+${MODULE_DIR}/llvm/12.0.0/netcdf-c/4.8.1.lua :
+	${SRC_DIR}/build.sh netcdf-c 4.8.1 llvm 12.0.0
+
+netcdf-c-4.8.1-openmpi-4.1.1-gcc-11.1.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/netcdf-c/4.8.1.lua
+
+${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/netcdf-c/4.8.1.lua :
+	${SRC_DIR}/build.sh netcdf-c 4.8.1 gcc 11.1.0 openmpi 4.1.1
+
+netcdf-c-4.8.1-openmpi-4.1.1-llvm-12.0.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/netcdf-c/4.8.1.lua
+
+${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/netcdf-c/4.8.1.lua :
+	${SRC_DIR}/build.sh netcdf-c 4.8.1 llvm 12.0.0 openmpi 4.1.1
+
+# -----------------------------------------------
+# NetCDF-CXX
+# -----------------------------------------------
+
+netcdf-cxx : netcdf-cxx-4.3.1
+
+netcdf-cxx-4.3.1 : netcdf-cxx-4.3.1-gcc-11.1.0 netcdf-cxx-4.3.1-openmpi-4.1.1-gcc-11.1.0
+
+netcdf-cxx-4.3.1-gcc-11.1.0 : ${MODULE_DIR}/gcc/11.1.0/netcdf-cxx/4.3.1.lua
+
+${MODULE_DIR}/gcc/11.1.0/netcdf-cxx/4.3.1.lua :
+	${SRC_DIR}/build.sh netcdf-cxx 4.3.1 gcc 11.1.0
+
+netcdf-cxx-4.3.1-llvm-12.0.0 : ${MODULE_DIR}/llvm/12.0.0/netcdf-cxx/4.3.1.lua
+
+${MODULE_DIR}/llvm/12.0.0/netcdf-cxx/4.3.1.lua :
+	${SRC_DIR}/build.sh netcdf-cxx 4.3.1 llvm 12.0.0
+
+netcdf-cxx-4.3.1-openmpi-4.1.1-gcc-11.1.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/netcdf-cxx/4.3.1.lua
+
+${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/netcdf-cxx/4.3.1.lua :
+	${SRC_DIR}/build.sh netcdf-cxx 4.3.1 gcc 11.1.0 openmpi 4.1.1
+
+netcdf-cxx-4.3.1-openmpi-4.1.1-llvm-12.0.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/netcdf-cxx/4.3.1.lua
+
+${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/netcdf-cxx/4.3.1.lua :
+	${SRC_DIR}/build.sh netcdf-cxx 4.3.1 llvm 12.0.0 openmpi 4.1.1
+
+
+# -----------------------------------------------
+# NetCDF-Fortran
+# -----------------------------------------------
+
+netcdf-f : netcdf-f-4.5.3
+
+netcdf-f-4.5.3 : netcdf-f-4.5.3-gcc-11.1.0 netcdf-f-4.5.3-openmpi-4.1.1-gcc-11.1.0
+
+netcdf-f-4.5.3-gcc-11.1.0 : ${MODULE_DIR}/gcc/11.1.0/netcdf-f/4.5.3.lua
+
+${MODULE_DIR}/gcc/11.1.0/netcdf-f/4.5.3.lua :
+	${SRC_DIR}/build.sh netcdf-f 4.5.3 gcc 11.1.0
+
+netcdf-f-4.5.3-llvm-12.0.0 : ${MODULE_DIR}/llvm/12.0.0/netcdf-f/4.5.3.lua
+
+${MODULE_DIR}/llvm/12.0.0/netcdf-f/4.5.3.lua :
+	${SRC_DIR}/build.sh netcdf-f 4.5.3 llvm 12.0.0
+
+netcdf-f-4.5.3-openmpi-4.1.1-gcc-11.1.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/netcdf-f/4.5.3.lua
+
+${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/netcdf-f/4.5.3.lua :
+	${SRC_DIR}/build.sh netcdf-f 4.5.3 gcc 11.1.0 openmpi 4.1.1
+
+netcdf-f-4.5.3-openmpi-4.1.1-llvm-12.0.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/netcdf-f/4.5.3.lua
+
+${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/netcdf-f/4.5.3.lua :
+	${SRC_DIR}/build.sh netcdf-f 4.5.3 llvm 12.0.0 openmpi 4.1.1
+
+# -----------------------------------------------
 # NetCDF
 # -----------------------------------------------
 
-netcdf : netcdf-4.8.1
-
-netcdf-4.8.1 : netcdf-4.8.1-gcc-11.1.0 netcdf-4.8.1-openmpi-4.1.1-gcc-11.1.0
-
-netcdf-4.8.1-gcc-11.1.0 : ${MODULE_DIR}/gcc/11.1.0/netcdf/4.8.1.lua
-
-${MODULE_DIR}/gcc/11.1.0/netcdf/4.8.1.lua :
-	${SRC_DIR}/build.sh netcdf 4.8.1 gcc 11.1.0
-
-netcdf-4.8.1-llvm-12.0.0 : ${MODULE_DIR}/llvm/12.0.0/netcdf/4.8.1.lua
-
-${MODULE_DIR}/llvm/12.0.0/netcdf/4.8.1.lua :
-	${SRC_DIR}/build.sh netcdf 4.8.1 llvm 12.0.0
-
-netcdf-4.8.1-openmpi-4.1.1-gcc-11.1.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/netcdf/4.8.1.lua
-
-${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/netcdf/4.8.1.lua :
-	${SRC_DIR}/build.sh netcdf 4.8.1 gcc 11.1.0 openmpi 4.1.1
-
-netcdf-4.8.1-openmpi-4.1.1-llvm-12.0.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/netcdf/4.8.1.lua
-
-${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/netcdf/4.8.1.lua :
-	${SRC_DIR}/build.sh netcdf 4.8.1 llvm 12.0.0 openmpi 4.1.1
+netcdf : netcdf-c netcdf-cxx netcdf-f

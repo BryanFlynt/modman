@@ -78,7 +78,19 @@ wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.12/hdf5-1.12.1/src/hd
 
 # NetCDF
 wget https://github.com/Unidata/netcdf-c/archive/refs/tags/v4.8.1.tar.gz
-mv v4.8.1.tar.gz netcdf-4.8.1.tar.gz
+mv v4.8.1.tar.gz netcdf-c-4.8.1.tar.gz
+
+wget https://www.unidata.ucar.edu/downloads/netcdf/ftp/netcdf-cxx4-4.3.1.tar.gz
+mv netcdf-cxx4-4.3.1.tar.gz netcdf-cxx-4.3.1.tar.gz
+
+wget https://www.unidata.ucar.edu/downloads/netcdf/ftp/netcdf-fortran-4.5.3.tar.gz
+mv netcdf-fortran-4.5.3.tar.gz netcdf-f-4.5.3.tar.gz
+
+
+
+
+
+
 
 
 
