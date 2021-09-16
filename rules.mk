@@ -7,7 +7,7 @@ unpack_only : cmake paraview gmsh vscode anaconda
 
 compilers : gcc llvm nvptx nvhpc oneapi sycl
 
-libraries : hwloc ucx libevent tbb openblas blis
+libraries : hwloc ucx libevent tbb openblas blis astyle
 
 mpi_compilers : openmpi
 
@@ -292,6 +292,17 @@ blis-0.8.1-pgi-21.5 : ${MODULE_DIR}/compiler/pgi/21.5/blis/0.8.1.lua
 
 ${MODULE_DIR}/compiler/pgi/21.5/blis/0.8.1.lua :
 	${SRC_DIR}/build.sh blis 0.8.1 pgi 21.5
+
+# -----------------------------------------------
+# ASTYLE
+# -----------------------------------------------
+
+astyle : astyle-3.1.0
+
+astyle-3.1.0 : ${MODULE_DIR}/base/astyle/3.1.0.lua
+
+${MODULE_DIR}/base/astyle/3.1.0.lua :
+	${SRC_DIR}/build.sh astyle 3.1.0 gcc 11.1.0
 
 # -----------------------------------------------
 # Intel TBB
