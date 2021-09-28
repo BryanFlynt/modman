@@ -448,13 +448,13 @@ ${MODULE_DIR}/mpi/impi/2021.3.0/oneapi/2021.3.0/boost/1.77.0.lua :
 # GPTL 
 # -----------------------------------------------
 
-gptl : gptl_gcc gptl_oneapi # gptl_llvm
+gptl : gptl-gcc gptl-oneapi # gptl-llvm
 
-gptl_gcc : gptl-8.0.3-gcc-11.1.0 gptl-8.0.3-openmpi-4.1.1-gcc-11.1.0
+gptl-gcc : gptl-8.0.3-gcc-11.1.0 gptl-8.0.3-openmpi-4.1.1-gcc-11.1.0
 
-gptl_oneapi : gptl-8.0.3-oneapi-2021.3.0 # gptl-8.0.3-impi-2021.3.0-oneapi-2021.3.0 # gptl-8.0.3-oneapi-2021.2.0
+gptl-oneapi : gptl-8.0.3-oneapi-2021.3.0 # gptl-8.0.3-impi-2021.3.0-oneapi-2021.3.0 # gptl-8.0.3-oneapi-2021.2.0
 
-gptl_llvm : gptl-8.0.3-llvm-12.0.0  # Error within gptl
+gptl-llvm : gptl-8.0.3-llvm-12.0.0  # Error within gptl
 
 gptl-8.0.3-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/gptl/8.0.3.lua
 
