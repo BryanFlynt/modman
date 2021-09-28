@@ -92,7 +92,7 @@ prepend_path("OCL_ICD_FILENAMES", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/li
 prepend_path("MANPATH",           "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/documentation/en/man/common")
 
 -- Environment Variables
-setenv("CPP", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/icpx")
+setenv("CPP", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/icpx -E")
 setenv("CC",  "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/icx")
 setenv("CXX", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/icpx")
 setenv("FPP", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/fpp")
