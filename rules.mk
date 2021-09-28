@@ -3,15 +3,15 @@
 
 all : unpack_only compilers libraries mpi_compilers libraries_w_mpi
 
-unpack_only : cmake paraview gmsh vscode anaconda
+unpack_only : cmake # paraview gmsh vscode anaconda
 
-compilers : gcc llvm nvptx nvhpc oneapi sycl
+compilers : gcc oneapi # llvm nvptx nvhpc sycl
 
-libraries : hwloc ucx libevent tbb openblas blis astyle
+libraries : hwloc ucx libevent # tbb openblas blis astyle
 
 mpi_compilers : openmpi
 
-libraries_w_mpi : boost gptl hdf5 netcdf
+libraries_w_mpi : boost gptl # hdf5 netcdf
 
 clean :
 	rm -rf log
@@ -376,7 +376,7 @@ ${MODULE_DIR}/compiler/pgi/21.5/openmpi/4.1.1.lua :
 # Boost
 # -----------------------------------------------
 
-boost : boost-gcc boost-oneapi boost-nvptx
+boost : boost-gcc boost-oneapi # boost-nvptx
 
 boost-gcc : boost-1.76.0-gcc-11.1.0 boost-1.76.0-openmpi-4.1.1-gcc-11.1.0 boost-1.77.0-gcc-11.1.0 boost-1.77.0-openmpi-4.1.1-gcc-11.1.0
 
@@ -448,13 +448,13 @@ ${MODULE_DIR}/mpi/impi/2021.3.0/oneapi/2021.3.0/boost/1.77.0.lua :
 # GPTL 
 # -----------------------------------------------
 
-gptl : gptl_gcc gptl_oneapi # gptl_llvm
+gptl : gptl-gcc gptl-oneapi # gptl-llvm
 
-gptl_gcc : gptl-8.0.3-gcc-11.1.0 gptl-8.0.3-openmpi-4.1.1-gcc-11.1.0
+gptl-gcc : gptl-8.0.3-gcc-11.1.0 gptl-8.0.3-openmpi-4.1.1-gcc-11.1.0
 
-gptl_oneapi : gptl-8.0.3-oneapi-2021.3.0 # gptl-8.0.3-impi-2021.3.0-oneapi-2021.3.0 # gptl-8.0.3-oneapi-2021.2.0
+gptl-oneapi : gptl-8.0.3-oneapi-2021.3.0 # gptl-8.0.3-impi-2021.3.0-oneapi-2021.3.0
 
-gptl_llvm : gptl-8.0.3-llvm-12.0.0  # Error within gptl
+gptl-llvm : gptl-8.0.3-llvm-12.0.0  # Error within gptl
 
 gptl-8.0.3-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/gptl/8.0.3.lua
 
