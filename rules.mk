@@ -114,12 +114,17 @@ ${MODULE_DIR}/base/llvm/12.0.0.lua:
 # Intel OneAPI
 # -----------------------------------------------
 
-oneapi : oneapi-2021.2.0
+oneapi : oneapi-2021.3.0  # oneapi-2021.2.0
 
 oneapi-2021.2.0 : ${MODULE_DIR}/base/oneapi/2021.2.0.lua
 
 ${MODULE_DIR}/base/oneapi/2021.2.0.lua :
 	${SRC_DIR}/build.sh oneapi 2021.2.0
+
+oneapi-2021.3.0 : ${MODULE_DIR}/base/oneapi/2021.3.0.lua
+
+${MODULE_DIR}/base/oneapi/2021.3.0.lua :
+	${SRC_DIR}/build.sh oneapi 2021.3.0
 
 # -----------------------------------------------
 # NVHPC + PGI Compiler
@@ -308,7 +313,11 @@ ${MODULE_DIR}/base/astyle/3.1.0.lua :
 # Intel TBB
 # -----------------------------------------------
 
-tbb : tbb-2021.3.0-gcc-11.1.0 tbb-2021.3.0-oneapi-2021.2.0
+tbb : tbb-gcc tbb-oneapi
+
+tbb-gcc : tbb-2021.3.0-gcc-11.1.0
+
+tbb-oneapi : tbb-2021.3.0-oneapi-2021.3.0  # tbb-2021.3.0-oneapi-2021.2.0
 
 tbb-2021.3.0-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/tbb/2021.3.0.lua
 
@@ -319,6 +328,11 @@ tbb-2021.3.0-oneapi-2021.2.0 : ${MODULE_DIR}/compiler/oneapi/2021.2.0/tbb/2021.3
 
 ${MODULE_DIR}/compiler/oneapi/2021.2.0/tbb/2021.3.0.lua :
 	${SRC_DIR}/build.sh tbb 2021.3.0 oneapi 2021.2.0
+
+tbb-2021.3.0-oneapi-2021.3.0 : ${MODULE_DIR}/compiler/oneapi/2021.3.0/tbb/2021.3.0.lua
+
+${MODULE_DIR}/compiler/oneapi/2021.3.0/tbb/2021.3.0.lua :
+	${SRC_DIR}/build.sh tbb 2021.3.0 oneapi 2021.3.0
 
 #
 # **********************************************************
@@ -362,7 +376,13 @@ ${MODULE_DIR}/compiler/pgi/21.5/openmpi/4.1.1.lua :
 # Boost
 # -----------------------------------------------
 
-boost : boost-1.76.0-gcc-11.1.0 boost-1.76.0-openmpi-4.1.1-gcc-11.1.0 boost-1.76.0-nvptx-11.1.0 boost-1.76.0-openmpi-4.1.1-nvptx-11.1.0
+boost : boost-gcc boost-oneapi boost-nvptx
+
+boost-gcc : boost-1.76.0-gcc-11.1.0 boost-1.76.0-openmpi-4.1.1-gcc-11.1.0 boost-1.77.0-gcc-11.1.0 boost-1.77.0-openmpi-4.1.1-gcc-11.1.0
+
+boost-oneapi : boost-1.76.0-oneapi-2021.3.0 boost-1.76.0-impi-2021.3.0-oneapi-2021.3.0 boost-1.77.0-oneapi-2021.3.0 boost-1.77.0-impi-2021.3.0-oneapi-2021.3.0
+
+boost-nvptx : boost-1.76.0-nvptx-11.1.0 boost-1.76.0-openmpi-4.1.1-nvptx-11.1.0
 
 boost-1.76.0-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/boost/1.76.0.lua
 
@@ -373,6 +393,16 @@ boost-1.76.0-openmpi-4.1.1-gcc-11.1.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1
 
 ${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/boost/1.76.0.lua :
 	${SRC_DIR}/build.sh boost 1.76.0 gcc 11.1.0 openmpi 4.1.1
+
+boost-1.77.0-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/boost/1.77.0.lua
+
+${MODULE_DIR}/compiler/gcc/11.1.0/boost/1.77.0.lua :
+	${SRC_DIR}/build.sh boost 1.77.0 gcc 11.1.0
+
+boost-1.77.0-openmpi-4.1.1-gcc-11.1.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/boost/1.77.0.lua
+
+${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/boost/1.77.0.lua :
+	${SRC_DIR}/build.sh boost 1.77.0 gcc 11.1.0 openmpi 4.1.1
 
 boost-1.76.0-nvptx-11.1.0 : ${MODULE_DIR}/compiler/nvptx/11.1.0/boost/1.76.0.lua
 
@@ -394,11 +424,37 @@ boost-1.76.0-openmpi-4.1.1-pgi-21.5 : ${MODULE_DIR}/mpi/openmpi/4.1.1/pgi/21.5/b
 ${MODULE_DIR}/mpi/openmpi/4.1.1/pgi/21.5/boost/1.76.0.lua :
 	${SRC_DIR}/build.sh boost 1.76.0 pgi 21.5 openmpi 4.1.1
 
+boost-1.76.0-oneapi-2021.3.0 : ${MODULE_DIR}/compiler/oneapi/2021.3.0/boost/1.76.0.lua
+
+${MODULE_DIR}/compiler/oneapi/2021.3.0/boost/1.76.0.lua :
+	${SRC_DIR}/build.sh boost 1.76.0 oneapi 2021.3.0
+
+boost-1.76.0-impi-2021.3.0-oneapi-2021.3.0 : ${MODULE_DIR}/mpi/impi/2021.3.0/oneapi/2021.3.0/boost/1.76.0.lua
+
+${MODULE_DIR}/mpi/impi/2021.3.0/oneapi/2021.3.0/boost/1.76.0.lua :
+	${SRC_DIR}/build.sh boost 1.76.0 oneapi 2021.3.0 impi 2021.3.0
+
+boost-1.77.0-oneapi-2021.3.0 : ${MODULE_DIR}/compiler/oneapi/2021.3.0/boost/1.77.0.lua
+
+${MODULE_DIR}/compiler/oneapi/2021.3.0/boost/1.77.0.lua :
+	${SRC_DIR}/build.sh boost 1.77.0 oneapi 2021.3.0
+
+boost-1.77.0-impi-2021.3.0-oneapi-2021.3.0 : ${MODULE_DIR}/mpi/impi/2021.3.0/oneapi/2021.3.0/boost/1.77.0.lua
+
+${MODULE_DIR}/mpi/impi/2021.3.0/oneapi/2021.3.0/boost/1.77.0.lua :
+	${SRC_DIR}/build.sh boost 1.77.0 oneapi 2021.3.0 impi 2021.3.0
+
 # -----------------------------------------------
 # GPTL 
 # -----------------------------------------------
 
-gptl : gptl-8.0.3-gcc-11.1.0 gptl-8.0.3-openmpi-4.1.1-gcc-11.1.0
+gptl : gptl_gcc gptl_oneapi # gptl_llvm
+
+gptl_gcc : gptl-8.0.3-gcc-11.1.0 gptl-8.0.3-openmpi-4.1.1-gcc-11.1.0
+
+gptl_oneapi : gptl-8.0.3-oneapi-2021.3.0 # gptl-8.0.3-impi-2021.3.0-oneapi-2021.3.0 # gptl-8.0.3-oneapi-2021.2.0
+
+gptl_llvm : gptl-8.0.3-llvm-12.0.0  # Error within gptl
 
 gptl-8.0.3-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/gptl/8.0.3.lua
 
@@ -410,7 +466,6 @@ gptl-8.0.3-openmpi-4.1.1-gcc-11.1.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0
 ${MODULE_DIR}/mpi/openmpi/4.1.1/gcc/11.1.0/gptl/8.0.3.lua :
 	${SRC_DIR}/build.sh gptl 8.0.3 gcc 11.1.0 openmpi 4.1.1
 
-## LLVM will not build GPTL because of a configuration error
 gptl-8.0.3-llvm-12.0.0 : ${MODULE_DIR}/compiler/llvm/12.0.0/gptl/8.0.3.lua
 
 ${MODULE_DIR}/compiler/llvm/12.0.0/gptl/8.0.3.lua :
@@ -420,6 +475,26 @@ gptl-8.0.3-openmpi-4.1.1-llvm-12.0.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0
 
 ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/gptl/8.0.3.lua :
 	${SRC_DIR}/build.sh gptl 8.0.3 llvm 12.0.0 openmpi 4.1.1
+
+gptl-8.0.3-oneapi-2021.2.0 : ${MODULE_DIR}/compiler/oneapi/2021.2.0/gptl/8.0.3.lua
+
+${MODULE_DIR}/compiler/oneapi/2021.2.0/gptl/8.0.3.lua :
+	${SRC_DIR}/build.sh gptl 8.0.3 oneapi 2021.2.0
+
+gptl-8.0.3-oneapi-2021.2.0 : ${MODULE_DIR}/mpi/impi/2021.2.0/compiler/oneapi/2021.2.0/gptl/8.0.3.lua
+
+${MODULE_DIR}/mpi/impi/2021.2.0/compiler/oneapi/2021.2.0/gptl/8.0.3.lua :
+	${SRC_DIR}/build.sh gptl 8.0.3 oneapi 2021.2.0 impi 2021.2.0
+
+gptl-8.0.3-oneapi-2021.3.0 : ${MODULE_DIR}/compiler/oneapi/2021.3.0/gptl/8.0.3.lua
+
+${MODULE_DIR}/compiler/oneapi/2021.3.0/gptl/8.0.3.lua :
+	${SRC_DIR}/build.sh gptl 8.0.3 oneapi 2021.3.0
+
+gptl-8.0.3-oneapi-2021.3.0 : ${MODULE_DIR}/mpi/impi/2021.3.0/compiler/oneapi/2021.3.0/gptl/8.0.3.lua
+
+${MODULE_DIR}/mpi/impi/2021.3.0/compiler/oneapi/2021.3.0/gptl/8.0.3.lua :
+	${SRC_DIR}/build.sh gptl 8.0.3 oneapi 2021.3.0 impi 2021.3.0
 
 # -----------------------------------------------
 # HDF5

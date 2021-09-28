@@ -32,9 +32,14 @@ mv l_BaseKit_p_2021.2.0.2883_offline.sh oneapi_base-2021.2.0.sh
 wget "https://registrationcenter-download.intel.com/akdlm/irc_nas/17764/l_HPCKit_p_2021.2.0.2997_offline.sh"
 mv l_HPCKit_p_2021.2.0.2997_offline.sh oneapi_hpc-2021.2.0.sh
 
+wget "https://registrationcenter-download.intel.com/akdlm/irc_nas/17977/l_BaseKit_p_2021.3.0.3219_offline.sh"
+mv l_BaseKit_p_2021.3.0.3219_offline.sh oneapi_base-2021.3.0.sh
+
+wget "https://registrationcenter-download.intel.com/akdlm/irc_nas/17912/l_HPCKit_p_2021.3.0.3230_offline.sh"
+mv l_HPCKit_p_2021.3.0.3230_offline.sh oneapi_hpc-2021.3.0.sh
+
 wget --content-disposition "https://code.visualstudio.com/sha/download?build=stable&os=linux-x64"
 mv code-stable-x64*.tar.gz vscode-1.56.2.tar.gz
-
 
 wget "https://github.com/jmrosinski/GPTL/releases/download/v8.0.3/gptl-8.0.3.tar.gz"
 

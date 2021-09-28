@@ -37,27 +37,41 @@ cd ${LIB_BUILD_DIR}
 tar --strip-components 1 -xjvf ${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.bz2
 
 # Build the boot strap builder
-toolset=none
+toolname=none
 case ${COMPILER} in
     "gcc" )
-        toolset=gcc
+        toolname=gcc
         ;;
     "nvptx" )
-        toolset=gcc
+        toolname=gcc
         ;;
     "intel" )
-        toolset=intel-linux
+        toolname=intel-linux
+        ;;
+    "oneapi" )
+        toolname=intel-linux
         ;;
     "pgi" )
-        toolset=pgi
+        toolname=pgi
         ;;
     *)
         echo "Unsupported compiler: ${COMPILER}"
         exit 1
         ;;
 esac
-./bootstrap.sh --with-toolset=${toolset} --prefix=${LIB_INSTALL_DIR}
+
+# The B2 Engine can be built with any compiler supporting C++11
+# - So use the system compiler
+./bootstrap.sh --prefix=${LIB_INSTALL_DIR}
 #./bootstrap.sh --show-libraries
+
+#
+# Replace the language about the system compiler with our toolname
+# - Replace gcc with intel-linux
+#
+sed -i "s/gcc/${toolname}/g" project-config.jam
+#sed -i "0,/gcc/s/gcc/${toolname}/" project-config.jam
+#sed -i "0,/gcc/s/gcc/${toolname}/" project-config.jam
 
 #
 # Insert specifics about the MPI compiler
@@ -70,7 +84,7 @@ fi
 
 # Compile Boost (turn off/on abort since it never compiles everything)
 set +e
-./b2 -j8 install --layout=system --target=shared,static
+./b2 -j8 install toolset=${toolname} variant=release --layout=system --target=shared,static
 set -e
 
 # Create the module path and filename
