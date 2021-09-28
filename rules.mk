@@ -452,7 +452,7 @@ gptl : gptl-gcc gptl-oneapi # gptl-llvm
 
 gptl-gcc : gptl-8.0.3-gcc-11.1.0 gptl-8.0.3-openmpi-4.1.1-gcc-11.1.0
 
-gptl-oneapi : gptl-8.0.3-oneapi-2021.3.0 # gptl-8.0.3-impi-2021.3.0-oneapi-2021.3.0
+gptl-oneapi : gptl-8.0.3-oneapi-2021.3.0 gptl-8.0.3-impi-2021.3.0-oneapi-2021.3.0
 
 gptl-llvm : gptl-8.0.3-llvm-12.0.0  # Error within gptl
 
@@ -491,7 +491,7 @@ gptl-8.0.3-oneapi-2021.3.0 : ${MODULE_DIR}/compiler/oneapi/2021.3.0/gptl/8.0.3.l
 ${MODULE_DIR}/compiler/oneapi/2021.3.0/gptl/8.0.3.lua :
 	${SRC_DIR}/build.sh gptl 8.0.3 oneapi 2021.3.0
 
-gptl-8.0.3-oneapi-2021.3.0 : ${MODULE_DIR}/mpi/impi/2021.3.0/compiler/oneapi/2021.3.0/gptl/8.0.3.lua
+gptl-8.0.3-impi-2021.3.0-oneapi-2021.3.0 : ${MODULE_DIR}/mpi/impi/2021.3.0/compiler/oneapi/2021.3.0/gptl/8.0.3.lua
 
 ${MODULE_DIR}/mpi/impi/2021.3.0/compiler/oneapi/2021.3.0/gptl/8.0.3.lua :
 	${SRC_DIR}/build.sh gptl 8.0.3 oneapi 2021.3.0 impi 2021.3.0

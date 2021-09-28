@@ -45,7 +45,7 @@ fi
 
 # Build it
 make
-make check
+#make check
 make install
 
 # Create Module File
