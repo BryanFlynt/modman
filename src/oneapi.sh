@@ -109,6 +109,10 @@ family("mpi")
 -- Dependencies
 prereq_any("${PKG}/${PKG_VERSION}")
 
+-- Modulepath for packages built by this compiler
+prepend_path("MODULEPATH", "${MODULE_DIR}/mpi/${PKG}/${PKG_VERSION}/${COMPILER}/${COMPILER_VERSION}")
+
+-- Environment Paths
 prepend_path("PATH",            "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}/bin")
 prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}/lib")
 
