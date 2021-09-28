@@ -380,7 +380,7 @@ boost : boost-gcc boost-oneapi boost-nvptx
 
 boost-gcc : boost-1.76.0-gcc-11.1.0 boost-1.76.0-openmpi-4.1.1-gcc-11.1.0 boost-1.77.0-gcc-11.1.0 boost-1.77.0-openmpi-4.1.1-gcc-11.1.0
 
-boost-oneapi : boost-1.76.0-oneapi-2021.3.0 boost-1.76.0-impi-2021.3.0-oneapi-2021.3.0 boost-1.77.0-oneapi-2021.3.0 boost-1.77.0-impi-2021.3.0-oneapi-2021.3.0
+boost-oneapi : boost-1.77.0-oneapi-2021.3.0 boost-1.77.0-impi-2021.3.0-oneapi-2021.3.0 # boost-1.76.0-oneapi-2021.3.0 boost-1.76.0-impi-2021.3.0-oneapi-2021.3.0
 
 boost-nvptx : boost-1.76.0-nvptx-11.1.0 boost-1.76.0-openmpi-4.1.1-nvptx-11.1.0
 

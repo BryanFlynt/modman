@@ -15,6 +15,9 @@ wget "https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-4.1.1.tar.bz2"
 wget "https://boostorg.jfrog.io/artifactory/main/release/1.76.0/source/boost_1_76_0.tar.bz2"
 mv boost_1_76_0.tar.bz2 boost-1.76.0.tar.bz2
 
+wget "https://boostorg.jfrog.io/artifactory/main/release/1.77.0/source/boost_1_77_0.tar.bz2"
+mv boost_1_77_0.tar.bz2 boost-1.77.0.tar.bz2
+
 wget "https://github.com/xianyi/OpenBLAS/releases/download/v0.3.15/OpenBLAS-0.3.15.tar.gz"
 mv OpenBLAS-0.3.15.tar.gz openblas-0.3.15.tar.gz
 
