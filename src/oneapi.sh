@@ -92,7 +92,7 @@ prepend_path("OCL_ICD_FILENAMES", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/li
 prepend_path("MANPATH",           "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/documentation/en/man/common")
 
 -- Environment Variables
-setenv("CPP", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/icpx")
+setenv("CPP", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/icpx -E")
 setenv("CC",  "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/icx")
 setenv("CXX", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/icpx")
 setenv("FPP", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/fpp")
@@ -101,8 +101,11 @@ setenv("INTEL_TARGET_ARCH", "intel64")
 EOF
 
 # MPI Module
-mkdir -p ${MODULE_DIR}/compiler/${PKG}/${PKG_VERSION}/impi
-cat << EOF > ${MODULE_DIR}/compiler/${PKG}/${PKG_VERSION}/impi/${PKG_VERSION}.lua
+impi_install_dir=${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}             # Location of IMPI
+impi_module_dir=${MODULE_DIR}/compiler/${PKG}/${PKG_VERSION}/impi  # Module lua dir (full path)
+impi_module_file=${impi_module_dir}/${PKG_VERSION}.lua             # Module lua file (full path) 
+mkdir -p ${impi_module_dir}
+cat << EOF > ${impi_module_file}
 help([[ Intel MPI ${PKG} version ${PKG_VERSION} ]])
 family("mpi")
 
@@ -113,11 +116,15 @@ prereq_any("${PKG}/${PKG_VERSION}")
 prepend_path("MODULEPATH", "${MODULE_DIR}/mpi/impi/${PKG_VERSION}/${PKG}/${PKG_VERSION}")
 
 -- Environment Paths
-prepend_path("PATH",            "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}/bin")
-prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}/lib")
+prepend_path("PATH",            "${impi_install_dir}/bin")
+prepend_path("LIBRARY_PATH",    "${impi_install_dir}/lib")
+prepend_path("LIBRARY_PATH",    "${impi_install_dir}/lib/release")
+prepend_path("LD_LIBRARY_PATH", "${impi_install_dir}/lib")
+prepend_path("LD_LIBRARY_PATH", "${impi_install_dir}/lib/release")
+prepend_path("CLASSPATH",       "${impi_install_dir}/lib/mpi.jar")
 
 -- SetUp Intel Variables
-setenv("I_MPI_ROOT", "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}")
+setenv("I_MPI_ROOT", "${impi_install_dir}")
 if os.getenv("CC") then
     setenv("I_MPI_CC", os.getenv("CC"))
 end
@@ -129,16 +136,39 @@ if os.getenv("FC") then
 end
 
 -- Setup environment variables
-setenv("MPI_ROOT",             "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}")
-setenv("MPI_C_COMPILER",       "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}/bin/mpiicc")
-setenv("MPI_CXX_COMPILER",     "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}/bin/mpiicpc")
-setenv("MPI_Fortran_COMPILER", "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}/bin/mpiifort")
+setenv("MPI_ROOT",             "${impi_install_dir}")
+setenv("MPI_C_COMPILER",       "${impi_install_dir}/bin/mpiicc")
+setenv("MPI_CXX_COMPILER",     "${impi_install_dir}/bin/mpiicpc")
+setenv("MPI_Fortran_COMPILER", "${impi_install_dir}/bin/mpiifort")
 
 -- Should be then re-set serial vars ???
-setenv("CC",  "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}/bin/mpiicc")
-setenv("CXX", "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}/bin/mpiicpc")
-setenv("FC",  "${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}/bin/mpiifort")
+setenv("CC",  "${impi_install_dir}/bin/mpiicc")
+setenv("CXX", "${impi_install_dir}/bin/mpiicpc")
+setenv("FC",  "${impi_install_dir}/bin/mpiifort")
+
 EOF
+if [ -d "${impi_install_dir}/libfabric" ]; then
+cat << EOF >> ${impi_module_file}
+-- IB Fabric Variables for IMPI
+prepend_path("PATH",            "${impi_install_dir}/libfabric/bin")
+prepend_path("LIBRARY_PATH",    "${impi_install_dir}/libfabric/lib")
+prepend_path("LD_LIBRARY_PATH", "${impi_install_dir}/libfabric/lib")
+setenv("FI_PROVIDER",           "mlx")
+setenv("FI_PROVIDER_PATH",      "${impi_install_dir}/libfabric/lib/prov")
+
+EOF
+fi
+if [ -x "$(command -v sbatch)" ]; then
+slurm_command=$(command -v sbatch)
+pmi_path=${slurm_command%/*/*}
+if [ -f "${pmi_path}/lib/libpmi.so" ]; then
+cat << EOF >> ${impi_module_file}
+-- Slurm Environment for IMPI
+setenv("I_MPI_PMI_LIBRARY", "${pmi_path}/lib/libpmi.so")
+EOF
+fi
+fi
+
 
 # MKL Module
 mkdir -p ${MODULE_DIR}/base/mkl
