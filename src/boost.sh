@@ -54,6 +54,9 @@ case ${COMPILER} in
     "pgi" )
         toolname=pgi
         ;;
+    "llvm" )
+        toolname=clang
+        ;;
     *)
         echo "Unsupported compiler: ${COMPILER}"
         exit 1

@@ -31,6 +31,10 @@ rm -rf ${LIB_INSTALL_DIR}
 mkdir -p ${LIB_BUILD_DIR}
 cd ${LIB_BUILD_DIR}
 
+# Make a Unique Directory for reporting Errors to GitHub
+OMPI_OUTPUT=${LIB_BUILD_DIR}/ompi-output
+mkdir -p ${OMPI_OUTPUT}
+
 # Unpack the Source
 tar --strip-components 1 -xvf ${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.*
 
@@ -45,7 +49,7 @@ if ! [ -x "$(command -v sbatch)" ]; then
                 --with-ucx=${UCX_ROOT}                    \
                 --with-libevent=${LIBEVENT_ROOT}          \
                 --without-verbs                           \
-                -enable-mca-no-build=btl-uct   
+                -enable-mca-no-build=btl-uct 2>&1 | tee ${OMPI_OUTPUT}/configure.out
 else
     slurm_command=$(command -v sbatch)
     pmi_path=${slurm_command%/*/*}
@@ -63,11 +67,15 @@ else
                 --without-verbs
 fi
 
+# Copy the logs into out ompi-output
+cp config.log ${OMPI_OUTPUT}/.
+cp opal/include/opal_config.h ${OMPI_OUTPUT}/.
+
 # Build
-make -j 8
+make all 2>&1 | tee ${OMPI_OUTPUT}/make.out
 
 # Install
-make install
+make install 2>&1 | tee ${OMPI_OUTPUT}/make-install.out
 
 # Create Module File
 mkdir -p ${MODULE_DIR}/compiler/${COMPILER}/${COMPILER_VERSION}/${PKG}

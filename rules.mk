@@ -7,7 +7,7 @@ unpack_only : cmake paraview gmsh vscode anaconda
 
 compilers : gcc llvm nvptx nvhpc oneapi sycl
 
-libraries : hwloc ucx libevent tbb openblas blis astyle
+libraries : ninja hwloc ucx libevent papi tbb openblas blis astyle
 
 mpi_compilers : openmpi
 
@@ -172,9 +172,20 @@ ${MODULE_DIR}/base/cuda/11.3.1.lua :
 
 #
 # **********************************************************
-#               Libraries (Never Require MPI)
+#         Tools & Libraries (Never Require MPI)
 # **********************************************************
 #
+
+# -----------------------------------------------
+# Ninja
+# -----------------------------------------------
+
+ninja : ninja-1.10.2
+
+ninja-1.10.2 : ${MODULE_DIR}/base/ninja/1.10.2.lua
+
+${MODULE_DIR}/base/ninja/1.10.2.lua :
+	${SRC_DIR}/build.sh ninja 1.10.2
 
 # -----------------------------------------------
 # HWLOC 
@@ -334,6 +345,26 @@ tbb-2021.3.0-oneapi-2021.3.0 : ${MODULE_DIR}/compiler/oneapi/2021.3.0/tbb/2021.3
 ${MODULE_DIR}/compiler/oneapi/2021.3.0/tbb/2021.3.0.lua :
 	${SRC_DIR}/build.sh tbb 2021.3.0 oneapi 2021.3.0
 
+# -----------------------------------------------
+# PAPI
+# -----------------------------------------------
+
+papi : papi-gcc papi-llvm
+
+papi-gcc : papi-6.0.0-gcc-11.1.0
+
+papi-llvm : papi-6.0.0-llvm-12.0.0
+
+papi-6.0.0-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/papi/6.0.0.lua
+
+${MODULE_DIR}/compiler/gcc/11.1.0/papi/6.0.0.lua :
+	${SRC_DIR}/build.sh papi 6.0.0 gcc 11.1.0
+
+papi-6.0.0-llvm-12.0.0 : ${MODULE_DIR}/compiler/llvm/12.0.0/papi/6.0.0.lua
+
+${MODULE_DIR}/compiler/llvm/12.0.0/papi/6.0.0.lua :
+	${SRC_DIR}/build.sh papi 6.0.0 llvm 12.0.0
+
 #
 # **********************************************************
 #                 OpenMPI Compiler Wrappers
@@ -376,11 +407,13 @@ ${MODULE_DIR}/compiler/pgi/21.5/openmpi/4.1.1.lua :
 # Boost
 # -----------------------------------------------
 
-boost : boost-gcc boost-oneapi boost-nvptx
+boost : boost-gcc boost-oneapi boost-llvm boost-nvptx
 
 boost-gcc : boost-1.76.0-gcc-11.1.0 boost-1.76.0-openmpi-4.1.1-gcc-11.1.0 boost-1.77.0-gcc-11.1.0 boost-1.77.0-openmpi-4.1.1-gcc-11.1.0
 
 boost-oneapi : boost-1.77.0-oneapi-2021.3.0 boost-1.77.0-impi-2021.3.0-oneapi-2021.3.0 # boost-1.76.0-oneapi-2021.3.0 boost-1.76.0-impi-2021.3.0-oneapi-2021.3.0
+
+boost-llvm : boost-1.77.0-llvm-12.0.0 boost-1.77.0-openmpi-4.1.1-llvm-12.0.0
 
 boost-nvptx : boost-1.76.0-nvptx-11.1.0 boost-1.76.0-openmpi-4.1.1-nvptx-11.1.0
 
@@ -443,6 +476,17 @@ boost-1.77.0-impi-2021.3.0-oneapi-2021.3.0 : ${MODULE_DIR}/mpi/impi/2021.3.0/one
 
 ${MODULE_DIR}/mpi/impi/2021.3.0/oneapi/2021.3.0/boost/1.77.0.lua :
 	${SRC_DIR}/build.sh boost 1.77.0 oneapi 2021.3.0 impi 2021.3.0
+
+boost-1.77.0-llvm-12.0.0 : ${MODULE_DIR}/compiler/llvm/12.0.0/boost/1.77.0.lua
+
+${MODULE_DIR}/compiler/llvm/12.0.0/boost/1.77.0.lua :
+	${SRC_DIR}/build.sh boost 1.77.0 llvm 12.0.0
+
+boost-1.77.0-openmpi-4.1.1-llvm-12.0.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/boost/1.77.0.lua
+
+${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/boost/1.77.0.lua :
+	${SRC_DIR}/build.sh boost 1.77.0 llvm 12.0.0 openmpi 4.1.1
+
 
 # -----------------------------------------------
 # GPTL 

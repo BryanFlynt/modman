@@ -32,7 +32,9 @@ bash ${TAR_DIR}/${PKG}_base-${PKG_VERSION}.sh -a --action=install --install-dir=
 # Run the Script (HPC Toolkit)
 bash ${TAR_DIR}/${PKG}_hpc-${PKG_VERSION}.sh -a --action=install --install-dir=${LIB_INSTALL_DIR} --components=all --eula=accept --intel-sw-improvement-program-consent=decline --silent
 
+# ------------------------------------------------------
 # Advisor Module
+# ------------------------------------------------------
 mkdir -p ${MODULE_DIR}/base/advisor
 cat << EOF > ${MODULE_DIR}/base/advisor/${PKG_VERSION}.lua
 help([[ Intel Advisor version ${PKG_VERSION} ]])
@@ -56,6 +58,9 @@ gnu_c_compiler=${CC}
 gnu_bin_dir=$(dirname ${CC})
 gnu_base_name=$(dirname ${gnu_bin_dir})
 
+# ------------------------------------------------------
+# Compiler Module
+# ------------------------------------------------------
 mkdir -p ${MODULE_DIR}/base/${PKG}
 cat << EOF > ${MODULE_DIR}/base/${PKG}/${PKG_VERSION}.lua
 help([[ ${PKG} version ${PKG_VERSION} ]])
@@ -100,7 +105,9 @@ setenv("FC",  "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/ifx")
 setenv("INTEL_TARGET_ARCH", "intel64")
 EOF
 
+# ------------------------------------------------------
 # MPI Module
+# ------------------------------------------------------
 impi_install_dir=${LIB_INSTALL_DIR}/mpi/${PKG_VERSION}             # Location of IMPI
 impi_module_dir=${MODULE_DIR}/compiler/${PKG}/${PKG_VERSION}/impi  # Module lua dir (full path)
 impi_module_file=${impi_module_dir}/${PKG_VERSION}.lua             # Module lua file (full path) 
@@ -169,8 +176,9 @@ EOF
 fi
 fi
 
-
+# ------------------------------------------------------
 # MKL Module
+# ------------------------------------------------------
 mkdir -p ${MODULE_DIR}/base/mkl
 cat << EOF > ${MODULE_DIR}/base/mkl/${PKG_VERSION}.lua
 help([[ MKL version ${PKG_VERSION} ]])
@@ -188,4 +196,41 @@ prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/mkl/${PKG_VERSION}/lib/intel
 
 prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/compiler/lib/intel64_lin")
 prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/compiler/lib/intel64_lin")
+EOF
+
+# ------------------------------------------------------
+# VTune Module
+# ------------------------------------------------------
+
+# VTune version is different that OneAPI Version (Seriously!!!)
+if [ ${PKG_VERSION} == "2021.3.0" ]; then
+    VTUNE_VERSION=2021.5.0
+else
+    VTUNE_VERSION=${PKG_VERSION}
+fi
+
+mkdir -p ${MODULE_DIR}/base/vtune
+cat << EOF > ${MODULE_DIR}/base/vtune/${VTUNE_VERSION}.lua
+help([[ Intel VTune version ${VTUNE_VERSION} ]])
+family("vtune")
+
+-- Conflicting modules
+
+-- Modulepath for packages built by this compiler
+
+-- Environment Paths
+prepend_path("PATH",        "${LIB_INSTALL_DIR}/vtune/${VTUNE_VERSION}/bin64")
+
+-- Environment Variables
+setenv("VTUNE_PROFILER_2021_DIR", "${LIB_INSTALL_DIR}/vtune/${VTUNE_VERSION}")
+setenv("INTEL_LIBITTNOTIFY64",    "${LIB_INSTALL_DIR}/vtune/${VTUNE_VERSION}/lib64/runtime/libittnotify_collector.so")
+prepend_path("PKG_CONFIG_PATH",   "${LIB_INSTALL_DIR}/vtune/${VTUNE_VERSION}/include/pkgconfig/lib64")
+
+
+-- VTune Instrumentation & Tracing API
+prepend_path("CPATH",           "${LIB_INSTALL_DIR}/vtune/2021.5.0/sdk/include") 
+prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/vtune/2021.5.0/sdk/include")
+prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/vtune/2021.5.0/sdk/include")
+prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/vtune/2021.5.0/sdk/lib64")
+prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/vtune/2021.5.0/sdk/lib64")
 EOF

@@ -100,8 +100,13 @@ mv netcdf-fortran-4.5.3.tar.gz netcdf-f-4.5.3.tar.gz
 wget https://sourceforge.net/projects/astyle/files/astyle/astyle%203.1/astyle_3.1_linux.tar.gz
 mv astyle_3.1_linux.tar.gz astyle-3.1.0.tar.gz
 
+# Ninja
+wget https://github.com/ninja-build/ninja/archive/refs/tags/v1.10.2.tar.gz
+mv v1.10.2.tar.gz ninja-1.10.2.tar.gz
 
-
+# PAPI
+wget https://bitbucket.org/icl/papi/get/papi-6-0-0-1-t.tar.gz
+mv papi-6-0-0-1-t.tar.gz papi-6.0.0.tar.gz
 
 
 
