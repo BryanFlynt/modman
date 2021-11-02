@@ -45,7 +45,7 @@ make install
 mkdir -p ${MODULE_DIR}/compiler/${COMPILER}/${COMPILER_VERSION}/${PKG}
 cat << EOF > ${MODULE_DIR}/compiler/${COMPILER}/${COMPILER_VERSION}/${PKG}/${PKG_VERSION}.lua
 help([[ ${PKG} version ${PKG_VERSION} ]])
-family("blis")
+family("papi")
 
 -- Conflicts
 
