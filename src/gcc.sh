@@ -1,4 +1,13 @@
 #!/bin/bash -l
+#
+# ##################################################################################
+#
+# Script is always called as:
+# > <package>.sh <package_version> <compiler> <compiler_version> <mpi> <mpi_version>
+#
+# ##################################################################################
+#
+#
 
 # Abort if any command returns an error
 set -e
@@ -9,18 +18,32 @@ set -x
 # Set the package name
 export PKG=gcc
 export PKG_VERSION=$1
+export COMPILER=$3
+export COMPILER_VERSION=$4
+export MPI=$5
+export MPI_VERSION=$6
 
-# Support Library Versions (GCC 11.1)
-#isl_version=0.18
-#gmp_version=6.1.0
-#mpfr_version=3.1.4
-#mpc_version=1.0.3
+#
+# GCC can be built with a series of other libraries available
+#
+if [[ "${PKG_VERSION}" == "11.1.0" ]]; then
+    isl_version=0.18
+    gmp_version=6.1.0
+    mpfr_version=3.1.4
+    mpc_version=1.0.3
+elif [[ "${PKG_VERSION}" == "11.3.0" ]]; then
+    mpfr_version=4.1.0
+    gmp_version=6.2.1
+    isl_version=0.24
+    mpc_version=1.2.1
+else
+    echo "GCC Version Not Recognized"
+    exit -1
+fi
 
-# Support Library Versions (GCC 11.3)
-mpfr_version=4.1.0
-gmp_version=6.2.1
-isl_version=0.24
-mpc_version=1.2.1
+# ----------------------------------------------------------------------
+#                          Make Directories
+# ----------------------------------------------------------------------
 
 # Load build environment
 module purge
@@ -37,8 +60,23 @@ rm -rf ${LIB_INSTALL_DIR}
 mkdir -p ${LIB_BUILD_DIR}
 cd ${LIB_BUILD_DIR}
 
+# ----------------------------------------------------------------------
+#                        Download (if Needed)
+# ----------------------------------------------------------------------
+
+LOCAL_DOWNLOAD_NAME=${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.gz
+REMOTE_DOWNLOAD_NAME="https://mirrors.kernel.org/gnu/gcc/gcc-${PKG_VERSION}/gcc-${PKG_VERSION}.tar.gz"
+
+if [[ ! -f "${LOCAL_DOWNLOAD_NAME}" ]]; then
+    ${DOWNLOAD_CMD} ${LOCAL_DOWNLOAD_NAME} ${REMOTE_DOWNLOAD_NAME}
+fi
+
+# ----------------------------------------------------------------------
+#                            UnPack + Link
+# ----------------------------------------------------------------------
+
 # Untar the tarball
-tar --strip-components 1 -xzvf ${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.gz
+tar --strip-components 1 -xvf ${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.gz
 
 # GCC also needs ISL
 tar -xvf ${TAR_DIR}/isl-${isl_version}.tar.*
@@ -56,9 +94,16 @@ ln -s mpfr-${mpfr_version} mpfr
 tar -xvf ${TAR_DIR}/mpc-${mpc_version}.tar.*
 ln -s mpc-${mpc_version} mpc
 
+# ----------------------------------------------------------------------
+#                            Build + Install
+# ----------------------------------------------------------------------
+
 # Do an out of source build by making a temporary build directory
 mkdir -p ${LIB_BUILD_DIR}/my_build
 cd ${LIB_BUILD_DIR}/my_build
+
+# Load build environment
+module purge
 
 # Configure
 ${LIB_BUILD_DIR}/configure                           \
@@ -73,6 +118,11 @@ make -j 8
 
 # Install
 make install
+
+# ----------------------------------------------------------------------
+#                            Create Module File
+# ----------------------------------------------------------------------
+
 
 # Create Module File
 mkdir -p ${MODULE_DIR}/base/${PKG}

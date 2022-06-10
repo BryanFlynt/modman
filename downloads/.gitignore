@@ -1,9 +1,0 @@
-*.tar.gz
-*.tar.bz2
-*.tar.xy
-oneapi*
-*.run
-anaconda*
-*.tgz
-*.zip
-

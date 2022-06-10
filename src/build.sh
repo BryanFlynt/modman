@@ -31,8 +31,9 @@ export COMPILER_VERSION=$4
 export MPI=$5
 export MPI_VERSION=$6
 
-# Create log directory if not exist
+# Create the log & download directory if necessary
 mkdir -p ${LOG_DIR}
+mkdir -p ${TAR_DIR}
 
 # Construct a log file name
 logfile=${LOG_DIR}/${PKG}
@@ -59,11 +60,17 @@ logfile="${logfile}.log"
 # Make sure the stacksize is something reasonable
 ulimit -s 8192
 
-# Create the log directory if necessary
-mkdir -p ${LOG_DIR}
+echo "Setting Download Commands based on OS System"
+if [[ "$OSTYPE" == "linux"* ]]; then
+    export DOWNLOAD_CMD="wget -O"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    export DOWNLOAD_CMD="curl -o"
+else
+    echo "ERROR: Download for ${OSTYPE} does not Exist"
+    exit 1
+fi
 
-echo "Building ${PKG}-${PKG_VERSION}"
-
+echo "Building ${PKG}-${PKG_VERSION}-${COMPILER}-${COMPILER_VERSION}-${MPI}-${MPI_VERSION}"
 eval ${SRC_DIR}/${PKG}.sh ${PKG_VERSION} ${COMPILER} ${COMPILER_VERSION} ${MPI} ${MPI_VERSION}
 
 } 2>&1 | tee ${logfile}  # End of shell block with redirected IO

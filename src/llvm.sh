@@ -1,4 +1,13 @@
 #!/bin/bash -l
+#
+# ##################################################################################
+#
+# Script is always called as:
+# > <package>.sh <package_version> <compiler> <compiler_version> <mpi> <mpi_version>
+#
+# ##################################################################################
+#
+#
 
 # Abort if any command returns an error
 set -e
@@ -10,18 +19,13 @@ set -x
 export PKG=llvm
 export PKG_VERSION=$1
 
-# Load build environment
-module purge
-module load cmake
-#module load gcc    # Requires compiler to build
-module load llvm    # Requires compiler to build
+# ----------------------------------------------------------------------
+#                          Make Directories
+# ----------------------------------------------------------------------
 
 # Make full path names to locations
 LIB_BUILD_DIR=${BUILD_DIR}/${PKG}/${PKG_VERSION}
 LIB_INSTALL_DIR=${INSTALL_DIR}/${PKG}/${PKG_VERSION}
-
-##### -- Start -- Comment out Build for Failed Parallel Build
-## : <<'END'
 
 # Clean if they already exist
 rm -rf ${LIB_BUILD_DIR}
@@ -31,20 +35,35 @@ rm -rf ${LIB_INSTALL_DIR}
 mkdir -p ${LIB_BUILD_DIR}
 cd ${LIB_BUILD_DIR}
 
+# ----------------------------------------------------------------------
+#                        Download (if Needed)
+# ----------------------------------------------------------------------
+
+LOCAL_DOWNLOAD_NAME=${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.xz
+REMOTE_DOWNLOAD_NAME="https://github.com/llvm/llvm-project/releases/download/llvmorg-${PKG_VERSION}/llvm-project-${PKG_VERSION}.src.tar.xz"
+
+if [[ ! -f "${LOCAL_DOWNLOAD_NAME}" ]]; then
+    ${DOWNLOAD_CMD} ${LOCAL_DOWNLOAD_NAME} ${REMOTE_DOWNLOAD_NAME}
+fi
+
+# ----------------------------------------------------------------------
+#                            UnPack + Patch
+# ----------------------------------------------------------------------
+
 # Untar the tarball
 tar --strip-components 1 -xvf ${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.*
 
-# If version 12.0.0 then patch file
-#if [ ${PKG_VERSION} -eq "12.0.0" ]; then
-    sed -i 's/<cstdio>/<cstdio>\n#include <limits>/' ${LIB_BUILD_DIR}/flang/runtime/unit.cpp
-#fi
+# If patch file
+sed -i 's/<cstdio>/<cstdio>\n#include <limits>/' ${LIB_BUILD_DIR}/flang/runtime/unit.cpp
 
-# Do an out of source build by making a temporary build directory
-mkdir -p ${LIB_BUILD_DIR}/my_build
-cd ${LIB_BUILD_DIR}/my_build
+# ----------------------------------------------------------------------
+#                            Build + Install
+# ----------------------------------------------------------------------
 
-#ENABLED_PROJECTS='clang;flang;clang-tools-extra;libcxx;libcxxabi;lld;poly;openmp'
-#ENABLED_PROJECTS='clang;flang;clang-tools-extra;libcxx;libcxxabi;libunwind;libc;libclc;lld;lldb;openmp;polly;pstl'
+module purge
+module load cmake
+module load gcc   # Use compiler with latest std
+
 ENABLED_PROJECTS='all'
 
 # Detect if we can find Ninja
@@ -70,13 +89,9 @@ else
     make install
 fi
 
-## END
-## cd ${LIB_BUILD_DIR}/my_build
-## module load ninja
-## ninja
-## ninja install
-##### -- Finish -- Comment out Build for Failed Parallel Build
-
+# ----------------------------------------------------------------------
+#                            Create Module File
+# ----------------------------------------------------------------------
 
 # Get location of libstdc++ files for the GCC compiler we used
 gnu_c_compiler=${CC}
