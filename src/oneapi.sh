@@ -97,12 +97,19 @@ prepend_path("OCL_ICD_FILENAMES", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/li
 prepend_path("MANPATH",           "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/documentation/en/man/common")
 
 -- Environment Variables
-setenv("CPP", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/icpx -E")
-setenv("CC",  "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/icx")
-setenv("CXX", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/icpx")
-setenv("FPP", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/fpp")
-setenv("FC",  "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/ifx")
+-- setenv("CPP", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/icpx -E")
+-- setenv("CC",  "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/icx")
+-- setenv("CXX", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/icpx")
+-- setenv("FPP", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/fpp")
+-- setenv("FC",  "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/ifx")
 setenv("INTEL_TARGET_ARCH", "intel64")
+
+setenv("CPP", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/intel64/icpc -E")
+setenv("CC",  "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/intel64/icc")
+setenv("CXX", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/intel64/icpc")
+setenv("FPP", "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/intel64/fpp")
+setenv("FC",  "${LIB_INSTALL_DIR}/compiler/${PKG_VERSION}/linux/bin/intel64/ifort")
+
 EOF
 
 # ------------------------------------------------------

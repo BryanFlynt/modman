@@ -67,10 +67,10 @@ conflict("pgi")
 prepend_path("MODULEPATH", "${MODULE_DIR}/compiler/${PKG}/${PKG_VERSION}")
 
 -- Temporary Variables (can use within file only)
-local nvhpc_home = pathJoin(${LIB_INSTALL_DIR},"Linux_x86_64",${PKG_VERSION})
-local nvhpc_math = pathJoin($nvhpc_home,"math_libs")
-local nvhpc_comp = pathJoin($nvhpc_home,"compilers")
-local nvhpc_comm = pathJoin($nvhpc_home,"comm_libs")
+local nvhpc_home = pathJoin("${LIB_INSTALL_DIR}","Linux_x86_64","${PKG_VERSION}")
+local nvhpc_math = pathJoin("${nvhpc_home}","math_libs")
+local nvhpc_comp = pathJoin("${nvhpc_home}","compilers")
+local nvhpc_comm = pathJoin("${nvhpc_home}","comm_libs")
 
 -- Environment Paths
 prepend_path("PATH",            "${LIB_INSTALL_DIR}/Linux_x86_64/${PKG_VERSION}/cuda/bin")

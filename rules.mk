@@ -3,7 +3,7 @@
 
 all : unpack_only compilers libraries mpi_compilers libraries_w_mpi
 
-unpack_only : cmake paraview gmsh vscode anaconda
+unpack_only : cmake paraview gmsh anaconda
 
 compilers : gcc llvm nvptx nvhpc oneapi sycl
 
@@ -92,23 +92,33 @@ ${MODULE_DIR}/base/anaconda/2021.5.lua :
 # GCC
 # -----------------------------------------------
 
-gcc : gcc-11.1.0
+gcc : gcc-11.1.0 gcc-11.3.0
 
 gcc-11.1.0 : ${MODULE_DIR}/base/gcc/11.1.0.lua
 
 ${MODULE_DIR}/base/gcc/11.1.0.lua:
 	${SRC_DIR}/build.sh gcc 11.1.0
 
+gcc-11.3.0 : ${MODULE_DIR}/base/gcc/11.3.0.lua
+
+${MODULE_DIR}/base/gcc/11.3.0.lua:
+	${SRC_DIR}/build.sh gcc 11.3.0
+
 # -----------------------------------------------
 # LLVM
 # -----------------------------------------------
 
-llvm : llvm-12.0.0
+llvm : llvm-12.0.0 llvm-14.0.0
 
 llvm-12.0.0 : ${MODULE_DIR}/base/llvm/12.0.0.lua
 
 ${MODULE_DIR}/base/llvm/12.0.0.lua:
 	${SRC_DIR}/build.sh llvm 12.0.0
+
+llvm-14.0.0 : ${MODULE_DIR}/base/llvm/14.0.0.lua
+
+${MODULE_DIR}/base/llvm/14.0.0.lua:
+	${SRC_DIR}/build.sh llvm 14.0.0
 
 # -----------------------------------------------
 # Intel OneAPI
@@ -191,7 +201,7 @@ ${MODULE_DIR}/base/ninja/1.10.2.lua :
 # HWLOC 
 # -----------------------------------------------
 
-hwloc : hwloc-2.4.1-gcc-11.1.0 hwloc-2.4.1-llvm-12.0.0 hwloc-2.4.1-nvptx-11.1.0
+hwloc : hwloc-2.4.1-gcc-11.1.0 hwloc-2.4.1-llvm-12.0.0 hwloc-2.4.1-nvptx-11.1.0 hwloc-2.4.1-oneapi-2021.3.0
 
 hwloc-2.4.1-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/hwloc/2.4.1.lua
 
@@ -213,11 +223,16 @@ hwloc-2.4.1-pgi-21.5 : ${MODULE_DIR}/compiler/pgi/21.5/hwloc/2.4.1.lua
 ${MODULE_DIR}/compiler/pgi/21.5/hwloc/2.4.1.lua :
 	${SRC_DIR}/build.sh hwloc 2.4.1 pgi 21.5
 
+hwloc-2.4.1-oneapi-2021.3.0 : ${MODULE_DIR}/compiler/oneapi/2021.3.0/hwloc/2.4.1.lua
+
+${MODULE_DIR}/compiler/oneapi/2021.3.0/hwloc/2.4.1.lua :
+	${SRC_DIR}/build.sh hwloc 2.4.1 oneapi 2021.3.0
+
 # -----------------------------------------------
 # UCX
 # -----------------------------------------------
 
-ucx : ucx-1.10.1-gcc-11.1.0 ucx-1.10.1-llvm-12.0.0 ucx-1.10.1-nvptx-11.1.0
+ucx : ucx-1.10.1-gcc-11.1.0 ucx-1.10.1-llvm-12.0.0 ucx-1.10.1-nvptx-11.1.0 ucx-1.10.1-oneapi-2021.3.0
 
 ucx-1.10.1-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/ucx/1.10.1.lua
 
@@ -239,11 +254,16 @@ ucx-1.10.1-pgi-21.5 : ${MODULE_DIR}/compiler/pgi/21.5/ucx/1.10.1.lua
 ${MODULE_DIR}/compiler/pgi/21.5/ucx/1.10.1.lua :
 	${SRC_DIR}/build.sh ucx 1.10.1 pgi 21.5
 
+ucx-1.10.1-oneapi-2021.3.0 : ${MODULE_DIR}/compiler/oneapi/2021.3.0/ucx/1.10.1.lua
+
+${MODULE_DIR}/compiler/oneapi/2021.3.0/ucx/1.10.1.lua :
+	${SRC_DIR}/build.sh ucx 1.10.1 oneapi 2021.3.0
+
 # -----------------------------------------------
 # libevent
 # -----------------------------------------------
 
-libevent : libevent-2.1.12-gcc-11.1.0 libevent-2.1.12-llvm-12.0.0 libevent-2.1.12-nvptx-11.1.0
+libevent : libevent-2.1.12-gcc-11.1.0 libevent-2.1.12-llvm-12.0.0 libevent-2.1.12-nvptx-11.1.0 libevent-2.1.12-oneapi-2021.3.0
 
 libevent-2.1.12-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/libevent/2.1.12.lua
 
@@ -264,6 +284,11 @@ libevent-2.1.12-pgi-21.5 : ${MODULE_DIR}/compiler/pgi/21.5/libevent/2.1.12.lua
 
 ${MODULE_DIR}/compiler/pgi/21.5/libevent/2.1.12.lua :
 	${SRC_DIR}/build.sh libevent 2.1.12 pgi 21.5
+
+libevent-2.1.12-oneapi-2021.3.0 : ${MODULE_DIR}/compiler/oneapi/2021.3.0/libevent/2.1.12.lua
+
+${MODULE_DIR}/compiler/oneapi/2021.3.0/libevent/2.1.12.lua :
+	${SRC_DIR}/build.sh libevent 2.1.12 oneapi 2021.3.0
 
 # -----------------------------------------------
 # OpenBLAS
@@ -375,7 +400,7 @@ ${MODULE_DIR}/compiler/llvm/12.0.0/papi/6.0.0.lua :
 # OpenMPI
 # -----------------------------------------------
 
-openmpi : openmpi-4.1.1-gcc-11.1.0 openmpi-4.1.1-llvm-12.0.0 openmpi-4.1.1-nvptx-11.1.0
+openmpi : openmpi-4.1.1-gcc-11.1.0 openmpi-4.1.1-llvm-12.0.0 openmpi-4.1.1-nvptx-11.1.0 openmpi-4.1.1-oneapi-2021.3.0
 
 openmpi-4.1.1-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/openmpi/4.1.1.lua
 
@@ -396,6 +421,11 @@ openmpi-4.1.1-pgi-21.5 : ${MODULE_DIR}/compiler/pgi/21.5/openmpi/4.1.1.lua
 
 ${MODULE_DIR}/compiler/pgi/21.5/openmpi/4.1.1.lua :
 	${SRC_DIR}/build.sh openmpi 4.1.1 pgi 21.5
+
+openmpi-4.1.1-oneapi-2021.3.0 : ${MODULE_DIR}/compiler/oneapi/2021.3.0/openmpi/4.1.1.lua
+
+${MODULE_DIR}/compiler/oneapi/2021.3.0/openmpi/4.1.1.lua :
+	${SRC_DIR}/build.sh openmpi 4.1.1 oneapi 2021.3.0
 
 #
 # **********************************************************
@@ -546,7 +576,7 @@ ${MODULE_DIR}/mpi/impi/2021.3.0/compiler/oneapi/2021.3.0/gptl/8.0.3.lua :
 
 hdf5 : hdf5-1.12.1
 
-hdf5-1.12.1 : hdf5-1.12.1-gcc-11.1.0 hdf5-1.12.1-openmpi-4.1.1-gcc-11.1.0
+hdf5-1.12.1 : hdf5-1.12.1-gcc-11.1.0 hdf5-1.12.1-openmpi-4.1.1-gcc-11.1.0 hdf5-1.12.1-oneapi-2021.3.0 hdf5-1.12.1-openmpi-4.1.1-oneapi-2021.3.0
 
 hdf5-1.12.1-gcc-11.1.0 : ${MODULE_DIR}/gcc/11.1.0/hdf5/1.12.1.lua
 
@@ -568,13 +598,23 @@ hdf5-1.12.1-openmpi-4.1.1-llvm-12.0.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.
 ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/hdf5/1.12.1.lua :
 	${SRC_DIR}/build.sh hdf5 1.12.1 llvm 12.0.0 openmpi 4.1.1
 
+hdf5-1.12.1-oneapi-2021.3.0 : ${MODULE_DIR}/oneapi/2021.3.0/hdf5/1.12.1.lua
+
+${MODULE_DIR}/oneapi/2021.3.0/hdf5/1.12.1.lua :
+	${SRC_DIR}/build.sh hdf5 1.12.1 oneapi 2021.3.0
+
+hdf5-1.12.1-openmpi-4.1.1-oneapi-2021.3.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/oneapi/2021.3.0/hdf5/1.12.1.lua
+
+${MODULE_DIR}/mpi/openmpi/4.1.1/oneapi/2021.3.0/hdf5/1.12.1.lua :
+	${SRC_DIR}/build.sh hdf5 1.12.1 oneapi 2021.3.0 openmpi 4.1.1
+
 # -----------------------------------------------
 # NetCDF C
 # -----------------------------------------------
 
 netcdf-c : netcdf-c-4.8.1
 
-netcdf-c-4.8.1 : netcdf-c-4.8.1-gcc-11.1.0 netcdf-c-4.8.1-openmpi-4.1.1-gcc-11.1.0
+netcdf-c-4.8.1 : netcdf-c-4.8.1-gcc-11.1.0 netcdf-c-4.8.1-openmpi-4.1.1-gcc-11.1.0 netcdf-c-4.8.1-oneapi-2021.3.0 netcdf-c-4.8.1-openmpi-4.1.1-oneapi-2021.3.0
 
 netcdf-c-4.8.1-gcc-11.1.0 : ${MODULE_DIR}/gcc/11.1.0/netcdf-c/4.8.1.lua
 
@@ -596,13 +636,23 @@ netcdf-c-4.8.1-openmpi-4.1.1-llvm-12.0.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/
 ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/netcdf-c/4.8.1.lua :
 	${SRC_DIR}/build.sh netcdf-c 4.8.1 llvm 12.0.0 openmpi 4.1.1
 
+netcdf-c-4.8.1-oneapi-2021.3.0 : ${MODULE_DIR}/oneapi/2021.3.0/netcdf-c/4.8.1.lua
+
+${MODULE_DIR}/oneapi/2021.3.0/netcdf-c/4.8.1.lua :
+	${SRC_DIR}/build.sh netcdf-c 4.8.1 oneapi 2021.3.0
+
+netcdf-c-4.8.1-openmpi-4.1.1-oneapi-2021.3.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/oneapi/2021.3.0/netcdf-c/4.8.1.lua
+
+${MODULE_DIR}/mpi/openmpi/4.1.1/oneapi/2021.3.0/netcdf-c/4.8.1.lua :
+	${SRC_DIR}/build.sh netcdf-c 4.8.1 oneapi 2021.3.0 openmpi 4.1.1
+
 # -----------------------------------------------
-# NetCDF-CXX
+# NetCDF C++
 # -----------------------------------------------
 
 netcdf-cxx : netcdf-cxx-4.3.1
 
-netcdf-cxx-4.3.1 : netcdf-cxx-4.3.1-gcc-11.1.0 netcdf-cxx-4.3.1-openmpi-4.1.1-gcc-11.1.0
+netcdf-cxx-4.3.1 : netcdf-cxx-4.3.1-gcc-11.1.0 netcdf-cxx-4.3.1-openmpi-4.1.1-gcc-11.1.0 netcdf-cxx-4.3.1-oneapi-2021.3.0 netcdf-cxx-4.3.1-openmpi-4.1.1-oneapi-2021.3.0
 
 netcdf-cxx-4.3.1-gcc-11.1.0 : ${MODULE_DIR}/gcc/11.1.0/netcdf-cxx/4.3.1.lua
 
@@ -624,14 +674,23 @@ netcdf-cxx-4.3.1-openmpi-4.1.1-llvm-12.0.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/llv
 ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/netcdf-cxx/4.3.1.lua :
 	${SRC_DIR}/build.sh netcdf-cxx 4.3.1 llvm 12.0.0 openmpi 4.1.1
 
+netcdf-cxx-4.3.1-oneapi-2021.3.0 : ${MODULE_DIR}/oneapi/2021.3.0/netcdf-cxx/4.3.1.lua
+
+${MODULE_DIR}/oneapi/2021.3.0/netcdf-cxx/4.3.1.lua :
+	${SRC_DIR}/build.sh netcdf-cxx 4.3.1 oneapi 2021.3.0
+
+netcdf-cxx-4.3.1-openmpi-4.1.1-oneapi-2021.3.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/oneapi/2021.3.0/netcdf-cxx/4.3.1.lua
+
+${MODULE_DIR}/mpi/openmpi/4.1.1/oneapi/2021.3.0/netcdf-cxx/4.3.1.lua :
+	${SRC_DIR}/build.sh netcdf-cxx 4.3.1 oneapi 2021.3.0 openmpi 4.1.1
 
 # -----------------------------------------------
-# NetCDF-Fortran
+# NetCDF Fortran
 # -----------------------------------------------
 
 netcdf-f : netcdf-f-4.5.3
 
-netcdf-f-4.5.3 : netcdf-f-4.5.3-gcc-11.1.0 netcdf-f-4.5.3-openmpi-4.1.1-gcc-11.1.0
+netcdf-f-4.5.3 : netcdf-f-4.5.3-gcc-11.1.0 netcdf-f-4.5.3-openmpi-4.1.1-gcc-11.1.0 netcdf-f-4.5.3-oneapi-2021.3.0 netcdf-f-4.5.3-openmpi-4.1.1-oneapi-2021.3.0
 
 netcdf-f-4.5.3-gcc-11.1.0 : ${MODULE_DIR}/gcc/11.1.0/netcdf-f/4.5.3.lua
 
@@ -653,8 +712,12 @@ netcdf-f-4.5.3-openmpi-4.1.1-llvm-12.0.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/
 ${MODULE_DIR}/mpi/openmpi/4.1.1/llvm/12.0.0/netcdf-f/4.5.3.lua :
 	${SRC_DIR}/build.sh netcdf-f 4.5.3 llvm 12.0.0 openmpi 4.1.1
 
-# -----------------------------------------------
-# NetCDF
-# -----------------------------------------------
+netcdf-f-4.5.3-oneapi-2021.3.0 : ${MODULE_DIR}/oneapi/2021.3.0/netcdf-f/4.5.3.lua
 
-netcdf : netcdf-c netcdf-cxx netcdf-f
+${MODULE_DIR}/oneapi/2021.3.0/netcdf-f/4.5.3.lua :
+	${SRC_DIR}/build.sh netcdf-f 4.5.3 oneapi 2021.3.0
+
+netcdf-f-4.5.3-openmpi-4.1.1-oneapi-2021.3.0 : ${MODULE_DIR}/mpi/openmpi/4.1.1/oneapi/2021.3.0/netcdf-f/4.5.3.lua
+
+${MODULE_DIR}/mpi/openmpi/4.1.1/oneapi/2021.3.0/netcdf-f/4.5.3.lua :
+	${SRC_DIR}/build.sh netcdf-f 4.5.3 oneapi 2021.3.0 openmpi 4.1.1

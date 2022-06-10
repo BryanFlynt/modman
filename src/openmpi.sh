@@ -48,8 +48,7 @@ if ! [ -x "$(command -v sbatch)" ]; then
                 --with-hwloc=${HWLOC_ROOT}                \
                 --with-ucx=${UCX_ROOT}                    \
                 --with-libevent=${LIBEVENT_ROOT}          \
-                --without-verbs                           \
-                -enable-mca-no-build=btl-uct 2>&1 | tee ${OMPI_OUTPUT}/configure.out
+                --without-verbs 2>&1 | tee ${OMPI_OUTPUT}/configure.out
 else
     slurm_command=$(command -v sbatch)
     pmi_path=${slurm_command%/*/*}

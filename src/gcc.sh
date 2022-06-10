@@ -10,11 +10,17 @@ set -x
 export PKG=gcc
 export PKG_VERSION=$1
 
-# Support Library Versions
-isl_version=0.18
-gmp_version=6.1.0
-mpfr_version=3.1.4
-mpc_version=1.0.3
+# Support Library Versions (GCC 11.1)
+#isl_version=0.18
+#gmp_version=6.1.0
+#mpfr_version=3.1.4
+#mpc_version=1.0.3
+
+# Support Library Versions (GCC 11.3)
+mpfr_version=4.1.0
+gmp_version=6.2.1
+isl_version=0.24
+mpc_version=1.2.1
 
 # Load build environment
 module purge

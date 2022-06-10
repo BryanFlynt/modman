@@ -13,7 +13,8 @@ export PKG_VERSION=$1
 # Load build environment
 module purge
 module load cmake
-module load gcc    # Requires compiler to build
+#module load gcc    # Requires compiler to build
+module load llvm    # Requires compiler to build
 
 # Make full path names to locations
 LIB_BUILD_DIR=${BUILD_DIR}/${PKG}/${PKG_VERSION}
@@ -42,10 +43,14 @@ tar --strip-components 1 -xvf ${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.*
 mkdir -p ${LIB_BUILD_DIR}/my_build
 cd ${LIB_BUILD_DIR}/my_build
 
+#ENABLED_PROJECTS='clang;flang;clang-tools-extra;libcxx;libcxxabi;lld;poly;openmp'
+#ENABLED_PROJECTS='clang;flang;clang-tools-extra;libcxx;libcxxabi;libunwind;libc;libclc;lld;lldb;openmp;polly;pstl'
+ENABLED_PROJECTS='all'
+
 # Detect if we can find Ninja
 if ninja --help || module load ninja; then
     cmake \
-        -D LLVM_ENABLE_PROJECTS='clang;flang;clang-tools-extra;libcxx;libcxxabi;lld;poly;openmp' \
+        -D LLVM_ENABLE_PROJECTS=${ENABLED_PROJECTS} \
         -D CMAKE_INSTALL_PREFIX=${LIB_INSTALL_DIR} \
         -D CMAKE_BUILD_TYPE=Release \
         -G "Ninja" \
@@ -55,7 +60,7 @@ if ninja --help || module load ninja; then
     ninja install
 else
     cmake \
-        -D LLVM_ENABLE_PROJECTS='clang;flang;clang-tools-extra;libcxx;libcxxabi;lld;poly;openmp' \
+        -D LLVM_ENABLE_PROJECTS=${ENABLED_PROJECTS} \
         -D CMAKE_INSTALL_PREFIX=${LIB_INSTALL_DIR} \
         -D CMAKE_BUILD_TYPE=Release \
         -G "Unix Makefiles" \

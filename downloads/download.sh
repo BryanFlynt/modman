@@ -4,11 +4,22 @@ wget "https://github.com/Kitware/CMake/releases/download/v3.20.2/cmake-3.20.2-li
 wget "https://github.com/Kitware/CMake/releases/download/v3.20.2/cmake-3.20.2-macos-universal.tar.gz"
 
 wget "https://mirrors.kernel.org/gnu/gcc/gcc-11.1.0/gcc-11.1.0.tar.gz"
-#wget "https://www.mpfr.org/mpfr-current/mpfr-3.1.4.tar.bz2"
+
+wget "https://mirrors.kernel.org/gnu/gcc/gcc-11.3.0/gcc-11.3.0.tar.gz"
+
+
 wget "https://www.mpfr.org/mpfr-3.1.4/mpfr-3.1.4.tar.bz2"
+wget "https://www.mpfr.org/mpfr-4.1.0/mpfr-4.1.0.tar.bz2"
+
 wget "https://gmplib.org/download/gmp/gmp-6.1.0.tar.lz"
+wget "https://gmplib.org/download/gmp/gmp-6.2.1.tar.lz"
+
 wget "http://isl.gforge.inria.fr/isl-0.18.tar.bz2"
+wget "http://isl.gforge.inria.fr/isl-0.24.tar.bz2"
+
 wget "https://ftp.gnu.org/gnu/mpc/mpc-1.0.3.tar.gz"
+wget "https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz"
+
 
 wget "https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-4.1.1.tar.bz2"
 
@@ -28,6 +39,9 @@ wget "https://github.com/llvm/llvm-project/archive/llvmorg-9.0.0.zip"
 
 wget "https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/llvm-project-12.0.0.src.tar.xz"
 mv llvm-project-12.0.0.src.tar.xz llvm-12.0.0.tar.xy
+
+wget "https://github.com/llvm/llvm-project/releases/download/llvmorg-14.0.0/llvm-project-14.0.0.src.tar.xz"
+mv llvm-project-14.0.0.src.tar.xz llvm-14.0.0.tar.xy
 
 wget "https://registrationcenter-download.intel.com/akdlm/irc_nas/17769/l_BaseKit_p_2021.2.0.2883_offline.sh"
 mv l_BaseKit_p_2021.2.0.2883_offline.sh oneapi_base-2021.2.0.sh
