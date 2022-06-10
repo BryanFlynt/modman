@@ -114,7 +114,7 @@ ${LIB_BUILD_DIR}/configure                           \
                 --disable-multilib
 
 # Build
-make -j 8
+make -j
 
 # Install
 make install

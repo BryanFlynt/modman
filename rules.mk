@@ -7,11 +7,11 @@ unpack_only : cmake
 
 compilers : gcc llvm
 
-libraries : isl gmp mpfr mpc
+libraries : ninja isl gmp mpfr mpc boost
 
 mpi_compilers : openmpi
 
-libraries_w_mpi : boost gptl hdf5 netcdf
+libraries_w_mpi : boost-mpi gptl hdf5 netcdf
 
 clean :
 	rm -rf log
@@ -69,7 +69,7 @@ llvm : llvm-14.0.0
 
 llvm-14.0.0 : ${MODULE_DIR}/base/llvm/14.0.0.lua
 
-${MODULE_DIR}/base/llvm/14.0.0.lua: cmake
+${MODULE_DIR}/base/llvm/14.0.0.lua: cmake ninja
 	${SRC_DIR}/build.sh llvm 14.0.0
 
 #
@@ -77,6 +77,17 @@ ${MODULE_DIR}/base/llvm/14.0.0.lua: cmake
 #         Tools & Libraries (Never Require MPI)
 # **********************************************************
 #
+
+# -----------------------------------------------
+# Ninja
+# -----------------------------------------------
+
+ninja : ninja-1.11.0
+
+ninja-1.11.0 : ${MODULE_DIR}/base/ninja/1.11.0.lua
+
+${MODULE_DIR}/base/ninja/1.11.0.lua : cmake
+	${SRC_DIR}/build.sh ninja 1.11.0
 
 # -----------------------------------------------
 # ISL 
@@ -113,3 +124,43 @@ mpfr : mpfr-4.1.0
 
 mpfr-4.1.0 :
 	${SRC_DIR}/build.sh mpfr 4.1.0
+
+# -----------------------------------------------
+# Boost
+# -----------------------------------------------
+
+boost : boost-gcc boost-llvm
+
+boost-gcc : boost-1.79.0-gcc-11.3.0
+
+boost-llvm : boost-1.79.0-llvm-14.0.0
+
+boost-1.79.0-gcc-11.3.0 : ${MODULE_DIR}/compiler/gcc/11.3.0/boost/1.79.0.lua
+
+boost-1.79.0-llvm-14.0.0 : ${MODULE_DIR}/compiler/llvm/14.0.0/boost/1.79.0.lua
+
+${MODULE_DIR}/compiler/gcc/11.3.0/boost/1.79.0.lua : gcc-11.3.0
+	${SRC_DIR}/build.sh boost 1.79.0 gcc 11.3.0
+
+${MODULE_DIR}/compiler/llvm/14.0.0/boost/1.79.0.lua : llvm-14.0.0
+	${SRC_DIR}/build.sh boost 1.79.0 llvm 14.0.0
+
+# -----------------------------------------------
+# HWLOC 
+# -----------------------------------------------
+
+hwloc : hwloc-2.7.1-gcc hwloc-2.7.1-llvm
+
+hwloc-2.7.1-gcc : hwloc-2.7.1-gcc-11.3.0
+
+hwloc-2.7.1-llvm : hwloc-2.7.1-llvm-14.0.0
+
+hwloc-2.7.1-gcc-11.3.0 : ${MODULE_DIR}/compiler/gcc/11.3.0/hwloc/2.7.1.lua
+
+hwloc-2.7.1-llvm-14.0.0 : ${MODULE_DIR}/compiler/llvm/14.0.0/hwloc/2.7.1.lua
+
+${MODULE_DIR}/compiler/gcc/11.3.0/hwloc/2.7.1.lua :
+	${SRC_DIR}/build.sh hwloc 2.7.1 gcc 11.3.0
+
+${MODULE_DIR}/compiler/llvm/14.0.0/hwloc/2.7.1.lua :
+	${SRC_DIR}/build.sh hwloc 2.7.1 llvm 14.0.0
