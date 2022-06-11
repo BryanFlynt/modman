@@ -62,16 +62,37 @@ sed -i 's/<cstdio>/<cstdio>\n#include <limits>/' ${LIB_BUILD_DIR}/flang/runtime/
 
 module purge
 module load cmake
-module load gcc   # Use compiler with latest std
+#module load gcc   # Use compiler with C++20
 
-ENABLED_PROJECTS='all'
+# Having Read these pages
+# https://groups.google.com/g/llvm-dev/c/Oj6ttXy08Fw
+# https://llvm.org/docs/GettingStarted.html#getting-a-modern-host-c-toolchain
+# https://llvm.org/docs/CMake.html#llvm-related-variables
+
+# LLVM_ENABLED_PROJECTS (Cannot be dual listed in LLVM_ENABLED_RUNTIMES)
+# - These get built with the system compiler (gcc, etc.)
+# - Moved "libc" & "openmp" into ENABLED_RUNTIMES since those can go either way
+# - - Available: clang, clang-tools-extra, cross-project-tests, flang, libc, libclc, lld, lldb, mlir, openmp, polly, pstl.
+ENABLED_PROJECTS="clang;clang-tools-extra;cross-project-tests;libclc;lld;lldb;polly;pstl"
+
+# LLVM_ENABLED_RUNTIMES (Cannot be dual listed in LLVM_ENABLED_PROJECTS)
+# - These get built but the just built clang compiler
+# - - Available: compiler-rt, libc, libcxx, libcxxabi, libunwind, or openmp
+ENABLED_RUNTIMES="all"
+
+# LLVM_TARGETS_TO_BUILD
+# - These are all the platforms to build for
+# - - Available: AArch64, AMDGPU, ARM, AVR, BPF, Hexagon, Lanai, Mips, MSP430, NVPTX, PowerPC, RISCV, Sparc, SystemZ, WebAssembly, X86, XCore
+ENABLED_TARGETS="AMDGPU;NVPTX;X86"
 
 # Detect if we can find Ninja
 if ninja --help || module load ninja; then
     cmake \
         -D LLVM_ENABLE_PROJECTS=${ENABLED_PROJECTS} \
+        -D LLVM_ENABLE_RUNTIMES=${ENABLED_RUNTIMES} \
+        -D LLVM_TARGETS_TO_BUILD=${ENABLED_TARGETS} \
         -D CMAKE_INSTALL_PREFIX=${LIB_INSTALL_DIR} \
-        -D CMAKE_BUILD_TYPE=Release \
+         -D CMAKE_BUILD_TYPE=Release \
         -G "Ninja" \
         ${LIB_BUILD_DIR}/llvm
         
@@ -80,6 +101,7 @@ if ninja --help || module load ninja; then
 else
     cmake \
         -D LLVM_ENABLE_PROJECTS=${ENABLED_PROJECTS} \
+        -D LLVM_ENABLE_RUNTIMES=${ENABLED_RUNTIMES} \
         -D CMAKE_INSTALL_PREFIX=${LIB_INSTALL_DIR} \
         -D CMAKE_BUILD_TYPE=Release \
         -G "Unix Makefiles" \
@@ -89,14 +111,15 @@ else
     make install
 fi
 
+
 # ----------------------------------------------------------------------
 #                            Create Module File
 # ----------------------------------------------------------------------
 
 # Get location of libstdc++ files for the GCC compiler we used
-gnu_c_compiler=${CC}
-gnu_bin_dir=$(dirname ${CC})
-gnu_base_name=$(dirname ${gnu_bin_dir})
+#gnu_c_compiler=${CC}
+#gnu_bin_dir=$(dirname ${CC})
+#gnu_base_name=$(dirname ${gnu_bin_dir})
 
 # Create Module File
 mkdir -p ${MODULE_DIR}/base/${PKG}
@@ -112,9 +135,9 @@ conflict("gcc")
 prepend_path("MODULEPATH", "${MODULE_DIR}/compiler/${PKG}/${PKG_VERSION}")
 
 -- Point at Latest GCC Compiler (libstdc++)
-prepend_path("PATH",            "${gnu_base_name}/bin")
-prepend_path("LD_LIBRARY_PATH", "${gnu_base_name}/lib")
-prepend_path("LD_LIBRARY_PATH", "${gnu_base_name}/lib64")
+-- prepend_path("PATH",            "${gnu_base_name}/bin")
+-- prepend_path("LD_LIBRARY_PATH", "${gnu_base_name}/lib")
+-- prepend_path("LD_LIBRARY_PATH", "${gnu_base_name}/lib64")
 
 -- Environment Paths
 prepend_path("PATH",            "${LIB_INSTALL_DIR}/bin")
