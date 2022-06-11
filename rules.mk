@@ -252,3 +252,22 @@ ${MODULE_DIR}/compiler/gcc/11.3.0/openmpi/4.1.4.lua:
 
 ${MODULE_DIR}/compiler/llvm/14.0.4/openmpi/4.1.4.lua:
 	${SRC_DIR}/build.sh openmpi 4.1.4 llvm 14.0.4
+
+#
+# **********************************************************
+#                  Libraries (Require MPI)
+# **********************************************************
+#
+
+# -----------------------------------------------
+# Boost
+# -----------------------------------------------
+
+boost-mpi : boost-mpi-gcc
+
+boost-mpi-gcc : boost-1.79.0-openmpi-4.1.4-gcc-11.3.0
+
+boost-1.79.0-openmpi-4.1.4-gcc-11.3.0 : ${MODULE_DIR}/mpi/openmpi/4.1.4/gcc/11.3.0/boost/1.79.0.lua
+
+${MODULE_DIR}/mpi/openmpi/4.1.4/gcc/11.3.0/boost/1.79.0.lua:
+	${SRC_DIR}/build.sh boost 1.79.0 gcc 11.3.0 openmpi 4.1.4
