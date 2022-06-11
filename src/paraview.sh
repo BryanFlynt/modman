@@ -35,6 +35,10 @@ LIB_INSTALL_DIR=${INSTALL_DIR}/${PKG}/${PKG_VERSION}
 rm -rf ${LIB_BUILD_DIR}
 rm -rf ${LIB_INSTALL_DIR}
 
+# Create the build directory to unpack
+mkdir -p ${LIB_BUILD_DIR}
+cd ${LIB_BUILD_DIR}
+
 # ----------------------------------------------------------------------
 #                        Download (if Needed)
 # ----------------------------------------------------------------------
@@ -74,7 +78,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 # Untar the tarball
-tar --strip-components 1 -xvf ${TAR_DIR}/${tar_file_name}
+tar --strip-components 1 -xvf ${LOCAL_DOWNLOAD_NAME}
 
 # Create installation directory
 mkdir -p ${LIB_INSTALL_DIR}

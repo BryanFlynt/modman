@@ -7,7 +7,7 @@ unpack_only : cmake paraview
 
 compilers : gcc llvm
 
-libraries : ninja isl gmp mpfr mpc hwloc ucx libevent boost
+libraries : ninja hwloc ucx libevent boost
 
 mpi_compilers : openmpi
 
@@ -69,7 +69,11 @@ gcc : gcc-11.3.0
 
 gcc-11.3.0 : ${MODULE_DIR}/base/gcc/11.3.0.lua
 
-${MODULE_DIR}/base/gcc/11.3.0.lua: isl-0.24 gmp-6.2.1 mpc-1.2.1 mpfr-4.1.0 
+${MODULE_DIR}/base/gcc/11.3.0.lua:
+	${SRC_DIR}/build.sh isl 0.24
+	${SRC_DIR}/build.sh gmp 6.2.1
+	${SRC_DIR}/build.sh mpc 1.2.1
+	${SRC_DIR}/build.sh mpfr 4.1.0 
 	${SRC_DIR}/build.sh gcc 11.3.0
 
 # -----------------------------------------------
@@ -101,7 +105,7 @@ ${MODULE_DIR}/base/ninja/1.11.0.lua : cmake
 	${SRC_DIR}/build.sh ninja 1.11.0
 
 # -----------------------------------------------
-# ISL 
+# ISL (Download Only)
 # -----------------------------------------------
 
 isl : isl-0.24
@@ -110,7 +114,7 @@ isl-0.24 :
 	${SRC_DIR}/build.sh isl 0.24
 
 # -----------------------------------------------
-# GMP
+# GMP (Download Only)
 # -----------------------------------------------
 
 gmp : gmp-6.2.1
@@ -119,7 +123,7 @@ gmp-6.2.1 :
 	${SRC_DIR}/build.sh gmp 6.2.1
 
 # -----------------------------------------------
-# MPC
+# MPC (Download Only)
 # -----------------------------------------------
 
 mpc : mpc-1.2.1
@@ -128,7 +132,7 @@ mpc-1.2.1 :
 	${SRC_DIR}/build.sh mpc 1.2.1
 
 # -----------------------------------------------
-# MPFR
+# MPFR (Download Only)
 # -----------------------------------------------
 
 mpfr : mpfr-4.1.0
