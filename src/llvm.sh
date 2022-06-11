@@ -39,19 +39,34 @@ cd ${LIB_BUILD_DIR}
 #                        Download (if Needed)
 # ----------------------------------------------------------------------
 
+REPO_NAME=${TAR_DIR}/llvm-project
+REMOTE_REPO_NAME="https://github.com/llvm/llvm-project.git"
+
 LOCAL_DOWNLOAD_NAME=${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.xz
 REMOTE_DOWNLOAD_NAME="https://github.com/llvm/llvm-project/releases/download/llvmorg-${PKG_VERSION}/llvm-project-${PKG_VERSION}.src.tar.xz"
 
-if [[ ! -f "${LOCAL_DOWNLOAD_NAME}" ]]; then
-    ${DOWNLOAD_CMD} ${LOCAL_DOWNLOAD_NAME} ${REMOTE_DOWNLOAD_NAME}
+if [ "$PKG_VERSION" == "dev" ]; then
+    if [ -d "${REPO_NAME}" ]; then
+        (cd ${REPO_NAME}; git pull)
+    else
+        (cd ${TAR_DIR}; git clone --depth 1 ${REMOTE_REPO_NAME})
+    fi    
+else
+    if [[ ! -f "${LOCAL_DOWNLOAD_NAME}" ]]; then
+        ${DOWNLOAD_CMD} ${LOCAL_DOWNLOAD_NAME} ${REMOTE_DOWNLOAD_NAME}
+    fi 
 fi
 
 # ----------------------------------------------------------------------
 #                            UnPack + Patch
 # ----------------------------------------------------------------------
 
-# Untar the tarball
-tar --strip-components 1 -xvf ${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.*
+# Gather Files into ${LIB_BUILD_DIR}
+if [ "$PKG_VERSION" == "dev" ]; then
+    cp -r ${REPO_NAME}/* .
+else
+    tar --strip-components 1 -xvf ${LOCAL_DOWNLOAD_NAME}
+fi
 
 # If patch file
 sed -i 's/<cstdio>/<cstdio>\n#include <limits>/' ${LIB_BUILD_DIR}/flang/runtime/unit.cpp
@@ -62,7 +77,6 @@ sed -i 's/<cstdio>/<cstdio>\n#include <limits>/' ${LIB_BUILD_DIR}/flang/runtime/
 
 module purge
 module load cmake
-#module load gcc   # Use compiler with C++20
 
 # Having Read these pages
 # https://groups.google.com/g/llvm-dev/c/Oj6ttXy08Fw
@@ -85,26 +99,52 @@ ENABLED_RUNTIMES="all"
 # - - Available: AArch64, AMDGPU, ARM, AVR, BPF, Hexagon, Lanai, Mips, MSP430, NVPTX, PowerPC, RISCV, Sparc, SystemZ, WebAssembly, X86, XCore
 ENABLED_TARGETS="AMDGPU;NVPTX;X86"
 
+# CLANG_DEFAULT_CXX_STDLIB
+# - Default C++ std library to use
+# - - Available:
+# - - - <empty>   -> Platform Default
+# - - - libstdc++ -> GCC standard lib
+# - - - libc++    -> LLVM standard lib
+
+# CLANG_DEFAULT_RTLIB=compiler-rt
+# - Default Runtime Library for CLANG
+# - - Available:
+# - - - <empty>     -> Platform Default
+# - - - libgcc      -> GCC runtime
+# - - - compiler-rt -> LLVM runtime
+
+# CLANG_DEFAULT_UNWINDLIB
+# - Default unwind library
+# - - Available:
+# - - - <empty>   -> Matches Runtime Library
+# - - - libgcc    -> GCC
+# - - - libunwind -> LLVM
+
 # Detect if we can find Ninja
 if ninja --help || module load ninja; then
     cmake \
+        -D CMAKE_BUILD_TYPE=Release                 \
+        -D CMAKE_INSTALL_PREFIX=${LIB_INSTALL_DIR}  \
         -D LLVM_ENABLE_PROJECTS=${ENABLED_PROJECTS} \
         -D LLVM_ENABLE_RUNTIMES=${ENABLED_RUNTIMES} \
         -D LLVM_TARGETS_TO_BUILD=${ENABLED_TARGETS} \
-        -D CMAKE_INSTALL_PREFIX=${LIB_INSTALL_DIR} \
-         -D CMAKE_BUILD_TYPE=Release \
-        -G "Ninja" \
+        -D CLANG_DEFAULT_CXX_STDLIB=libc++          \
+        -D CLANG_DEFAULT_RTLIB=compiler-rt          \
+        -G "Ninja"                                  \
         ${LIB_BUILD_DIR}/llvm
-        
+    
     ninja
     ninja install
 else
     cmake \
+        -D CMAKE_BUILD_TYPE=Release                 \
+        -D CMAKE_INSTALL_PREFIX=${LIB_INSTALL_DIR}  \
         -D LLVM_ENABLE_PROJECTS=${ENABLED_PROJECTS} \
         -D LLVM_ENABLE_RUNTIMES=${ENABLED_RUNTIMES} \
-        -D CMAKE_INSTALL_PREFIX=${LIB_INSTALL_DIR} \
-        -D CMAKE_BUILD_TYPE=Release \
-        -G "Unix Makefiles" \
+        -D LLVM_TARGETS_TO_BUILD=${ENABLED_TARGETS} \
+        -D CLANG_DEFAULT_CXX_STDLIB=libc++          \
+        -D CLANG_DEFAULT_RTLIB=compiler-rt          \
+        -G "Ninja"                                  \
         ${LIB_BUILD_DIR}/llvm
 
     make

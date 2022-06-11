@@ -17,10 +17,12 @@ clean :
 	rm -rf log
 	rm -rf build
 
-cleanall : clean
+cleanmem : clean
+	rm -rf downloads
+
+cleanall : cleanmem
 	rm -rf apps
 	rm -rf modulefiles
-	rm -rf downloads
 
 #
 # **********************************************************
@@ -80,12 +82,17 @@ ${MODULE_DIR}/base/gcc/11.3.0.lua:
 # LLVM
 # -----------------------------------------------
 
-llvm : llvm-14.0.4
+llvm : llvm-14.0.4 llvm-dev
 
 llvm-14.0.4 : ${MODULE_DIR}/base/llvm/14.0.4.lua
 
+llvm-dev : ${MODULE_DIR}/base/llvm/dev.lua
+
 ${MODULE_DIR}/base/llvm/14.0.4.lua: cmake
 	${SRC_DIR}/build.sh llvm 14.0.4
+
+${MODULE_DIR}/base/llvm/dev.lua: cmake
+	${SRC_DIR}/build.sh llvm dev
 
 #
 # **********************************************************
