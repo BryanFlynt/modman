@@ -97,7 +97,7 @@ ENABLED_RUNTIMES="all"
 # LLVM_TARGETS_TO_BUILD
 # - These are all the platforms to build for
 # - - Available: AArch64, AMDGPU, ARM, AVR, BPF, Hexagon, Lanai, Mips, MSP430, NVPTX, PowerPC, RISCV, Sparc, SystemZ, WebAssembly, X86, XCore
-ENABLED_TARGETS="AMDGPU;NVPTX;X86"
+ENABLED_TARGETS="X86;NVPTX"
 
 # CLANG_DEFAULT_CXX_STDLIB
 # - Default C++ std library to use
@@ -128,8 +128,6 @@ if ninja --help || module load ninja; then
         -D LLVM_ENABLE_PROJECTS=${ENABLED_PROJECTS} \
         -D LLVM_ENABLE_RUNTIMES=${ENABLED_RUNTIMES} \
         -D LLVM_TARGETS_TO_BUILD=${ENABLED_TARGETS} \
-        -D CLANG_DEFAULT_CXX_STDLIB=libc++          \
-        -D CLANG_DEFAULT_RTLIB=compiler-rt          \
         -G "Ninja"                                  \
         ${LIB_BUILD_DIR}/llvm
     
@@ -142,8 +140,6 @@ else
         -D LLVM_ENABLE_PROJECTS=${ENABLED_PROJECTS} \
         -D LLVM_ENABLE_RUNTIMES=${ENABLED_RUNTIMES} \
         -D LLVM_TARGETS_TO_BUILD=${ENABLED_TARGETS} \
-        -D CLANG_DEFAULT_CXX_STDLIB=libc++          \
-        -D CLANG_DEFAULT_RTLIB=compiler-rt          \
         -G "Ninja"                                  \
         ${LIB_BUILD_DIR}/llvm
 

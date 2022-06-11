@@ -52,7 +52,7 @@ LOCAL_DOWNLOAD_NAME=${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.bz2
 
 VERSION_SPLIT=(${PKG_VERSION//./ })
 OMP_VERSION="v${VERSION_SPLIT[0]}.${VERSION_SPLIT[1]}"
-REMOTE_DOWNLOAD_NAME="https://download.open-mpi.org/release/open-mpi/v${OMP_VERSION}/openmpi-${PKG_VERSION}.tar.bz2"
+REMOTE_DOWNLOAD_NAME="https://download.open-mpi.org/release/open-mpi/${OMP_VERSION}/openmpi-${PKG_VERSION}.tar.bz2"
 
 if [[ ! -f "${LOCAL_DOWNLOAD_NAME}" ]]; then
     ${DOWNLOAD_CMD} ${LOCAL_DOWNLOAD_NAME} ${REMOTE_DOWNLOAD_NAME}
@@ -75,7 +75,7 @@ if ! [ -x "$(command -v sbatch)" ]; then
                 --with-hwloc=${HWLOC_ROOT}                \
                 --with-ucx=${UCX_ROOT}                    \
                 --with-libevent=${LIBEVENT_ROOT}          \
-                --without-verbs 2>&1 | tee ${OMPI_OUTPUT}/configure.out
+                --without-verbs
 else
     slurm_command=$(command -v sbatch)
     pmi_path=${slurm_command%/*/*}
@@ -97,10 +97,7 @@ fi
 #                            Build + Install
 # ----------------------------------------------------------------------
 
-# Build
 make -j
-
-# Install
 make install
 
 # ----------------------------------------------------------------------

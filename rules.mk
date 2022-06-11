@@ -1,5 +1,5 @@
 
-.PHONY: clean cleanall
+.PHONY: clean cleanmem cleanall
 
 all : unpack_only compilers libraries
 
@@ -247,8 +247,8 @@ openmpi-4.1.4-gcc-11.3.0 : ${MODULE_DIR}/compiler/gcc/11.3.0/openmpi/4.1.4.lua
 
 openmpi-4.1.4-llvm-14.0.4 : ${MODULE_DIR}/compiler/llvm/14.0.4/openmpi/4.1.4.lua
 
-${MODULE_DIR}/compiler/gcc/11.3.0/openmpi/4.1.4.lua : gcc-11.3.0 hwloc-2.7.1-gcc-11.3.0 ucx-1.12.1-gcc-11.3.0 libevent-2.1.12-gcc-11.3.0
+${MODULE_DIR}/compiler/gcc/11.3.0/openmpi/4.1.4.lua:
 	${SRC_DIR}/build.sh openmpi 4.1.4 gcc 11.3.0
 
-${MODULE_DIR}/compiler/llvm/14.0.4/openmpi/4.1.4.lua : llvm-14.0.4 hwloc-2.7.1-llvm-14.0.4 ucx-1.12.1-llvm-14.0.4 libevent-2.1.12-llvm-14.0.4
+${MODULE_DIR}/compiler/llvm/14.0.4/openmpi/4.1.4.lua:
 	${SRC_DIR}/build.sh openmpi 4.1.4 llvm 14.0.4

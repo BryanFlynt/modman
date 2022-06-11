@@ -52,7 +52,7 @@ cd ${LIB_BUILD_DIR}
 
 LOCAL_DOWNLOAD_NAME=${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.bz2
 
-BOOST_VERSION="${PKG_VERSION//-/_}"
+BOOST_VERSION="${PKG_VERSION//./_}"
 REMOTE_DOWNLOAD_NAME="https://boostorg.jfrog.io/artifactory/main/release/${PKG_VERSION}/source/boost_${BOOST_VERSION}.tar.bz2"
 
 if [[ ! -f "${LOCAL_DOWNLOAD_NAME}" ]]; then
@@ -121,7 +121,7 @@ fi
 
 # Compile Boost (turn off/on abort since it never compiles everything)
 set +e
-./b2 -j ${MOD_NPROC} install toolset=${toolname} variant=release --layout=system --target=shared,static
+./b2 -j ${MODMAN_NPROC} install toolset=${toolname} variant=release --layout=system --target=shared,static
 set -e
 
 # ----------------------------------------------------------------------
