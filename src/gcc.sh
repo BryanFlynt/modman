@@ -45,9 +45,6 @@ fi
 #                          Make Directories
 # ----------------------------------------------------------------------
 
-# Load build environment
-module purge
-
 # Make full path names to locations
 LIB_BUILD_DIR=${BUILD_DIR}/${PKG}/${PKG_VERSION}
 LIB_INSTALL_DIR=${INSTALL_DIR}/${PKG}/${PKG_VERSION}
@@ -101,9 +98,6 @@ ln -s mpc-${mpc_version} mpc
 # Do an out of source build by making a temporary build directory
 mkdir -p ${LIB_BUILD_DIR}/my_build
 cd ${LIB_BUILD_DIR}/my_build
-
-# Load build environment
-module purge
 
 # Configure
 ${LIB_BUILD_DIR}/configure                           \

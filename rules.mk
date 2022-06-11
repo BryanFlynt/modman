@@ -3,11 +3,11 @@
 
 all : unpack_only compilers libraries
 
-unpack_only : cmake
+unpack_only : cmake paraview
 
 compilers : gcc llvm
 
-libraries : ninja isl gmp mpfr mpc boost
+libraries : ninja isl gmp mpfr mpc hwloc ucx libevent boost
 
 mpi_compilers : openmpi
 
@@ -43,6 +43,17 @@ cmake-3.23.2 : ${MODULE_DIR}/base/cmake/3.23.2.lua
 
 ${MODULE_DIR}/base/cmake/3.23.2.lua:
 	${SRC_DIR}/build.sh cmake 3.23.2
+
+# -----------------------------------------------
+# Paraview
+# -----------------------------------------------
+
+paraview : paraview-5.10.1
+
+paraview-5.10.1 : ${MODULE_DIR}/base/paraview/5.10.1.lua
+
+${MODULE_DIR}/base/paraview/5.10.1.lua:
+	${SRC_DIR}/build.sh paraview 5.10.1
 
 #
 # **********************************************************
@@ -159,8 +170,46 @@ hwloc-2.7.1-gcc-11.3.0 : ${MODULE_DIR}/compiler/gcc/11.3.0/hwloc/2.7.1.lua
 
 hwloc-2.7.1-llvm-14.0.0 : ${MODULE_DIR}/compiler/llvm/14.0.0/hwloc/2.7.1.lua
 
-${MODULE_DIR}/compiler/gcc/11.3.0/hwloc/2.7.1.lua :
+${MODULE_DIR}/compiler/gcc/11.3.0/hwloc/2.7.1.lua : gcc-11.3.0
 	${SRC_DIR}/build.sh hwloc 2.7.1 gcc 11.3.0
 
-${MODULE_DIR}/compiler/llvm/14.0.0/hwloc/2.7.1.lua :
+${MODULE_DIR}/compiler/llvm/14.0.0/hwloc/2.7.1.lua : llvm-14.0.0
 	${SRC_DIR}/build.sh hwloc 2.7.1 llvm 14.0.0
+
+# -----------------------------------------------
+# UCX
+# -----------------------------------------------
+
+ucx : ucx-1.12.1-gcc ucx-1.12.1-llvm
+
+ucx-1.12.1-gcc : ucx-1.12.1-gcc-11.3.0
+
+ucx-1.12.1-llvm : ucx-1.12.1-llvm-14.0.0
+
+ucx-1.12.1-gcc-11.3.0 : ${MODULE_DIR}/compiler/gcc/11.3.0/ucx/1.12.1.lua
+
+ucx-1.12.1-llvm-14.0.0 : ${MODULE_DIR}/compiler/llvm/14.0.0/ucx/1.12.1.lua
+
+${MODULE_DIR}/compiler/gcc/11.3.0/ucx/1.12.1.lua : gcc-11.3.0
+	${SRC_DIR}/build.sh ucx 1.12.1 gcc 11.3.0
+
+${MODULE_DIR}/compiler/llvm/14.0.0/ucx/1.12.1.lua : llvm-14.0.0
+	${SRC_DIR}/build.sh ucx 1.12.1 llvm 14.0.0
+
+# -----------------------------------------------
+# libevent
+# -----------------------------------------------
+
+libevent : libevent-2.1.12-gcc libevent-2.1.12-llvm
+
+libevent-2.1.12-gcc : libevent-2.1.12-gcc-11.3.0
+
+libevent-2.1.12-llvm : libevent-2.1.12-llvm-14.0.0
+
+libevent-2.1.12-gcc-11.3.0 : ${MODULE_DIR}/compiler/gcc/11.3.0/libevent/2.1.12.lua
+
+${MODULE_DIR}/compiler/gcc/11.3.0/libevent/2.1.12.lua : gcc-11.3.0
+	${SRC_DIR}/build.sh libevent 2.1.12 gcc 11.3.0
+
+${MODULE_DIR}/compiler/llvm/14.0.0/libevent/2.1.12.lua : llvm-14.0.0
+	${SRC_DIR}/build.sh libevent 2.1.12 llvm 14.0.0

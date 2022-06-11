@@ -16,7 +16,7 @@ set -e
 set -x
 
 # Set the variables
-export PKG=cmake
+export PKG=paraview
 export PKG_VERSION=$1
 export COMPILER=$3
 export COMPILER_VERSION=$4
@@ -35,10 +35,6 @@ LIB_INSTALL_DIR=${INSTALL_DIR}/${PKG}/${PKG_VERSION}
 rm -rf ${LIB_BUILD_DIR}
 rm -rf ${LIB_INSTALL_DIR}
 
-# Create the build directory to unpack
-mkdir -p ${LIB_BUILD_DIR}
-cd ${LIB_BUILD_DIR}
-
 # ----------------------------------------------------------------------
 #                        Download (if Needed)
 # ----------------------------------------------------------------------
@@ -46,9 +42,23 @@ cd ${LIB_BUILD_DIR}
 LOCAL_DOWNLOAD_NAME=${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.gz
 
 if [[ "$OSTYPE" == "linux"* ]]; then
-    REMOTE_DOWNLOAD_NAME="https://github.com/Kitware/CMake/releases/download/v${PKG_VERSION}/cmake-${PKG_VERSION}-linux-x86_64.tar.gz"
+    if [[ "$PKG_VERSION" == "5.9.1" ]]; then
+        REMOTE_DOWNLOAD_NAME="https://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v5.9&type=binary&os=Linux&downloadFile=ParaView-5.9.1-MPI-Linux-Python3.8-64bit.tar.gz"
+    elif [[ "$PKG_VERSION" == "5.10.1" ]]; then
+        REMOTE_DOWNLOAD_NAME="https://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v5.10&type=binary&os=Linux&downloadFile=ParaView-5.10.1-MPI-Linux-Python3.9-x86_64.tar.gz"
+    else
+        echo "ERROR: Version ${PKG_VERSION} Needs Link"
+        exit -1
+    fi        
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-    REMOTE_DOWNLOAD_NAME="https://github.com/Kitware/CMake/releases/download/v${PKG_VERSION}/cmake-${PKG_VERSION}-macos-universal.tar.gz"
+    if [[ "$PKG_VERSION" == "5.9.1" ]]; then
+        REMOTE_DOWNLOAD_NAME="https://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v5.9&type=binary&os=macOS&downloadFile=ParaView-5.9.1-MPI-OSX10.13-Python3.8-64bit.pkg"
+    elif [[ "$PKG_VERSION" == "5.10.1" ]]; then
+        REMOTE_DOWNLOAD_NAME="https://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v5.10&type=binary&os=macOS&downloadFile=ParaView-5.10.1-MPI-OSX10.13-Python3.9-x86_64.pkg"
+    else
+        echo "ERROR: Version ${PKG_VERSION} Needs Link"
+        exit -1
+    fi 
 fi
 
 if [[ ! -f "${LOCAL_DOWNLOAD_NAME}" ]]; then
@@ -58,9 +68,13 @@ fi
 # ----------------------------------------------------------------------
 #                            UnPack + Install
 # ----------------------------------------------------------------------
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    echo "ERROR: Need to Figure Out How to Unpack PKG into Custom Location"
+    exit -1
+fi
 
 # Untar the tarball
-tar --strip-components 1 -xvf ${LOCAL_DOWNLOAD_NAME}
+tar --strip-components 1 -xvf ${TAR_DIR}/${tar_file_name}
 
 # Create installation directory
 mkdir -p ${LIB_INSTALL_DIR}
@@ -72,18 +86,19 @@ mv ${LIB_BUILD_DIR}/* ${LIB_INSTALL_DIR}/.
 #                            Create Module File
 # ----------------------------------------------------------------------
 
+# Create Module File
 mkdir -p ${MODULE_DIR}/base/${PKG}
 cat << EOF > ${MODULE_DIR}/base/${PKG}/${PKG_VERSION}.lua
 
 help([[ ${PKG} version ${PKG_VERSION} ]])
-family("cmake")
+family("paraview")
 
 -- Conflicting modules
 
 -- Modulepath for packages built by this compiler
 
 -- Environment Paths
-prepend_path("PATH", "${LIB_INSTALL_DIR}/bin")
+prepend_path("PATH",     "${LIB_INSTALL_DIR}/bin")
 
 -- Environment Variables
 EOF
