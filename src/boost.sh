@@ -120,9 +120,9 @@ fi
 # ----------------------------------------------------------------------
 
 # Compile Boost (turn off/on abort since it never compiles everything)
-set +e
+set +e # Keep Going If ERROR
 ./b2 -j ${MODMAN_NPROC} install toolset=${toolname} variant=release --layout=system --target=shared,static
-set -e
+set -e # Stop if ERROR    
 
 # ----------------------------------------------------------------------
 #                            Create Module File

@@ -87,7 +87,7 @@ module load cmake
 # - These get built with the system compiler (gcc, etc.)
 # - Moved "libc" & "openmp" into ENABLED_RUNTIMES since those can go either way
 # - - Available: clang, clang-tools-extra, cross-project-tests, flang, libc, libclc, lld, lldb, mlir, openmp, polly, pstl.
-ENABLED_PROJECTS="clang;clang-tools-extra;cross-project-tests;libclc;lld;lldb;polly;pstl"
+ENABLED_PROJECTS="clang;clang-tools-extra;cross-project-tests;flang;libclc;lld;lldb;mlir;polly;pstl"
 
 # LLVM_ENABLED_RUNTIMES (Cannot be dual listed in LLVM_ENABLED_PROJECTS)
 # - These get built but the just built clang compiler
@@ -130,8 +130,9 @@ if ninja --help || module load ninja; then
         -D LLVM_TARGETS_TO_BUILD=${ENABLED_TARGETS} \
         -G "Ninja"                                  \
         ${LIB_BUILD_DIR}/llvm
-    
-    ninja
+
+    # Compiling flang eats >32GB of RAM unless limited with -j
+    ninja -j ${MODMAN_NPROC}
     ninja install
 else
     cmake \
@@ -143,7 +144,7 @@ else
         -G "Ninja"                                  \
         ${LIB_BUILD_DIR}/llvm
 
-    make
+    make -j ${MODMAN_NPROC}
     make install
 fi
 
@@ -156,6 +157,12 @@ fi
 #gnu_c_compiler=${CC}
 #gnu_bin_dir=$(dirname ${CC})
 #gnu_base_name=$(dirname ${gnu_bin_dir})
+#
+# We orginaly had these lines in the file but since took out
+# -- Point at Latest GCC Compiler (libstdc++)
+# prepend_path("PATH",            "${gnu_base_name}/bin")
+# prepend_path("LD_LIBRARY_PATH", "${gnu_base_name}/lib")
+# prepend_path("LD_LIBRARY_PATH", "${gnu_base_name}/lib64")
 
 # Create Module File
 mkdir -p ${MODULE_DIR}/base/${PKG}
@@ -169,11 +176,6 @@ conflict("gcc")
 
 -- Modulepath for packages built by this compiler
 prepend_path("MODULEPATH", "${MODULE_DIR}/compiler/${PKG}/${PKG_VERSION}")
-
--- Point at Latest GCC Compiler (libstdc++)
--- prepend_path("PATH",            "${gnu_base_name}/bin")
--- prepend_path("LD_LIBRARY_PATH", "${gnu_base_name}/lib")
--- prepend_path("LD_LIBRARY_PATH", "${gnu_base_name}/lib64")
 
 -- Environment Paths
 prepend_path("PATH",            "${LIB_INSTALL_DIR}/bin")

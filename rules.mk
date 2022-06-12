@@ -7,7 +7,7 @@ unpack_only : cmake paraview
 
 compilers : gcc llvm
 
-libraries : ninja hwloc ucx libevent boost
+libraries : ninja hwloc ucx libevent boost openblas blis
 
 mpi_compilers : openmpi
 
@@ -226,6 +226,38 @@ ${MODULE_DIR}/compiler/gcc/11.3.0/libevent/2.1.12.lua : gcc-11.3.0
 
 ${MODULE_DIR}/compiler/llvm/14.0.4/libevent/2.1.12.lua : llvm-14.0.4
 	${SRC_DIR}/build.sh libevent 2.1.12 llvm 14.0.4
+
+# -----------------------------------------------
+# OpenBLAS
+# -----------------------------------------------
+
+openblas : openblas-0.3.20-gcc-11.3.0
+
+openblas-0.3.20-gcc-11.3.0 : ${MODULE_DIR}/compiler/gcc/11.3.0/openblas/0.3.20.lua
+
+openblas-0.3.20-llvm-14.0.4 : ${MODULE_DIR}/compiler/llvm/14.0.4/openblas/0.3.20.lua
+
+${MODULE_DIR}/compiler/gcc/11.3.0/openblas/0.3.20.lua:
+	${SRC_DIR}/build.sh openblas 0.3.20 gcc 11.3.0
+
+${MODULE_DIR}/compiler/llvm/14.0.4/openblas/0.3.20.lua:
+	${SRC_DIR}/build.sh openblas 0.3.20 llvm 14.0.4
+
+# -----------------------------------------------
+# BLIS
+# -----------------------------------------------
+
+blis : blis-0.9.0-gcc-11.3.0 blis-0.9.0-llvm-14.0.4
+
+blis-0.9.0-gcc-11.3.0 : ${MODULE_DIR}/compiler/gcc/11.3.0/blis/0.9.0.lua
+
+blis-0.9.0-llvm-14.0.4 : ${MODULE_DIR}/compiler/llvm/14.0.4/blis/0.9.0.lua
+
+${MODULE_DIR}/compiler/gcc/11.3.0/blis/0.9.0.lua:
+	${SRC_DIR}/build.sh blis 0.9.0 gcc 11.3.0
+
+${MODULE_DIR}/compiler/llvm/14.0.4/blis/0.9.0.lua:
+	${SRC_DIR}/build.sh blis 0.9.0 llvm 14.0.4
 
 #
 # **********************************************************
