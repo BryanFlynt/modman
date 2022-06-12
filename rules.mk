@@ -7,7 +7,7 @@ unpack_only : cmake paraview
 
 compilers : gcc llvm
 
-libraries : ninja hwloc ucx libevent boost openblas blis
+libraries : ninja hwloc ucx libevent boost openblas blis cgal
 
 mpi_compilers : openmpi
 
@@ -258,6 +258,17 @@ ${MODULE_DIR}/compiler/gcc/11.3.0/blis/0.9.0.lua:
 
 ${MODULE_DIR}/compiler/llvm/14.0.4/blis/0.9.0.lua:
 	${SRC_DIR}/build.sh blis 0.9.0 llvm 14.0.4
+
+# -----------------------------------------------
+# CGAL
+# -----------------------------------------------
+
+cgal : cgal-5.4.1
+
+cgal-5.4.1 : ${MODULE_DIR}/base/cgal/5.4.1.lua
+
+${MODULE_DIR}/base/cgal/5.4.1.lua:
+	${SRC_DIR}/build.sh cgal 5.4.1
 
 #
 # **********************************************************
