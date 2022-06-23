@@ -35,8 +35,8 @@ fi
 # ----------------------------------------------------------------------
 
 # Make full path names to locations
-LIB_BUILD_DIR=$(readlink -m ${BUILD_DIR}/${PKG}/${PKG_VERSION}/${MPI_COMPILER}/${MPI_COMPILER_VERSION}/${COMPILER}/${COMPILER_VERSION})
-LIB_INSTALL_DIR=$(readlink -m ${INSTALL_DIR}/${PKG}/${PKG_VERSION}/${MPI_COMPILER}/${MPI_COMPILER_VERSION}/${COMPILER}/${COMPILER_VERSION})
+LIB_BUILD_DIR=$(realpath -m ${BUILD_DIR}/${PKG}/${PKG_VERSION}/${MPI_COMPILER}/${MPI_COMPILER_VERSION}/${COMPILER}/${COMPILER_VERSION})
+LIB_INSTALL_DIR=$(realpath -m ${INSTALL_DIR}/${PKG}/${PKG_VERSION}/${MPI_COMPILER}/${MPI_COMPILER_VERSION}/${COMPILER}/${COMPILER_VERSION})
 
 # Clean if they already exist
 rm -rf ${LIB_BUILD_DIR}
@@ -95,14 +95,14 @@ esac
 
 # The B2 Engine can be built with any compiler supporting C++11
 # - So use the system compiler
-./bootstrap.sh --prefix=${LIB_INSTALL_DIR}
+./bootstrap.sh --with-toolset=${toolname} --prefix=${LIB_INSTALL_DIR}
 #./bootstrap.sh --show-libraries
 
 #
 # Replace the language about the system compiler with our toolname
 # - Replace gcc (ie. with intel-linux)
 #
-sed -i "s/gcc/${toolname}/g" project-config.jam
+#sed -i "s/gcc/${toolname}/g" project-config.jam
 #sed -i "0,/gcc/s/gcc/${toolname}/" project-config.jam
 #sed -i "0,/gcc/s/gcc/${toolname}/" project-config.jam
 
@@ -121,7 +121,7 @@ fi
 
 # Compile Boost (turn off/on abort since it never compiles everything)
 set +e # Keep Going If ERROR
-./b2 -j ${MODMAN_NPROC} install toolset=${toolname} variant=release --layout=system --target=shared,static
+./b2 -j${MODMAN_NPROC} install toolset=${toolname} variant=release --layout=system --target=shared,static
 set -e # Stop if ERROR    
 
 # ----------------------------------------------------------------------
@@ -133,7 +133,7 @@ family=compiler
 if [ ! -z "${MPI_COMPILER}" ]; then
     family=mpi
 fi
-location_of_module=$(readlink -m ${MODULE_DIR}/${family}/${MPI_COMPILER}/${MPI_COMPILER_VERSION}/${COMPILER}/${COMPILER_VERSION}/${PKG})
+location_of_module=$(realpath -m ${MODULE_DIR}/${family}/${MPI_COMPILER}/${MPI_COMPILER_VERSION}/${COMPILER}/${COMPILER_VERSION}/${PKG})
 name_of_module=${location_of_module}/${PKG_VERSION}.lua
 
 # Create Module File
@@ -159,11 +159,8 @@ cat << EOF >> ${name_of_module}
 -- Modulepath for packages built with this library
 
 -- Environment Paths
-prepend_path("CPATH",           "${LIB_INSTALL_DIR}/include")
-prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/lib")
-prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/lib64")
-prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib")
-prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib64")
+prepend_path("CPATH",             "${LIB_INSTALL_DIR}/include")
+prepend_path("DYLD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib")
 
 -- Environment Variables
 setenv("BOOST_ROOT",           "${LIB_INSTALL_DIR}")
