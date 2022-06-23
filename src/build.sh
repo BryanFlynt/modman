@@ -64,7 +64,7 @@ echo "Setting Download Commands based on OS System"
 if [[ "$OSTYPE" == "linux"* ]]; then
     export DOWNLOAD_CMD="wget -O"
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-    export DOWNLOAD_CMD="curl -o"
+    export DOWNLOAD_CMD="curl -L -o"
 else
     echo "ERROR: Download for ${OSTYPE} does not Exist"
     exit 1

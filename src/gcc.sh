@@ -99,16 +99,24 @@ ln -s mpc-${mpc_version} mpc
 mkdir -p ${LIB_BUILD_DIR}/my_build
 cd ${LIB_BUILD_DIR}/my_build
 
+# New MacOS doesn't allow /usr/include
+# A work around is to use xcode-select to find the path
+XCODE_SDK_DIR=`xcrun --show-sdk-path`
+XCODE_HEADERS=${XCODE_SDK_DIR}/usr/include
+XCODE_LIBRARY=${XCODE_SDK_DIR}/usr/lib
+XCODE_FRAMEWORK=${XCODE_SDK_DIR}/System/Library/Frameworks
+XCODE_FLAGS="-iframework ${XCODE_FRAMEWORK}"
+
 # Configure
-${LIB_BUILD_DIR}/configure                           \
-                --prefix=${LIB_INSTALL_DIR}          \
-                --enable-languages=c,c++,fortran,lto \
-                --enable-checking=release            \
-                --enable-threads=posix               \
+${LIB_BUILD_DIR}/configure                                        \
+                --prefix=${LIB_INSTALL_DIR}                       \
+                --enable-languages=c,c++,fortran,lto              \
+                --enable-checking=release                         \
+	        --with-native-system-header-dir=${XCODE_HEADERS}  \
                 --disable-multilib
 
 # Build
-make -j
+make -j${MODMAN_NPROC} BOOT_CFLAGS="${XCODE_FLAGS}" CFLAGS_FOR_TARGET="${XCODE_FLAGS}" CXXFLAGS_FOR_TARGET="${XCODE_FLAGS}"
 
 # Install
 make install
@@ -131,14 +139,15 @@ conflict("llvm")
 -- Modulepath for packages built by this compiler
 prepend_path("MODULEPATH", "${MODULE_DIR}/compiler/${PKG}/${PKG_VERSION}")
 
--- Environment Paths
-prepend_path("PATH",            "${LIB_INSTALL_DIR}/bin")
-prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/lib")
-prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/lib64")
-prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib")
-prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib64")
-prepend_path("MANPATH",         "${LIB_INSTALL_DIR}/share/man") 
+-- MacOS Paths (This was built with)
+prepend_path("CPATH",             "${XCODE_HEADERS}")
+prepend_path("DYLD_LIBRARY_PATH", "${XCODE_LIBRARY}")
 
+-- Environment Paths
+prepend_path("PATH",              "${LIB_INSTALL_DIR}/bin")
+prepend_path("DYLD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib")
+prepend_path("MANPATH",           "${LIB_INSTALL_DIR}/share/man")
+ 
 -- Environment Variables
 setenv("CPP", "${LIB_INSTALL_DIR}/bin/cpp")
 setenv("CC",  "${LIB_INSTALL_DIR}/bin/gcc")
