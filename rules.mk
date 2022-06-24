@@ -7,7 +7,7 @@ unpack_only : cmake paraview
 
 compilers : gcc llvm
 
-libraries : ninja hwloc ucx libevent boost openblas blis cgal
+libraries : ninja hwloc boost openblas blis cgal
 
 mpi_compilers : openmpi
 
@@ -186,46 +186,6 @@ ${MODULE_DIR}/compiler/gcc/11.3.0/hwloc/2.7.1.lua : gcc-11.3.0
 
 ${MODULE_DIR}/compiler/llvm/14.0.4/hwloc/2.7.1.lua : llvm-14.0.4
 	${SRC_DIR}/build.sh hwloc 2.7.1 llvm 14.0.4
-
-# -----------------------------------------------
-# UCX
-# -----------------------------------------------
-
-ucx : ucx-1.12.1-gcc ucx-1.12.1-llvm
-
-ucx-1.12.1-gcc : ucx-1.12.1-gcc-11.3.0
-
-ucx-1.12.1-llvm : ucx-1.12.1-llvm-14.0.4
-
-ucx-1.12.1-gcc-11.3.0 : ${MODULE_DIR}/compiler/gcc/11.3.0/ucx/1.12.1.lua
-
-ucx-1.12.1-llvm-14.0.4 : ${MODULE_DIR}/compiler/llvm/14.0.4/ucx/1.12.1.lua
-
-${MODULE_DIR}/compiler/gcc/11.3.0/ucx/1.12.1.lua : gcc-11.3.0
-	${SRC_DIR}/build.sh ucx 1.12.1 gcc 11.3.0
-
-${MODULE_DIR}/compiler/llvm/14.0.4/ucx/1.12.1.lua : llvm-14.0.4
-	${SRC_DIR}/build.sh ucx 1.12.1 llvm 14.0.4
-
-# -----------------------------------------------
-# libevent
-# -----------------------------------------------
-
-libevent : libevent-2.1.12-gcc libevent-2.1.12-llvm
-
-libevent-2.1.12-gcc : libevent-2.1.12-gcc-11.3.0
-
-libevent-2.1.12-llvm : libevent-2.1.12-llvm-14.0.4
-
-libevent-2.1.12-gcc-11.3.0 : ${MODULE_DIR}/compiler/gcc/11.3.0/libevent/2.1.12.lua
-
-libevent-2.1.12-llvm-14.0.4 : ${MODULE_DIR}/compiler/llvm/14.0.4/libevent/2.1.12.lua
-
-${MODULE_DIR}/compiler/gcc/11.3.0/libevent/2.1.12.lua : gcc-11.3.0
-	${SRC_DIR}/build.sh libevent 2.1.12 gcc 11.3.0
-
-${MODULE_DIR}/compiler/llvm/14.0.4/libevent/2.1.12.lua : llvm-14.0.4
-	${SRC_DIR}/build.sh libevent 2.1.12 llvm 14.0.4
 
 # -----------------------------------------------
 # OpenBLAS

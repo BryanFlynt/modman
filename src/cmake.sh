@@ -66,7 +66,7 @@ tar --strip-components 1 -xvf ${LOCAL_DOWNLOAD_NAME}
 mkdir -p ${LIB_INSTALL_DIR}
 
 # Move Unpacked into installation directory
-mv ${LIB_BUILD_DIR}/* ${LIB_INSTALL_DIR}/.
+mv ${LIB_BUILD_DIR}/CMake.app/Contents/* ${LIB_INSTALL_DIR}/.
 
 # ----------------------------------------------------------------------
 #                            Create Module File

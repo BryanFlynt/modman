@@ -25,8 +25,6 @@ export COMPILER_VERSION=$3
 module purge
 module load ${COMPILER}/${COMPILER_VERSION}
 module load hwloc
-module load ucx
-module load libevent
 
 # ----------------------------------------------------------------------
 #                          Make Directories
@@ -66,32 +64,13 @@ fi
 tar --strip-components 1 -xvf ${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.*
 
 # Configure (Detecting if SLURM is installed)
-if ! [ -x "$(command -v sbatch)" ]; then
-    ./configure --prefix=${LIB_INSTALL_DIR}               \
-                --enable-mpi-cxx                          \
-                --enable-cxx-exceptions                   \
-                --enable-mpi-fortran=usempi               \
-                --enable-mca-no-build=btl-uct             \
-                --with-hwloc=${HWLOC_ROOT}                \
-                --with-ucx=${UCX_ROOT}                    \
-                --with-libevent=${LIBEVENT_ROOT}          \
-                --without-verbs
-else
-    slurm_command=$(command -v sbatch)
-    pmi_path=${slurm_command%/*/*}
-    ./configure --prefix=${LIB_INSTALL_DIR}               \
-                --enable-mpi-cxx                          \
-                --enable-cxx-exceptions                   \
-                --enable-mpi-fortran=usempi               \
-                --enable-mca-no-build=btl-uct             \
-                --with-slurm                              \
-                --with-pmi=${pmi_path}                    \
-                --with-pmi-libdir=${pmi_path}/lib         \
-                --with-hwloc=${HWLOC_ROOT}                \
-                --with-ucx=${UCX_ROOT}                    \
-                --with-libevent=${LIBEVENT_ROOT}          \
-                --without-verbs
-fi
+./configure --prefix=${LIB_INSTALL_DIR}               \
+            --enable-mpi-cxx                          \
+            --enable-cxx-exceptions                   \
+            --enable-mpi-fortran=usempi               \
+	    --with-hwloc=${HWLOC_ROOT}                \
+            --without-verbs
+
 
 # ----------------------------------------------------------------------
 #                            Build + Install
