@@ -69,7 +69,25 @@ else
 fi
 
 # If patch file
-sed -i 's/<cstdio>/<cstdio>\n#include <limits>/' ${LIB_BUILD_DIR}/flang/runtime/unit.cpp
+# sed -i 's/<cstdio>/<cstdio>\n#include <limits>/' ${LIB_BUILD_DIR}/flang/runtime/unit.cpp
+
+# New MacOS doesn't allow /usr/include
+# A work around is to use xcrun to find the current SDK path
+SDKROOT=`xcrun --show-sdk-path --sdk macosx | xargs realpath`
+XCODE_HEADERS=${SDKROOT}/usr/include
+XCODE_LIBRARY=${SDKROOT}/usr/lib
+XCODE_FRAMEWORK=${SDKROOT}/System/Library/Frameworks
+XCODE_FLAGS="-iframework ${XCODE_FRAMEWORK}"
+
+#export SDKROOT=`xcrun --show-sdk-path --sdk macosx | xargs realpath`
+#export C_INCLUDE_PATH+=:${SDKROOT}/usr/include
+#export CPLUS_INCLUDE_PATH+=:${SDKROOT}/usr/include/c++/v1
+#export CPATH+=${SDKROOT}/usr/include:${SDKROOT}/usr/include/c++/v1
+#export LIBRARY_PATH+=:${SDKROOT}/usr/lib
+
+# libc does not have a darwin/x86-64 directory so online they suggest linking to linux
+#cp -r ${LIB_BUILD_DIR}/libc/config/linux ${LIB_BUILD_DIR}/libc/config/darwin
+
 
 # ----------------------------------------------------------------------
 #                            Build + Install
@@ -83,51 +101,54 @@ module load cmake
 # https://llvm.org/docs/GettingStarted.html#getting-a-modern-host-c-toolchain
 # https://llvm.org/docs/CMake.html#llvm-related-variables
 
-# LLVM_ENABLED_PROJECTS (Cannot be dual listed in LLVM_ENABLED_RUNTIMES)
+# LLVM_ENABLED_PROJECTS= (Cannot be dual listed in LLVM_ENABLED_RUNTIMES)
 # - These get built with the system compiler (gcc, etc.)
 # - Moved "libc" & "openmp" into ENABLED_RUNTIMES since those can go either way
 # - - Available: clang, clang-tools-extra, cross-project-tests, flang, libc, libclc, lld, lldb, mlir, openmp, polly, pstl.
-ENABLED_PROJECTS="clang;clang-tools-extra;cross-project-tests;flang;libclc;lld;lldb;mlir;polly;pstl"
+ENABLED_PROJECTS='clang;flang;lld;lldb;mlir;polly;pstl;clang-tools-extra'
 
-# LLVM_ENABLED_RUNTIMES (Cannot be dual listed in LLVM_ENABLED_PROJECTS)
-# - These get built but the just built clang compiler
+# LLVM_ENABLED_RUNTIMES= (Cannot be dual listed in LLVM_ENABLED_PROJECTS)
+# - These get built by the just built clang compiler
 # - - Available: compiler-rt, libc, libcxx, libcxxabi, libunwind, or openmp
-ENABLED_RUNTIMES="all"
+ENABLED_RUNTIMES="libcxx;libcxxabi;openmp"
 
-# LLVM_TARGETS_TO_BUILD
+# LLVM_TARGETS_TO_BUILD=
 # - These are all the platforms to build for
 # - - Available: AArch64, AMDGPU, ARM, AVR, BPF, Hexagon, Lanai, Mips, MSP430, NVPTX, PowerPC, RISCV, Sparc, SystemZ, WebAssembly, X86, XCore
-ENABLED_TARGETS="X86;NVPTX"
+ENABLED_TARGETS=X86
 
-# CLANG_DEFAULT_CXX_STDLIB
+# CLANG_DEFAULT_CXX_STDLIB=
 # - Default C++ std library to use
 # - - Available:
 # - - - <empty>   -> Platform Default
 # - - - libstdc++ -> GCC standard lib
 # - - - libc++    -> LLVM standard lib
 
-# CLANG_DEFAULT_RTLIB=compiler-rt
+# CLANG_DEFAULT_RTLIB=
 # - Default Runtime Library for CLANG
 # - - Available:
 # - - - <empty>     -> Platform Default
 # - - - libgcc      -> GCC runtime
 # - - - compiler-rt -> LLVM runtime
 
-# CLANG_DEFAULT_UNWINDLIB
+# CLANG_DEFAULT_UNWINDLIB=
 # - Default unwind library
 # - - Available:
 # - - - <empty>   -> Matches Runtime Library
 # - - - libgcc    -> GCC
 # - - - libunwind -> LLVM
 
+# My out of source build
+mkdir -p ${LIB_BUILD_DIR}/build
+cd ${LIB_BUILD_DIR}/build
+
 # Detect if we can find Ninja
 if ninja --help || module load ninja; then
     cmake \
         -D CMAKE_BUILD_TYPE=Release                 \
         -D CMAKE_INSTALL_PREFIX=${LIB_INSTALL_DIR}  \
-        -D LLVM_ENABLE_PROJECTS=${ENABLED_PROJECTS} \
-        -D LLVM_ENABLE_RUNTIMES=${ENABLED_RUNTIMES} \
-        -D LLVM_TARGETS_TO_BUILD=${ENABLED_TARGETS} \
+	-D LLVM_ENABLE_PROJECTS=${ENABLED_PROJECTS} \
+	-D LLVM_ENABLE_RUNTIMES=${ENABLED_RUNTIMES} \
         -G "Ninja"                                  \
         ${LIB_BUILD_DIR}/llvm
 
@@ -147,6 +168,7 @@ else
     make -j ${MODMAN_NPROC}
     make install
 fi
+
 
 
 # ----------------------------------------------------------------------
@@ -177,12 +199,13 @@ conflict("gcc")
 -- Modulepath for packages built by this compiler
 prepend_path("MODULEPATH", "${MODULE_DIR}/compiler/${PKG}/${PKG_VERSION}")
 
+-- MacOS Paths (This was built with)
+prepend_path("CPATH",             "${XCODE_HEADERS}")
+prepend_path("DYLD_LIBRARY_PATH", "${XCODE_LIBRARY}")
+
 -- Environment Paths
-prepend_path("PATH",            "${LIB_INSTALL_DIR}/bin")
-prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/lib")
-prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/lib64")
-prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib")
-prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib64")
+prepend_path("PATH",              "${LIB_INSTALL_DIR}/bin")
+prepend_path("DYLD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib")
 
 -- Environment Variables
 setenv("CPP", "${LIB_INSTALL_DIR}/bin/clang-cpp")

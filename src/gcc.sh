@@ -101,10 +101,10 @@ cd ${LIB_BUILD_DIR}/my_build
 
 # New MacOS doesn't allow /usr/include
 # A work around is to use xcode-select to find the path
-XCODE_SDK_DIR=`xcrun --show-sdk-path`
-XCODE_HEADERS=${XCODE_SDK_DIR}/usr/include
-XCODE_LIBRARY=${XCODE_SDK_DIR}/usr/lib
-XCODE_FRAMEWORK=${XCODE_SDK_DIR}/System/Library/Frameworks
+SDKROOT=`xcrun --show-sdk-path --sdk macosx | xargs realpath`
+XCODE_HEADERS=${SDKROOT}/usr/include
+XCODE_LIBRARY=${SDKROOT}/usr/lib
+XCODE_FRAMEWORK=${SDKROOT}/System/Library/Frameworks
 XCODE_FLAGS="-iframework ${XCODE_FRAMEWORK}"
 
 # Configure
