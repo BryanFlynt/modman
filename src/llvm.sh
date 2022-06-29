@@ -115,7 +115,7 @@ ENABLED_RUNTIMES="libcxx;libcxxabi;openmp"
 # LLVM_TARGETS_TO_BUILD=
 # - These are all the platforms to build for
 # - - Available: AArch64, AMDGPU, ARM, AVR, BPF, Hexagon, Lanai, Mips, MSP430, NVPTX, PowerPC, RISCV, Sparc, SystemZ, WebAssembly, X86, XCore
-ENABLED_TARGETS=X86
+#ENABLED_TARGETS=X86
 
 # CLANG_DEFAULT_CXX_STDLIB=
 # - Default C++ std library to use
@@ -151,6 +151,7 @@ if ninja --help || module load ninja; then
 	-D LLVM_ENABLE_RUNTIMES=${ENABLED_RUNTIMES} \
         -G "Ninja"                                  \
         ${LIB_BUILD_DIR}/llvm
+#        -D LLVM_TARGETS_TO_BUILD=${ENABLED_TARGETS}
 
     # Compiling flang eats >32GB of RAM unless limited with -j
     ninja -j ${MODMAN_NPROC}
@@ -161,9 +162,9 @@ else
         -D CMAKE_INSTALL_PREFIX=${LIB_INSTALL_DIR}  \
         -D LLVM_ENABLE_PROJECTS=${ENABLED_PROJECTS} \
         -D LLVM_ENABLE_RUNTIMES=${ENABLED_RUNTIMES} \
-        -D LLVM_TARGETS_TO_BUILD=${ENABLED_TARGETS} \
         -G "Ninja"                                  \
         ${LIB_BUILD_DIR}/llvm
+#        -D LLVM_TARGETS_TO_BUILD=${ENABLED_TARGETS}
 
     make -j ${MODMAN_NPROC}
     make install
