@@ -43,9 +43,10 @@ cd ${LIB_BUILD_DIR}
 #                        Download (if Needed)
 # ----------------------------------------------------------------------
 
-LOCAL_DOWNLOAD_NAME=${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.gz
+
 
 if [[ "$OSTYPE" == "linux"* ]]; then
+    LOCAL_DOWNLOAD_NAME=${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.gz
     if [[ "$PKG_VERSION" == "5.9.1" ]]; then
         REMOTE_DOWNLOAD_NAME="https://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v5.9&type=binary&os=Linux&downloadFile=ParaView-5.9.1-MPI-Linux-Python3.8-64bit.tar.gz"
     elif [[ "$PKG_VERSION" == "5.10.1" ]]; then
@@ -56,9 +57,13 @@ if [[ "$OSTYPE" == "linux"* ]]; then
     fi        
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     if [[ "$PKG_VERSION" == "5.9.1" ]]; then
-        REMOTE_DOWNLOAD_NAME="https://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v5.9&type=binary&os=macOS&downloadFile=ParaView-5.9.1-MPI-OSX10.13-Python3.8-64bit.pkg"
+	PACKAGE_NAME="ParaView-5.9.1-MPI-OSX10.13-Python3.8-64bit"
+	LOCAL_DOWNLOAD_NAME=${TAR_DIR}/${PACKAGE_NAME}.dmg
+        REMOTE_DOWNLOAD_NAME="https://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v5.9&type=binary&os=macOS&downloadFile=${PACKAGE_NAME}.dmg"
     elif [[ "$PKG_VERSION" == "5.10.1" ]]; then
-        REMOTE_DOWNLOAD_NAME="https://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v5.10&type=binary&os=macOS&downloadFile=ParaView-5.10.1-MPI-OSX10.13-Python3.9-x86_64.pkg"
+	PACKAGE_NAME="ParaView-5.10.1-MPI-OSX10.13-Python3.9-x86_64"
+	LOCAL_DOWNLOAD_NAME=${TAR_DIR}/${PACKAGE_NAME}.dmg
+	REMOTE_DOWNLOAD_NAME="https://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v5.10&type=binary&os=macOS&downloadFile=${PACKAGE_NAME}.dmg"
     else
         echo "ERROR: Version ${PKG_VERSION} Needs Link"
         exit -1
@@ -72,19 +77,26 @@ fi
 # ----------------------------------------------------------------------
 #                            UnPack + Install
 # ----------------------------------------------------------------------
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    echo "ERROR: Need to Figure Out How to Unpack PKG into Custom Location"
-    exit -1
-fi
+#if [[ "$OSTYPE" == "darwin"* ]]; then
+#    echo "ERROR: Need to Figure Out How to Unpack PKG into Custom Location"
+#    exit -1
+#fi
 
-# Untar the tarball
-tar --strip-components 1 -xvf ${LOCAL_DOWNLOAD_NAME}
 
-# Create installation directory
+# Create Installation Directory
 mkdir -p ${LIB_INSTALL_DIR}
 
-# Move Unpacked into installation directory
-mv ${LIB_BUILD_DIR}/* ${LIB_INSTALL_DIR}/.
+if [[ "$OSTYPE" == "linux"* ]]; then
+    cd ${LIB_INSTALL_DIR}
+    tar --strip-components 1 -xvf ${LOCAL_DOWNLOAD_NAME}
+    
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+
+    # Mount the Downloaded Image, mv, then unmount
+    yes | hdiutil attach ${LOCAL_DOWNLOAD_NAME}
+    cp -r /Volumes/${PACKAGE_NAME}/ParaView-${PKG_VERSION}.app/Contents/* ${LIB_INSTALL_DIR}/.
+    hdiutil detach /Volumes/${PACKAGE_NAME}
+fi
 
 # ----------------------------------------------------------------------
 #                            Create Module File
@@ -102,7 +114,7 @@ family("paraview")
 -- Modulepath for packages built by this compiler
 
 -- Environment Paths
-prepend_path("PATH",     "${LIB_INSTALL_DIR}/bin")
+prepend_path("PATH",     "${LIB_INSTALL_DIR}/MacOS")
 
 -- Environment Variables
 EOF

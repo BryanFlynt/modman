@@ -110,7 +110,7 @@ ENABLED_PROJECTS='clang;flang;lld;lldb;mlir;polly;pstl;clang-tools-extra'
 # LLVM_ENABLED_RUNTIMES= (Cannot be dual listed in LLVM_ENABLED_PROJECTS)
 # - These get built by the just built clang compiler
 # - - Available: compiler-rt, libc, libcxx, libcxxabi, libunwind, or openmp
-ENABLED_RUNTIMES="libcxx;libcxxabi;openmp"
+ENABLED_RUNTIMES="libcxx;libcxxabi;libunwind;openmp"
 
 # LLVM_TARGETS_TO_BUILD=
 # - These are all the platforms to build for
