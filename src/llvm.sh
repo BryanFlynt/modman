@@ -90,7 +90,7 @@ module load cmake
 ENABLED_PROJECTS="clang;clang-tools-extra;cross-project-tests;flang;libclc;lld;lldb;mlir;polly;pstl"
 
 # LLVM_ENABLED_RUNTIMES (Cannot be dual listed in LLVM_ENABLED_PROJECTS)
-# - These get built but the just built clang compiler
+# - These get built by the just built clang compiler
 # - - Available: compiler-rt, libc, libcxx, libcxxabi, libunwind, or openmp
 ENABLED_RUNTIMES="all"
 

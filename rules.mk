@@ -5,9 +5,9 @@ all : unpack_only compilers libraries
 
 unpack_only : cmake paraview
 
-compilers : gcc llvm
+compilers : gcc llvm julia
 
-libraries : ninja hwloc ucx libevent boost openblas blis cgal
+libraries : ninja cuda hwloc ucx libevent boost openblas blis cgal
 
 mpi_compilers : openmpi
 
@@ -84,9 +84,14 @@ ${MODULE_DIR}/base/gcc/11.3.0.lua:
 
 llvm : llvm-14.0.4 llvm-dev
 
+llvm-6.0.0 : ${MODULE_DIR}/base/llvm/6.0.0.lua
+
 llvm-14.0.4 : ${MODULE_DIR}/base/llvm/14.0.4.lua
 
 llvm-dev : ${MODULE_DIR}/base/llvm/dev.lua
+
+${MODULE_DIR}/base/llvm/6.0.0.lua: cmake
+	${SRC_DIR}/build.sh llvm 6.0.0
 
 ${MODULE_DIR}/base/llvm/14.0.4.lua: cmake
 	${SRC_DIR}/build.sh llvm 14.0.4
@@ -94,11 +99,33 @@ ${MODULE_DIR}/base/llvm/14.0.4.lua: cmake
 ${MODULE_DIR}/base/llvm/dev.lua: cmake
 	${SRC_DIR}/build.sh llvm dev
 
+# -----------------------------------------------
+# Julia
+# -----------------------------------------------
+
+julia : julia-1.8.1
+
+julia-1.8.1 : ${MODULE_DIR}/base/julia/1.8.1.lua
+
+${MODULE_DIR}/base/julia/1.8.1.lua:
+	${SRC_DIR}/build.sh julia 1.8.1
+
 #
 # **********************************************************
 #         Tools & Libraries (Never Require MPI)
 # **********************************************************
 #
+
+# -----------------------------------------------
+# CUDA
+# -----------------------------------------------
+
+cuda : cuda-11.7.1
+
+cuda-11.7.1 : ${MODULE_DIR}/base/cuda/11.7.1.lua
+
+${MODULE_DIR}/base/cuda/11.7.1.lua : cmake
+	${SRC_DIR}/build.sh cuda 11.7.1
 
 # -----------------------------------------------
 # Ninja
@@ -269,6 +296,17 @@ cgal-5.4.1 : ${MODULE_DIR}/base/cgal/5.4.1.lua
 
 ${MODULE_DIR}/base/cgal/5.4.1.lua:
 	${SRC_DIR}/build.sh cgal 5.4.1
+
+# -----------------------------------------------
+# OCCA
+# -----------------------------------------------
+
+occa : occa-1.4.0-gcc-11.3.0
+
+occa-1.4.0-gcc-11.3.0 : ${MODULE_DIR}/compiler/gcc/11.3.0/occa/1.4.0.lua
+
+${MODULE_DIR}/compiler/gcc/11.3.0/occa/1.4.0.lua:
+	${SRC_DIR}/build.sh occa 1.4.0 gcc 11.3.0
 
 #
 # **********************************************************
