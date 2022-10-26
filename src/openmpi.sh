@@ -133,6 +133,7 @@ setenv("MPI_HOME",             "${LIB_INSTALL_DIR}")
 setenv("MPI_C_COMPILER",       "${LIB_INSTALL_DIR}/bin/mpicc")
 setenv("MPI_CXX_COMPILER",     "${LIB_INSTALL_DIR}/bin/mpicxx")
 setenv("MPI_Fortran_COMPILER", "${LIB_INSTALL_DIR}/bin/mpifort")
+setenv("MPIEXEC_EXECUTABLE",   "${LIB_INSTALL_DIR}/bin/mpiexec")
 
 -- Should be then re-set serial vars ???
 setenv("CC",  "${LIB_INSTALL_DIR}/bin/mpicc")
