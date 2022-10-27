@@ -43,7 +43,7 @@ source /usr/local/opt/lmod/init/profile
 # This should match the path listed within the modman/config.mk file
 # export MODULEPATH=${MODULE_DIR}/base
 #
-export MODULEPATH=/Users/${USER}/opt/modman/modulefiles/base
+export MODULEPATH=${HOME}/opt/modman/modulefiles/base
 ```
 
 ## Build Targets
