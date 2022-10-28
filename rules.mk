@@ -9,7 +9,7 @@ system_only : ninja cgal
 
 compilers : gcc llvm julia
 
-libraries : cuda hwloc ucx libevent boost openblas blis
+libraries : cuda hwloc ucx libevent boost openblas blis occa
 
 mpi_compilers : openmpi
 
@@ -309,7 +309,7 @@ ${MODULE_DIR}/compiler/llvm/14.0.4/blis/0.9.0.lua:
 # OCCA
 # -----------------------------------------------
 
-occa : occa-1.4.0-gcc-11.3.0 occa-1.4.0-llvm-14.0.4
+occa : occa-1.4.0-gcc-11.3.0 #occa-1.4.0-llvm-14.0.4
 
 occa-1.4.0-gcc-11.3.0 : cmake gcc-11.3.0 ${MODULE_DIR}/compiler/gcc/11.3.0/occa/1.4.0.lua
 
