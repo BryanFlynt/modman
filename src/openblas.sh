@@ -78,8 +78,8 @@ fi
 # ----------------------------------------------------------------------
 
 # Get number of cores on system
-NUM_HYPER_THREADS=$(grep -c ^processor /proc/cpuinfo)
-NUM_PHYSICAL_THREADS=$(grep ^cpu\\scores /proc/cpuinfo | uniq |  awk '{print $4}')
+NUM_HYPER_THREADS=$(sysctl -n hw.logicalcpu)
+NUM_PHYSICAL_THREADS=$(sysctl -n hw.physicalcpu)
 
 # Build it
 make USE_OPENMP=1 NUM_THREADS=${NUM_HYPER_THREADS} PREFIX=${LIB_INSTALL_DIR} 
