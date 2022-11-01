@@ -9,7 +9,7 @@ system_only : ninja #cgal
 
 compilers : gcc
 
-libraries : hwloc boost openblas blis
+libraries : hwloc boost blis openblas
 
 mpi_compilers : openmpi
 

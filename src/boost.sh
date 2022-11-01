@@ -163,5 +163,5 @@ prepend_path("CPATH",             "${LIB_INSTALL_DIR}/include")
 prepend_path("DYLD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib")
 
 -- Environment Variables
-setenv("BOOST_ROOT",           "${LIB_INSTALL_DIR}")
+setenv("BOOST_ROOT",              "${LIB_INSTALL_DIR}")
 EOF

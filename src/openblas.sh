@@ -103,12 +103,9 @@ prereq("${COMPILER}/${COMPILER_VERSION}")
 -- Modulepath for packages built with this library
 
 -- Environment Paths
-prepend_path("CPATH",           "${LIB_INSTALL_DIR}/include")
-prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/lib")
-prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/lib64")
-prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib")
-prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib64")
+prepend_path("CPATH",             "${LIB_INSTALL_DIR}/include")
+prepend_path("DYLD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib")
 
 -- Environment Variables
-setenv("BLAS_ROOT",             "${LIB_INSTALL_DIR}")
+setenv("BLAS_ROOT",               "${LIB_INSTALL_DIR}")
 EOF

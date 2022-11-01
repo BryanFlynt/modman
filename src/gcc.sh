@@ -112,7 +112,7 @@ ${LIB_BUILD_DIR}/configure                                        \
                 --prefix=${LIB_INSTALL_DIR}                       \
                 --enable-languages=c,c++,fortran,lto              \
                 --enable-checking=release                         \
-	        --with-native-system-header-dir=${XCODE_HEADERS}  \
+	        --with-sysroot=${SDKROOT}                         \
                 --disable-multilib
 
 # Build
@@ -138,10 +138,6 @@ conflict("llvm")
 
 -- Modulepath for packages built by this compiler
 prepend_path("MODULEPATH", "${MODULE_DIR}/compiler/${PKG}/${PKG_VERSION}")
-
--- MacOS Paths (This was built with)
-prepend_path("CPATH",             "${XCODE_HEADERS}")
-prepend_path("DYLD_LIBRARY_PATH", "${XCODE_LIBRARY}")
 
 -- Environment Paths
 prepend_path("PATH",              "${LIB_INSTALL_DIR}/bin")

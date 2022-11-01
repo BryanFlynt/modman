@@ -99,19 +99,13 @@ prereq("${COMPILER}/${COMPILER_VERSION}")
 prepend_path("MODULEPATH", "${MODULE_DIR}/mpi/${PKG}/${PKG_VERSION}/${COMPILER}/${COMPILER_VERSION}")
 
 -- Environment Paths
-prepend_path("PATH",            "${LIB_INSTALL_DIR}/bin")
-prepend_path("CPATH",           "${LIB_INSTALL_DIR}/include")
-prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/lib")
-prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/lib64")
-prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib")
-prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib64")
+prepend_path("PATH",              "${LIB_INSTALL_DIR}/bin")
+prepend_path("CPATH",             "${LIB_INSTALL_DIR}/include")
+prepend_path("DYLD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib")
 
 -- Environment Variables
-setenv("MPI_ROOT",             "${LIB_INSTALL_DIR}")
-setenv("MPI_HOME",             "${LIB_INSTALL_DIR}")
-setenv("MPI_C_COMPILER",       "${LIB_INSTALL_DIR}/bin/mpicc")
-setenv("MPI_CXX_COMPILER",     "${LIB_INSTALL_DIR}/bin/mpicxx")
-setenv("MPI_Fortran_COMPILER", "${LIB_INSTALL_DIR}/bin/mpifort")
+setenv("MPI_ROOT",  "${LIB_INSTALL_DIR}")
+setenv("MPI_HOME",  "${LIB_INSTALL_DIR}")
 
 -- Should be then re-set serial vars ???
 setenv("CC",  "${LIB_INSTALL_DIR}/bin/mpicc")
