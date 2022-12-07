@@ -206,27 +206,27 @@ ${MODULE_DIR}/compiler/pgi/21.5/hwloc/2.4.1.lua :
 # UCX
 # -----------------------------------------------
 
-ucx : ucx-1.10.1-gcc-11.1.0 ucx-1.10.1-llvm-12.0.0 ucx-1.10.1-nvptx-11.1.0
+ucx : ucx-1.12.1-gcc-11.1.0 ucx-1.12.1-llvm-12.0.0 ucx-1.12.1-nvptx-11.1.0
 
-ucx-1.10.1-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/ucx/1.10.1.lua
+ucx-1.12.1-gcc-11.1.0 : ${MODULE_DIR}/compiler/gcc/11.1.0/ucx/1.12.1.lua
 
-${MODULE_DIR}/compiler/gcc/11.1.0/ucx/1.10.1.lua :
-	${SRC_DIR}/build.sh ucx 1.10.1 gcc 11.1.0
+${MODULE_DIR}/compiler/gcc/11.1.0/ucx/1.12.1.lua :
+	${SRC_DIR}/build.sh ucx 1.12.1 gcc 11.1.0
 
-ucx-1.10.1-llvm-12.0.0 : ${MODULE_DIR}/compiler/llvm/12.0.0/ucx/1.10.1.lua
+ucx-1.12.1-llvm-12.0.0 : ${MODULE_DIR}/compiler/llvm/12.0.0/ucx/1.12.1.lua
 
-${MODULE_DIR}/compiler/llvm/12.0.0/ucx/1.10.1.lua :
-	${SRC_DIR}/build.sh ucx 1.10.1 llvm 12.0.0
+${MODULE_DIR}/compiler/llvm/12.0.0/ucx/1.12.1.lua :
+	${SRC_DIR}/build.sh ucx 1.12.1 llvm 12.0.0
 
-ucx-1.10.1-nvptx-11.1.0 : ${MODULE_DIR}/compiler/nvptx/11.1.0/ucx/1.10.1.lua
+ucx-1.12.1-nvptx-11.1.0 : ${MODULE_DIR}/compiler/nvptx/11.1.0/ucx/1.12.1.lua
 
-${MODULE_DIR}/compiler/nvptx/11.1.0/ucx/1.10.1.lua :
-	${SRC_DIR}/build.sh ucx 1.10.1 nvptx 11.1.0
+${MODULE_DIR}/compiler/nvptx/11.1.0/ucx/1.12.1.lua :
+	${SRC_DIR}/build.sh ucx 1.12.1 nvptx 11.1.0
 
-ucx-1.10.1-pgi-21.5 : ${MODULE_DIR}/compiler/pgi/21.5/ucx/1.10.1.lua
+ucx-1.12.1-pgi-21.5 : ${MODULE_DIR}/compiler/pgi/21.5/ucx/1.12.1.lua
 
-${MODULE_DIR}/compiler/pgi/21.5/ucx/1.10.1.lua :
-	${SRC_DIR}/build.sh ucx 1.10.1 pgi 21.5
+${MODULE_DIR}/compiler/pgi/21.5/ucx/1.12.1.lua :
+	${SRC_DIR}/build.sh ucx 1.12.1 pgi 21.5
 
 # -----------------------------------------------
 # libevent
