@@ -40,6 +40,7 @@ if ! [ -x "$(command -v sbatch)" ]; then
                 --enable-mpi-cxx                          \
                 --enable-cxx-exceptions                   \
                 --enable-mpi-fortran=usempi               \
+                --enable-mca-no-build=btl-uct             \
                 --with-hwloc=${HWLOC_ROOT}                \
                 --with-ucx=${UCX_ROOT}                    \
                 --with-libevent=${LIBEVENT_ROOT}          \
@@ -52,6 +53,7 @@ else
                 --enable-mpi-cxx                          \
                 --enable-cxx-exceptions                   \
                 --enable-mpi-fortran=usempi               \
+                --enable-mca-no-build=btl-uct             \
                 --with-slurm                              \
                 --with-pmi=${pmi_path}                    \
                 --with-pmi-libdir=${pmi_path}/lib         \
