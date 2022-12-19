@@ -444,10 +444,10 @@ boost-1.77.0-impi-2021.3.0-oneapi-2021.3.0 : ${MODULE_DIR}/mpi/impi/2021.3.0/one
 ${MODULE_DIR}/mpi/impi/2021.3.0/oneapi/2021.3.0/boost/1.77.0.lua :
 	${SRC_DIR}/build.sh boost 1.77.0 oneapi 2021.3.0 impi 2021.3.0
 	
-boost-1.77.0-impi-2022.1.2-intel-2022.1.2 : ${MODULE_DIR}/mpi/impi/2022.1.2/intel/2022.1.2/boost/1.77.0.lua
+boost-1.77.0-impi-2020.2-intel-2020.2 : ${MODULE_DIR}/mpi/impi/2020.2/intel/2020.2/boost/1.77.0.lua
 
-${MODULE_DIR}/mpi/impi/2022.1.2/intel/2022.1.2/boost/1.77.0.lua :
-	${SRC_DIR}/build.sh boost 1.77.0 intel 2022.1.2 impi 2022.1.2
+${MODULE_DIR}/mpi/impi/2020.2/intel/2020.2/boost/1.77.0.lua :
+	${SRC_DIR}/build.sh boost 1.77.0 intel 2020.2 impi 2020.2
 
 # -----------------------------------------------
 # GPTL 
