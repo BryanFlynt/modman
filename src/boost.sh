@@ -75,12 +75,34 @@ sed -i "s/gcc/${toolname}/g" project-config.jam
 
 #
 # Insert specifics about the MPI compiler
-# Note: The space before and after : and before ; are required
+# - If MPI_CXX_COMPILER is set then use that wrapper
+# - If not set:
+# - - Use default compiler names if using OpenMPI
+# - - Use Intel Compiler Names if using IMPI
+#
+# Note: 
+# Intel wraps both GCC system compiler (mpiCC, mpicxx, mpif90, etc.) 
+# and the Intel compiler (mpiiCC, mpiicpc, miif90, etc.) which makes 
+# it interesting... 
 #
 if [ ! -z "${MPI_COMPILER}" ]; then
     if [ -z "${MPI_CXX_COMPILER}" ]; then
-        MPI_CXX_COMPILER=$(command -v mpicxx)
+        MPI_CXX_COMPILER=none
+        case ${MPI_COMPILER} in
+            "openmpi" )
+                MPI_CXX_COMPILER=$(command -v mpicxx)
+                ;;
+            "impi" )
+                MPI_CXX_COMPILER=$(command -v mpiicpc)
+                ;;
+            *)
+                echo "Unsupported MPI Wrapper: ${MPI_COMPILER}"
+                exit 1
+                ;;
+        esac
     fi
+
+    # Note: The space before and after : and before ; are required
     printf "\n# MPI Compiler Details\n"               >> project-config.jam
     printf "using mpi : %s ;\n" "${MPI_CXX_COMPILER}" >> project-config.jam
 fi
