@@ -82,7 +82,7 @@ if [ ! -z "${MPI_COMPILER}" ]; then
         MPI_CXX_COMPILER=$(command -v mpicxx)
     fi
     printf "\n# MPI Compiler Details\n"               >> project-config.jam
-    printf "using mpi : %s ;\n" ${MPI_CXX_COMPILER}   >> project-config.jam
+    printf "using mpi : %s ;\n" "${MPI_CXX_COMPILER}" >> project-config.jam
 fi
 
 # Compile Boost (turn off/on abort since it never compiles everything)
