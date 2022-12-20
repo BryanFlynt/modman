@@ -78,8 +78,11 @@ sed -i "s/gcc/${toolname}/g" project-config.jam
 # Note: The space before and after : and before ; are required
 #
 if [ ! -z "${MPI_COMPILER}" ]; then
+    if [ -z "${MPI_CXX_COMPILER}" ]; then
+        MPI_CXX_COMPILER=$(command -v mpicxx)
+    fi
     printf "\n# MPI Compiler Details\n"               >> project-config.jam
-    printf "using mpi : %s ;\n" "/apps/intel-2020.2/intel-2020.2/compilers_and_libraries_2020.2.254/linux/mpi/intel64/bin/mpicxx" >> project-config.jam
+    printf "using mpi : %s ;\n" ${MPI_CXX_COMPILER}   >> project-config.jam
 fi
 
 # Compile Boost (turn off/on abort since it never compiles everything)
