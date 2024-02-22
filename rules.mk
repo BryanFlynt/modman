@@ -3,9 +3,9 @@
 
 all : unpack_only system_only compilers libraries mpi_compilers libraries_w_mpi
 
-unpack_only : cmake paraview
+unpack_only : cmake paraview oneapi vtune
 
-system_only : ninja cgal
+system_only : ninja cgal apptainer
 
 compilers : gcc llvm julia
 
@@ -59,6 +59,28 @@ paraview-5.10.1 : ${MODULE_DIR}/base/paraview/5.10.1.lua
 ${MODULE_DIR}/base/paraview/5.10.1.lua:
 	${SRC_DIR}/build.sh paraview 5.10.1
 
+# -----------------------------------------------
+# Intel OneAPI
+# -----------------------------------------------
+
+oneapi : oneapi-2023.1.0
+
+oneapi-2023.1.0 : ${MODULE_DIR}/base/oneapi/2023.1.0.lua
+
+${MODULE_DIR}/base/oneapi/2023.1.0.lua:
+	${SRC_DIR}/build.sh oneapi 2023.1.0
+
+# -----------------------------------------------
+# Intel VTune
+# -----------------------------------------------
+
+vtune : vtune-2023.1.0
+
+vtune-2023.1.0 : ${MODULE_DIR}/base/vtune/2023.1.0.lua
+
+${MODULE_DIR}/base/vtune/2023.1.0.lua:
+	${SRC_DIR}/build.sh vtune 2023.1.0
+
 #
 # **********************************************************
 #                   System Compiler (ONLY)
@@ -87,6 +109,17 @@ cgal-5.4.1 : cmake ${MODULE_DIR}/base/cgal/5.4.1.lua
 ${MODULE_DIR}/base/cgal/5.4.1.lua:
 	${SRC_DIR}/build.sh cgal 5.4.1
 
+# -----------------------------------------------
+# Apptainer (ie. Singularity)
+# -----------------------------------------------
+
+apptainer : apptainer-1.2.5
+
+apptainer-1.2.5 : cmake ${MODULE_DIR}/base/apptainer/1.2.5.lua
+
+${MODULE_DIR}/base/apptainer/1.2.5.lua:
+	${SRC_DIR}/build.sh apptainer 1.2.5
+
 #
 # **********************************************************
 #                        Compilers
@@ -97,7 +130,7 @@ ${MODULE_DIR}/base/cgal/5.4.1.lua:
 # GCC
 # -----------------------------------------------
 
-gcc : gcc-11.3.0
+gcc : gcc-11.3.0 gcc-13.2.0
 
 gcc-11.3.0 : ${MODULE_DIR}/base/gcc/11.3.0.lua
 
@@ -107,6 +140,13 @@ ${MODULE_DIR}/base/gcc/11.3.0.lua:
 	${SRC_DIR}/build.sh mpc 1.2.1
 	${SRC_DIR}/build.sh mpfr 4.1.0 
 	${SRC_DIR}/build.sh gcc 11.3.0
+
+gcc : gcc-13.2.0
+
+gcc-13.2.0 : ${MODULE_DIR}/base/gcc/13.2.0.lua
+
+${MODULE_DIR}/base/gcc/13.2.0.lua: 
+	${SRC_DIR}/build.sh gcc 13.2.0
 
 # -----------------------------------------------
 # LLVM

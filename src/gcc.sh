@@ -36,6 +36,11 @@ elif [[ "${PKG_VERSION}" == "11.3.0" ]]; then
     gmp_version=6.2.1
     isl_version=0.24
     mpc_version=1.2.1
+elif [[ "${PKG_VERSION}" == "13.2.0" ]]; then
+    mpfr_version=4.1.0
+    gmp_version=6.2.1
+    isl_version=0.24
+    mpc_version=1.2.1
 else
     echo "GCC Version Not Recognized"
     exit -1
@@ -75,21 +80,28 @@ fi
 # Untar the tarball
 tar --strip-components 1 -xvf ${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.gz
 
+# Let GCC download its own prerequisites
+# - ISL
+# - GMP
+# - MPFR
+# - MPC
+./contrib/download_prerequisites
+
 # GCC also needs ISL
-tar -xvf ${TAR_DIR}/isl-${isl_version}.tar.*
-ln -s isl-${isl_version} isl
+#tar -xvf ${TAR_DIR}/isl-${isl_version}.tar.*
+#ln -s isl-${isl_version} isl
 
 # GCC also needs GMP
-tar -xvf ${TAR_DIR}/gmp-${gmp_version}.tar.*
-ln -s gmp-${gmp_version} gmp
+#tar -xvf ${TAR_DIR}/gmp-${gmp_version}.tar.*
+#ln -s gmp-${gmp_version} gmp
 
 # GCC also needs MPFR
-tar -xvf ${TAR_DIR}/mpfr-${mpfr_version}.tar.*
-ln -s mpfr-${mpfr_version} mpfr
+#tar -xvf ${TAR_DIR}/mpfr-${mpfr_version}.tar.*
+#ln -s mpfr-${mpfr_version} mpfr
 
 # GCC also needs MPC
-tar -xvf ${TAR_DIR}/mpc-${mpc_version}.tar.*
-ln -s mpc-${mpc_version} mpc
+#tar -xvf ${TAR_DIR}/mpc-${mpc_version}.tar.*
+#ln -s mpc-${mpc_version} mpc
 
 # ----------------------------------------------------------------------
 #                            Build + Install
