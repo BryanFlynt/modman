@@ -13,12 +13,12 @@ set -x
 #
 # From build.sh
 #
-# PKG              = Package being installed (cmake, etc.)
-# PKG_VERSION      = Version of package (4.0.1, etc.)
-# COMPILER         = Compiler to use (gcc, etc.)
-# COMPILER_VERSION = Version of compiler to use (15.2.0, etc.)
-# MPI              = MPI to use (opnempi, etc.)
-# MPI_VERSION      = Version of MPI to use (5.0.2, etc.)
+# PKG                  = Package being installed (cmake, etc.)
+# PKG_VERSION          = Version of package (4.0.1, etc.)
+# COMPILER             = Compiler to use (gcc, etc.)
+# COMPILER_VERSION     = Version of compiler to use (15.2.0, etc.)
+# MPI_COMPILER         = MPI to use (opnempi, etc.)
+# MPI_COMPILER_VERSION = Version of MPI to use (5.0.2, etc.)
 #
 # MODPKG_DOWNLOAD_DIR = Directory to download package into
 # MODPKG_BUILD_DIR    = Directory to build package within

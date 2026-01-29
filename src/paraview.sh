@@ -39,16 +39,22 @@ rm -rf ${MODPKG_INSTALL_DIR}
 #                       Download
 # ===================================================
 
-URL_ROOT="https://mirrors.kernel.org/gnu/gcc"
-URL_DIR="${PKG}-${PKG_VERSION}"
-URL_NAME="${PKG}-${PKG_VERSION}"
-URL_EXT="tar.gz"
+# The path is redirected plus contains Python version and other information
+# Therefore, the user should just downloaded the tar.gz and place in downloads directory.
 
-URL_DOWNLOAD="${URL_ROOT}/${URL_DIR}/${URL_NAME}.${URL_EXT}"
-URL_TARGET="${MODPKG_DOWNLOAD_DIR}/${URL_NAME}.${URL_EXT}"
+if [ ${PKG_VERSION} = "6.0.1" ]; then
+    URL_TARGET="${MODPKG_DOWNLOAD_DIR}/ParaView-6.0.1-MPI-Linux-Python3.12-x86_64.tar.gz"
+else
+    printf "ERROR: Version not recognized\n"
+    exit 1
+fi
 
+
+# If the URL_TARGET is not already downloaded error
 if [ ! -f "${URL_TARGET}" ]; then
-    wget ${URL_DOWNLOAD} --directory-prefix=${MODPKG_DOWNLOAD_DIR}
+    printf "ERROR: Paraview *.tar.gz not found in download directory\n"
+    printf "Please place the requested version within: %s\n" ${MODPKG_DOWNLOAD_DIR}
+    exit 1
 fi
 
 # ===================================================
@@ -60,33 +66,17 @@ mkdir -p ${MODPKG_BUILD_DIR}
 cd ${MODPKG_BUILD_DIR}
 
 # Untar the tarball
-tar --strip-components 1 -xzvf ${URL_TARGET}
-
-# Download prerequisites
-./contrib/download_prerequisites
+tar --strip-components 1 -xvf ${URL_TARGET}
 
 # ===================================================
 #                    Build + Install
 # ===================================================
 
-# Do an out of source build by making a temporary build directory
-mkdir -p ${MODPKG_BUILD_DIR}/build_by_modman
-cd ${MODPKG_BUILD_DIR}/build_by_modman
+# Create installation directory
+mkdir -p ${MODPKG_INSTALL_DIR}
 
-# Configure
-${MODPKG_BUILD_DIR}/configure                           \
-                   --prefix=${MODPKG_INSTALL_DIR}       \
-                   --enable-bootstrap                   \
-                   --enable-languages=c,c++,fortran,lto \
-                   --enable-checking=release            \
-                   --enable-threads=posix               \
-                   --disable-multilib
-
-# Build
-make -j ${NTHREAD}
-
-# Install
-make install
+# Move Unpacked into installation directory
+mv ${MODPKG_BUILD_DIR}/* ${MODPKG_INSTALL_DIR}/.
 
 # ===================================================
 #                       Module File
@@ -95,27 +85,20 @@ make install
 # Create Module File
 mkdir -p ${MODPKG_MODULE_DIR}
 cat << EOF > ${MODPKG_MODULE_DIR}/${PKG_VERSION}.lua
-
 help([[ ${PKG} version ${PKG_VERSION} ]])
-family("compiler")
+family("${PKG}")
 
--- Conflicting modules
-conflict("llvm")
+-- Conflicts
 
--- Modulepath for packages built by this compiler
-prepend_path("MODULEPATH", "${MODMAN_MODULE_DIR}/compiler/${PKG}/${PKG_VERSION}")
+-- Dependencies
+
+-- Modulepath for packages built with this library
 
 -- Environment Variables
 local base = "${MODPKG_INSTALL_DIR}"
 
-setenv("CPP", pathJoin(base, "bin/cpp"))
-setenv("CC",  pathJoin(base, "bin/gcc"))
-setenv("CXX", pathJoin(base, "bin/g++"))
-setenv("FC",  pathJoin(base, "bin/gfortran"))
+setenv("PARAVIEW_ROOT", base)
 
 -- Environment Paths
-prepend_path("PATH",            pathJoin(base, "bin"))
-prepend_path("LIBRARY_PATH",    pathJoin(base, "lib64"))
-prepend_path("LD_LIBRARY_PATH", pathJoin(base, "lib64"))
-prepend_path("MANPATH",         pathJoin(base, "share/man")) 
+prepend_path("PATH", pathJoin(base, "bin"))
 EOF

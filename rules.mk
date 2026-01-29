@@ -38,6 +38,17 @@ cmake-4.2.2 : ${MODMAN_MODULE_DIR}/base/cmake/4.2.2.lua
 ${MODMAN_MODULE_DIR}/base/cmake/4.2.2.lua:
 	${MODMAN_SRC_DIR}/build.sh cmake 4.2.2
 
+# -----------------------------------------------
+# Paraview
+# -----------------------------------------------
+
+paraview : paraview-6.0.1
+
+paraview-6.0.1 : ${MODMAN_MODULE_DIR}/base/paraview/6.0.1.lua
+
+${MODMAN_MODULE_DIR}/base/paraview/6.0.1.lua:
+	${MODMAN_SRC_DIR}/build.sh paraview 6.0.1
+
 #
 # **********************************************************
 #                        Compilers
