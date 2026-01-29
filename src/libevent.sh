@@ -6,40 +6,87 @@ set -e
 # Record what we're doing
 set -x
 
-# Set the package name
-export PKG=libevent
-export PKG_VERSION=$1
-export COMPILER=$2
-export COMPILER_VERSION=$3
+# ===================================================
+#           Already set Variables (build.sh)
+# ===================================================
+
+#
+# From build.sh
+#
+# PKG              = Package being installed (cmake, etc.)
+# PKG_VERSION      = Version of package (4.0.1, etc.)
+# COMPILER         = Compiler to use (gcc, etc.)
+# COMPILER_VERSION = Version of compiler to use (15.2.0, etc.)
+# MPI              = MPI to use (opnempi, etc.)
+# MPI_VERSION      = Version of MPI to use (5.0.2, etc.)
+#
+# MODPKG_DOWNLOAD_DIR = Directory to download package into
+# MODPKG_BUILD_DIR    = Directory to build package within
+# MODPKG_INSTALL_DIR  = Directory to install package within
+# MODPKG_MODULE_DIR   = Directory to place module file
+
+# Number of threads to build
+NTHREAD=8
 
 # Load build environment
 module purge
 module load ${COMPILER}/${COMPILER_VERSION}
 
-# Make full path names to locations
-LIB_BUILD_DIR=${BUILD_DIR}/${PKG}/${PKG_VERSION}/${COMPILER}/${COMPILER_VERSION}
-LIB_INSTALL_DIR=${INSTALL_DIR}/${PKG}/${PKG_VERSION}/${COMPILER}/${COMPILER_VERSION}
-
 # Clean if they already exist
-rm -rf ${LIB_BUILD_DIR}
-rm -rf ${LIB_INSTALL_DIR}
+rm -rf ${MODPKG_BUILD_DIR}
+rm -rf ${MODPKG_INSTALL_DIR}
 
-# Make the build directory and cd into it
-mkdir -p ${LIB_BUILD_DIR}
-cd ${LIB_BUILD_DIR}
+# ===================================================
+#                       Download
+# ===================================================
 
-# Unpack the Source
-tar --strip-components 1 -xvf ${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.*
+# Split version into parts 
+IFS='.' read -ra PARTS <<< "${PKG_VERSION}"  # PARTS=("2" "4" "1")
 
-# Configure
-./configure --prefix=${LIB_INSTALL_DIR}
+URL_ROOT="https://github.com/libevent/libevent/releases/download"
+URL_DIR="release-${PKG_VERSION}-stable"
+URL_NAME="${PKG}-${PKG_VERSION}-stable"
+URL_EXT="tar.gz"
 
-make -j 8
+URL_DOWNLOAD="${URL_ROOT}/${URL_DIR}/${URL_NAME}.${URL_EXT}"
+URL_TARGET="${MODPKG_DOWNLOAD_DIR}/${URL_NAME}.${URL_EXT}"
+
+if [ ! -f "${URL_TARGET}" ]; then
+    wget ${URL_DOWNLOAD} --directory-prefix=${MODPKG_DOWNLOAD_DIR}
+fi
+
+# ===================================================
+#                        UnPack
+# ===================================================
+
+# Create Build Directory
+mkdir -p ${MODPKG_BUILD_DIR}
+cd ${MODPKG_BUILD_DIR}
+
+# Untar the tarball
+tar --strip-components 1 -xzvf ${URL_TARGET}
+
+# ===================================================
+#                    Build + Install
+# ===================================================
+
+# Do an out of source build by making a temporary build directory
+mkdir -p ${MODPKG_BUILD_DIR}/build_by_modman
+cd ${MODPKG_BUILD_DIR}/build_by_modman
+
+${MODPKG_BUILD_DIR}/configure --prefix=${MODPKG_INSTALL_DIR}
+
+make -j ${NTHREAD}
+#make check
 make install
 
+# ===================================================
+#                       Module File
+# ===================================================
+
 # Create Module File
-mkdir -p ${MODULE_DIR}/compiler/${COMPILER}/${COMPILER_VERSION}/${PKG}
-cat << EOF > ${MODULE_DIR}/compiler/${COMPILER}/${COMPILER_VERSION}/${PKG}/${PKG_VERSION}.lua
+mkdir -p ${MODPKG_MODULE_DIR}
+cat << EOF > ${MODPKG_MODULE_DIR}/${PKG_VERSION}.lua
 help([[ ${PKG} version ${PKG_VERSION} ]])
 family("libevent")
 
@@ -50,13 +97,13 @@ prereq("${COMPILER}/${COMPILER_VERSION}")
 
 -- Modulepath for packages built with this library
 
--- Environment Paths
-prepend_path("PATH",            "${LIB_INSTALL_DIR}/bin")
-prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/lib")
-prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/lib64")
-prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib")
-prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib64")
-
 -- Environment Variables
-setenv("LIBEVENT_ROOT",         "${LIB_INSTALL_DIR}")
+local base = "${MODPKG_INSTALL_DIR}"
+
+setenv("LIBEVENT_ROOT",         base)
+
+-- Environment Paths
+prepend_path("PATH",            pathJoin(base, "bin"))
+prepend_path("LIBRARY_PATH",    pathJoin(base, "lib64"))
+prepend_path("LD_LIBRARY_PATH", pathJoin(base, "lib64"))
 EOF

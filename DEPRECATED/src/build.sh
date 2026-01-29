@@ -20,23 +20,22 @@ set -e
 set -x
 
 # Set the package name and version
-PKG=$1
-PKG_VERSION=$2
+export PKG=$1
+export PKG_VERSION=$2
 
 # Get Compiler and version
-COMPILER=$3
-COMPILER_VERSION=$4
+export COMPILER=$3
+export COMPILER_VERSION=$4
 
 # Get MPI and version
-MPI_COMPILER=$5
-MPI_COMPILER_VERSION=$6
+export MPI=$5
+export MPI_VERSION=$6
 
-# Create directories (only on first use)
-mkdir -p ${MODMAN_LOG_DIR}
-mkdir -p ${MODMAN_DOWNLOAD_DIR}
+# Create log directory if not exist
+mkdir -p ${LOG_DIR}
 
 # Construct a log file name
-logfile=${MODMAN_LOG_DIR}/${PKG}
+logfile=${LOG_DIR}/${PKG}
 if [ -n "${PKG_VERSION}" ]; then
     logfile="${logfile}_${PKG_VERSION}"
 fi
@@ -46,28 +45,13 @@ fi
 if [ -n "${COMPILER_VERSION}" ]; then
     logfile="${logfile}_${COMPILER_VERSION}"
 fi
-if [ -n "${MPI_COMPILER}" ]; then
-    logfile="${logfile}_${MPI_COMPILER}"
+if [ -n "${MPI}" ]; then
+    logfile="${logfile}_${MPI}"
 fi
-if [ -n "${MPI_COMPILER_VERSION}" ]; then
-    logfile="${logfile}_${MPI_COMPILER_VERSION}"
+if [ -n "${MPI_VERSION}" ]; then
+    logfile="${logfile}_${MPI_VERSION}"
 fi
 logfile="${logfile}.log"
-
-# Construct the module family
-family="base"
-if [ -n "${COMPILER}" ]; then
-    family="compiler"
-fi
-if [ -n "${MPI_COMPILER}" ]; then
-    family="mpi"
-fi
-
-# Construct Path Names
-MODPKG_DOWNLOAD_DIR=$(realpath -m ${MODMAN_DOWNLOAD_DIR})
-MODPKG_BUILD_DIR=$(realpath -m ${MODMAN_BUILD_DIR}/${PKG}/${PKG_VERSION}/${MPI_COMPILER}/${MPI_COMPILER_VERSION}/${COMPILER}/${COMPILER_VERSION})
-MODPKG_INSTALL_DIR=$(realpath -m ${MODMAN_INSTALL_DIR}/${PKG}/${PKG_VERSION}/${MPI_COMPILER}/${MPI_COMPILER_VERSION}/${COMPILER}/${COMPILER_VERSION})
-MODPKG_MODULE_DIR=$(realpath -m ${MODMAN_MODULE_DIR}/${family}/${MPI_COMPILER}/${MPI_COMPILER_VERSION}/${COMPILER}/${COMPILER_VERSION}/${PKG})
 
 # Start a shell block with redirected IO to log file
 {
@@ -75,9 +59,12 @@ MODPKG_MODULE_DIR=$(realpath -m ${MODMAN_MODULE_DIR}/${family}/${MPI_COMPILER}/$
 # Make sure the stacksize is something reasonable
 ulimit -s 8192
 
+# Create the log directory if necessary
+mkdir -p ${LOG_DIR}
+
 echo "Building ${PKG}-${PKG_VERSION}"
 
-eval "source ${MODMAN_SRC_DIR}/${PKG}.sh"
+eval ${SRC_DIR}/${PKG}.sh ${PKG_VERSION} ${COMPILER} ${COMPILER_VERSION} ${MPI} ${MPI_VERSION}
 
 } 2>&1 | tee ${logfile}  # End of shell block with redirected IO
 

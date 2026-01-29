@@ -1,7 +1,7 @@
 #export PWD=$(shell pwd)
-export BUILD_DIR=${PWD}/build
-export INSTALL_DIR=${PWD}/apps
-export TAR_DIR=${PWD}/downloads
-export SRC_DIR=${PWD}/src
-export LOG_DIR=${PWD}/log
-export MODULE_DIR=${PWD}/modulefiles
+export MODMAN_BUILD_DIR=${PWD}/build
+export MODMAN_INSTALL_DIR=${PWD}/apps
+export MODMAN_DOWNLOAD_DIR=${PWD}/downloads
+export MODMAN_SRC_DIR=${PWD}/src
+export MODMAN_LOG_DIR=${PWD}/log
+export MODMAN_MODULE_DIR=${PWD}/modulefiles

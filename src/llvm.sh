@@ -6,86 +6,136 @@ set -e
 # Record what we're doing
 set -x
 
-# Set the package name
-export PKG=llvm
-export PKG_VERSION=$1
+# ===================================================
+#           Already set Variables (build.sh)
+# ===================================================
+
+#
+# From build.sh
+#
+# PKG              = Package being installed (cmake, etc.)
+# PKG_VERSION      = Version of package (4.0.1, etc.)
+# COMPILER         = Compiler to use (gcc, etc.)
+# COMPILER_VERSION = Version of compiler to use (15.2.0, etc.)
+# MPI              = MPI to use (opnempi, etc.)
+# MPI_VERSION      = Version of MPI to use (5.0.2, etc.)
+#
+# MODPKG_DOWNLOAD_DIR = Directory to download package into
+# MODPKG_BUILD_DIR    = Directory to build package within
+# MODPKG_INSTALL_DIR  = Directory to install package within
+# MODPKG_MODULE_DIR   = Directory to place module file
+
+# Number of threads to build
+NTHREAD=8
 
 # Load build environment
 module purge
 module load cmake
-#module load gcc    # Requires compiler to build
-module load llvm    # Requires compiler to build
-
-# Make full path names to locations
-LIB_BUILD_DIR=${BUILD_DIR}/${PKG}/${PKG_VERSION}
-LIB_INSTALL_DIR=${INSTALL_DIR}/${PKG}/${PKG_VERSION}
-
-##### -- Start -- Comment out Build for Failed Parallel Build
-## : <<'END'
+#module load gcc  # We need a newish compiler with libstdc++.co.*
 
 # Clean if they already exist
-rm -rf ${LIB_BUILD_DIR}
-rm -rf ${LIB_INSTALL_DIR}
+rm -rf ${MODPKG_BUILD_DIR}
+rm -rf ${MODPKG_INSTALL_DIR}
 
-# Make the build directory and cd into it
-mkdir -p ${LIB_BUILD_DIR}
-cd ${LIB_BUILD_DIR}
+# ===================================================
+#                       Download
+# ===================================================
+
+URL_ROOT="https://github.com/llvm/llvm-project/releases/download"
+URL_DIR="llvmorg-${PKG_VERSION}"
+URL_NAME="llvm-project-${PKG_VERSION}.src"
+URL_EXT="tar.xz"
+
+URL_DOWNLOAD="${URL_ROOT}/${URL_DIR}/${URL_NAME}.${URL_EXT}"
+URL_TARGET="${MODPKG_DOWNLOAD_DIR}/${URL_NAME}.${URL_EXT}"
+
+if [ ! -f "${URL_TARGET}" ]; then
+    wget ${URL_DOWNLOAD} --directory-prefix=${MODPKG_DOWNLOAD_DIR}
+fi
+
+# ===================================================
+#                        UnPack
+# ===================================================
+
+# Create Build Directory
+mkdir -p ${MODPKG_BUILD_DIR}
+cd ${MODPKG_BUILD_DIR}
 
 # Untar the tarball
-tar --strip-components 1 -xvf ${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.*
+tar --strip-components 1 -xvf ${URL_TARGET}
 
-# If version 12.0.0 then patch file
-#if [ ${PKG_VERSION} -eq "12.0.0" ]; then
-    sed -i 's/<cstdio>/<cstdio>\n#include <limits>/' ${LIB_BUILD_DIR}/flang/runtime/unit.cpp
-#fi
+# ===================================================
+#                    Build + Install
+# ===================================================
 
-# Do an out of source build by making a temporary build directory
-mkdir -p ${LIB_BUILD_DIR}/my_build
-cd ${LIB_BUILD_DIR}/my_build
+# Passing any bad name will provide the actual list of available flags
+# - Names should not overlap between the project and runtime lists
+# - Prefer the runtime option if available
+#
+# ENABLED_PROJECTS=junk
+# ENABLED_RUNTIMES=junk
+#
+# 21.1.8 from llvm/CMakeLists.txt
+#
+# all = LLVM_ALL_PROJECTS="bolt;clang;clang-tools-extra;compiler-rt;cross-project-tests;libclc;lld;lldb;mlir;openmp;polly"
+# LLVM_EXTRA_PROJECTS="flang;libc
+#
+# all = LLVM_DEFAULT_RUNTIMES="libcxx;libcxxabi;libunwind"
+# LLVM_SUPPORTED_RUNTIMES="libc;libunwind;libcxxabi;libcxx;compiler-rt;openmp;llvm-libgcc;offload;flang-rt;libclc"
+#
+#ENABLED_PROJECTS="all"
+#ENABLED_RUNTIMES="all"
 
-#ENABLED_PROJECTS='clang;flang;clang-tools-extra;libcxx;libcxxabi;lld;poly;openmp'
-#ENABLED_PROJECTS='clang;flang;clang-tools-extra;libcxx;libcxxabi;libunwind;libc;libclc;lld;lldb;openmp;polly;pstl'
-ENABLED_PROJECTS='all'
+ENABLED_PROJECTS="bolt;clang;clang-tools-extra;cross-project-tests;lld;lldb;mlir;polly;flang"
+ENABLED_RUNTIMES="libc;libunwind;libcxxabi;libcxx;compiler-rt;openmp;flang-rt;libclc"
+
+# Using CMake to create out of source build with -B flag
+cd ${MODPKG_BUILD_DIR}
 
 # Detect if we can find Ninja
 if ninja --help || module load ninja; then
-    cmake \
-        -D LLVM_ENABLE_PROJECTS=${ENABLED_PROJECTS} \
-        -D CMAKE_INSTALL_PREFIX=${LIB_INSTALL_DIR} \
-        -D CMAKE_BUILD_TYPE=Release \
-        -G "Ninja" \
-        ${LIB_BUILD_DIR}/llvm
-        
-    ninja
-    ninja install
+    cmake -S llvm \
+          -B build_by_modman \
+          -G "Ninja" \
+          -D LLVM_TARGETS_TO_BUILD=host \
+          -D LLVM_ENABLE_PROJECTS=${ENABLED_PROJECTS} \
+          -D LLVM_ENABLE_RUNTIMES=${ENABLED_RUNTIMES} \
+          -D CMAKE_INSTALL_PREFIX=${MODPKG_INSTALL_DIR} \
+          -D CMAKE_BUILD_TYPE=Release
 else
-    cmake \
-        -D LLVM_ENABLE_PROJECTS=${ENABLED_PROJECTS} \
-        -D CMAKE_INSTALL_PREFIX=${LIB_INSTALL_DIR} \
-        -D CMAKE_BUILD_TYPE=Release \
-        -G "Unix Makefiles" \
-        ${LIB_BUILD_DIR}/llvm
-
-    make
-    make install
+    cmake -S llvm \
+          -B build_by_modman \
+          -G "Unix Makefiles" \
+          -D LLVM_TARGETS_TO_BUILD=host \
+          -D LLVM_ENABLE_PROJECTS=${ENABLED_PROJECTS} \
+          -D LLVM_ENABLE_RUNTIMES=${ENABLED_RUNTIMES} \
+          -D CMAKE_INSTALL_PREFIX=${MODPKG_INSTALL_DIR} \
+          -D CMAKE_BUILD_TYPE=Release
 fi
+cmake --build build_by_modman -j ${NTHREAD}
+cmake --install build_by_modman
 
-## END
-## cd ${LIB_BUILD_DIR}/my_build
-## module load ninja
-## ninja
-## ninja install
-##### -- Finish -- Comment out Build for Failed Parallel Build
-
+# ===================================================
+#                       Module File
+# ===================================================
 
 # Get location of libstdc++ files for the GCC compiler we used
-gnu_c_compiler=${CC}
-gnu_bin_dir=$(dirname ${CC})
-gnu_base_name=$(dirname ${gnu_bin_dir})
+#
+# Clang uses GCC's libstdc++ as its default C++ standard library on Linux
+# Force libstdc++ (Default)  =>  -stdlib=libstdc++
+# Force libc++.so.*          =>  -stdlib=libc++
+#
+if [ -z ${CC+x} ]; then
+    stdlib_base_dir=/usr/lib64
+else
+    sys_c_compiler=${CC}
+    sys_bin_dir=$(dirname ${CC})
+    stdlib_base_dir=$(dirname ${sys_bin_dir})/lib64
+fi   
 
 # Create Module File
-mkdir -p ${MODULE_DIR}/base/${PKG}
-cat << EOF > ${MODULE_DIR}/base/${PKG}/${PKG_VERSION}.lua
+mkdir -p ${MODPKG_MODULE_DIR}
+cat << EOF > ${MODPKG_MODULE_DIR}/${PKG_VERSION}.lua
 
 help([[ ${PKG} version ${PKG_VERSION} ]])
 family("compiler")
@@ -94,23 +144,21 @@ family("compiler")
 conflict("gcc")
 
 -- Modulepath for packages built by this compiler
-prepend_path("MODULEPATH", "${MODULE_DIR}/compiler/${PKG}/${PKG_VERSION}")
+prepend_path("MODULEPATH", "${MODMAN_MODULE_DIR}/compiler/${PKG}/${PKG_VERSION}")
 
 -- Point at Latest GCC Compiler (libstdc++)
-prepend_path("PATH",            "${gnu_base_name}/bin")
-prepend_path("LD_LIBRARY_PATH", "${gnu_base_name}/lib")
-prepend_path("LD_LIBRARY_PATH", "${gnu_base_name}/lib64")
-
--- Environment Paths
-prepend_path("PATH",            "${LIB_INSTALL_DIR}/bin")
-prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/lib")
-prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/lib64")
-prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib")
-prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib64")
+prepend_path("LD_LIBRARY_PATH", "${stdlib_base_dir}")
 
 -- Environment Variables
-setenv("CPP", "${LIB_INSTALL_DIR}/bin/clang-cpp")
-setenv("CC",  "${LIB_INSTALL_DIR}/bin/clang")
-setenv("CXX", "${LIB_INSTALL_DIR}/bin/clang++")
-setenv("FC",  "${LIB_INSTALL_DIR}/bin/flang")
+local base = "${MODPKG_INSTALL_DIR}"
+
+setenv("CPP", pathJoin(base, "bin/clang-cpp""))
+setenv("CC",  pathJoin(base, "bin/clang"))
+setenv("CXX", pathJoin(base, "bin/clang++"))
+setenv("FC",  pathJoin(base, "bin/flang"))
+
+-- Environment Paths
+prepend_path("PATH",            pathJoin(base, "bin"))
+prepend_path("LIBRARY_PATH",    pathJoin(base, "lib"))
+prepend_path("LD_LIBRARY_PATH", pathJoin(base, "lib"))
 EOF

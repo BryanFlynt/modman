@@ -6,63 +6,95 @@ set -e
 # Record what we're doing
 set -x
 
-# Set the package name
-export PKG=ucx
-export PKG_VERSION=$1
-export COMPILER=$2
-export COMPILER_VERSION=$3
+# ===================================================
+#           Already set Variables (build.sh)
+# ===================================================
+
+#
+# From build.sh
+#
+# PKG              = Package being installed (cmake, etc.)
+# PKG_VERSION      = Version of package (4.0.1, etc.)
+# COMPILER         = Compiler to use (gcc, etc.)
+# COMPILER_VERSION = Version of compiler to use (15.2.0, etc.)
+# MPI              = MPI to use (opnempi, etc.)
+# MPI_VERSION      = Version of MPI to use (5.0.2, etc.)
+#
+# MODPKG_DOWNLOAD_DIR = Directory to download package into
+# MODPKG_BUILD_DIR    = Directory to build package within
+# MODPKG_INSTALL_DIR  = Directory to install package within
+# MODPKG_MODULE_DIR   = Directory to place module file
+
+# Number of threads to build
+NTHREAD=8
 
 # Load build environment
 module purge
 module load ${COMPILER}/${COMPILER_VERSION}
 
-# Make full path names to locations
-LIB_BUILD_DIR=${BUILD_DIR}/${PKG}/${PKG_VERSION}/${COMPILER}/${COMPILER_VERSION}
-LIB_INSTALL_DIR=${INSTALL_DIR}/${PKG}/${PKG_VERSION}/${COMPILER}/${COMPILER_VERSION}
-
 # Clean if they already exist
-rm -rf ${LIB_BUILD_DIR}
-rm -rf ${LIB_INSTALL_DIR}
+rm -rf ${MODPKG_BUILD_DIR}
+rm -rf ${MODPKG_INSTALL_DIR}
 
-# Make the build directory and cd into it
-mkdir -p ${LIB_BUILD_DIR}
-cd ${LIB_BUILD_DIR}
+# ===================================================
+#                       Download
+# ===================================================
 
-# Unpack the Source
-tar --strip-components 1 -xvf ${TAR_DIR}/${PKG}-${PKG_VERSION}.tar.*
+# Split version into parts 
+IFS='.' read -ra PARTS <<< "${PKG_VERSION}"  # PARTS=("2" "4" "1")
 
-# PGI has a bug which needs to be patched
-if [ "${COMPILER}" == "pgi" ]; then
-    if [ "${PKG_VERSION}" == "1.10.1" ]; then
-        echo "Patching for GPI"
-#        sed -i "14i BASE_CFLAGS=\"-g -Wall\" " ${LIB_BUILD_DIR}/config/m4/compiler.m4
-        sed -i "476i [--diag_suppress 1]," ${LIB_BUILD_DIR}/config/m4/compiler.m4
-        sed -i "476i [--diag_suppress 68]," ${LIB_BUILD_DIR}/config/m4/compiler.m4
-        sed -i "476i [--diag_suppress 111]," ${LIB_BUILD_DIR}/config/m4/compiler.m4
-        sed -i "476i [--diag_suppress 167]," ${LIB_BUILD_DIR}/config/m4/compiler.m4
-        sed -i "477i [--diag_suppress 188]," ${LIB_BUILD_DIR}/config/m4/compiler.m4
-        sed -i "477i [--diag_suppress 1144]," ${LIB_BUILD_DIR}/config/m4/compiler.m4
-        autoreconf -i
-    fi
-fi   
+URL_ROOT="https://github.com/openucx/ucx/releases/download"
+URL_DIR="${PKG_VERSION}"
+URL_NAME="${PKG}-${PKG_VERSION}"
+URL_EXT="tar.gz"
 
-# Configure and Check for NUMA
+URL_DOWNLOAD="${URL_ROOT}/${URL_DIR}/${URL_NAME}.${URL_EXT}"
+URL_TARGET="${MODPKG_DOWNLOAD_DIR}/${URL_NAME}.${URL_EXT}"
+
+if [ ! -f "${URL_TARGET}" ]; then
+    wget ${URL_DOWNLOAD} --directory-prefix=${MODPKG_DOWNLOAD_DIR}
+fi
+
+# ===================================================
+#                        UnPack
+# ===================================================
+
+# Create Build Directory
+mkdir -p ${MODPKG_BUILD_DIR}
+cd ${MODPKG_BUILD_DIR}
+
+# Untar the tarball
+tar --strip-components 1 -xzvf ${URL_TARGET}
+
+# ===================================================
+#                    Build + Install
+# ===================================================
+
+# Do an out of source build by making a temporary build directory
+mkdir -p ${MODPKG_BUILD_DIR}/build_by_modman
+cd ${MODPKG_BUILD_DIR}/build_by_modman
+
+# Check for NUMA
 cat > .test.h <<'EOM'
 #include <numa.h>
 EOM
 if gcc -E .test.h; then
-    ./configure --prefix=${LIB_INSTALL_DIR}
+    ${MODPKG_BUILD_DIR}/configure --prefix=${MODPKG_INSTALL_DIR}
 else
-    ./configure --prefix=${LIB_INSTALL_DIR} --disable-numa
+    ${MODPKG_BUILD_DIR}/configure --prefix=${MODPKG_INSTALL_DIR} --disable-numa
 fi
 
-make -j 8
+make -j ${NTHREAD}
 make check
 make install
 
+# ===================================================
+#                       Module File
+# ===================================================
+
 # Create Module File
-mkdir -p ${MODULE_DIR}/compiler/${COMPILER}/${COMPILER_VERSION}/${PKG}
-cat << EOF > ${MODULE_DIR}/compiler/${COMPILER}/${COMPILER_VERSION}/${PKG}/${PKG_VERSION}.lua
+mkdir -p ${MODPKG_MODULE_DIR}
+cat << EOF > ${MODPKG_MODULE_DIR}/${PKG_VERSION}.lua
 help([[ ${PKG} version ${PKG_VERSION} ]])
 family("ucx")
 
@@ -73,13 +105,13 @@ prereq("${COMPILER}/${COMPILER_VERSION}")
 
 -- Modulepath for packages built with this library
 
--- Environment Paths
-prepend_path("PATH",            "${LIB_INSTALL_DIR}/bin")
-prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/lib")
-prepend_path("LIBRARY_PATH",    "${LIB_INSTALL_DIR}/lib64")
-prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib")
-prepend_path("LD_LIBRARY_PATH", "${LIB_INSTALL_DIR}/lib64")
-
 -- Environment Variables
-setenv("UCX_ROOT",              "${LIB_INSTALL_DIR}")
+local base = "${MODPKG_INSTALL_DIR}"
+
+setenv("UCX_ROOT",              base)
+
+-- Environment Paths
+prepend_path("PATH",            pathJoin(base, "bin"))
+prepend_path("LIBRARY_PATH",    pathJoin(base, "lib64"))
+prepend_path("LD_LIBRARY_PATH", pathJoin(base, "lib64"))
 EOF

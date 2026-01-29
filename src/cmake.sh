@@ -1,11 +1,4 @@
 #!/bin/bash -l
-#
-# =========================================
-#
-# Script is always called as:
-# > <package>.sh <package_version> <compiler> <compiler_version> <mpi> <mpi_version>
-#
-# =========================================
 
 # Abort if any command returns an error
 set -e
@@ -13,56 +6,96 @@ set -e
 # Record what we're doing
 set -x
 
-# Set the variables
-export PKG=cmake
-export PKG_VERSION=$1
-export COMPILER=$3
-export COMPILER_VERSION=$4
-export MPI=$5
-export MPI_VERSION=$6
+# ===================================================
+#           Already set Variables (build.sh)
+# ===================================================
 
-# Make full path names to locations
-LIB_BUILD_DIR=${BUILD_DIR}/${PKG}/${PKG_VERSION}
-LIB_INSTALL_DIR=${INSTALL_DIR}/${PKG}/${PKG_VERSION}
+#
+# From build.sh
+#
+# PKG              = Package being installed (cmake, etc.)
+# PKG_VERSION      = Version of package (4.0.1, etc.)
+# COMPILER         = Compiler to use (gcc, etc.)
+# COMPILER_VERSION = Version of compiler to use (15.2.0, etc.)
+# MPI              = MPI to use (opnempi, etc.)
+# MPI_VERSION      = Version of MPI to use (5.0.2, etc.)
+#
+# MODPKG_DOWNLOAD_DIR = Directory to download package into
+# MODPKG_BUILD_DIR    = Directory to build package within
+# MODPKG_INSTALL_DIR  = Directory to install package within
+# MODPKG_MODULE_DIR   = Directory to place module file
+
+# Number of threads to build
+NTHREAD=8
+
+# Load build environment
+module purge
 
 # Clean if they already exist
-rm -rf ${LIB_BUILD_DIR}
-rm -rf ${LIB_INSTALL_DIR}
+rm -rf ${MODPKG_BUILD_DIR}
+rm -rf ${MODPKG_INSTALL_DIR}
 
-# Discover the machine type we are on
-file_name=${PKG}-${PKG_VERSION}
-if [ "$(uname)" == "Darwin" ]; then
-    tar_file_name=${file_name}-macos-universal.tar.gz      
-elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
-    tar_file_name=${file_name}-linux-x86_64.tar.gz
+# ===================================================
+#                       Download
+# ===================================================
+
+# Split version into parts 
+IFS='.' read -ra PARTS <<< "${PKG_VERSION}"  # PARTS=("2" "4" "1")
+
+URL_ROOT="https://github.com/Kitware/CMake/releases/download"
+URL_DIR="v${PKG_VERSION}"
+URL_NAME="${PKG}-${PKG_VERSION}-linux-x86_64"
+URL_EXT="tar.gz"
+
+URL_DOWNLOAD="${URL_ROOT}/${URL_DIR}/${URL_NAME}.${URL_EXT}"
+URL_TARGET="${MODPKG_DOWNLOAD_DIR}/${URL_NAME}.${URL_EXT}"
+
+if [ ! -f "${URL_TARGET}" ]; then
+    wget ${URL_DOWNLOAD} --directory-prefix=${MODPKG_DOWNLOAD_DIR}
 fi
 
-# Create the build directory to unpack
-mkdir -p ${LIB_BUILD_DIR}
-cd ${LIB_BUILD_DIR}
+# ===================================================
+#                        UnPack
+# ===================================================
+
+# Create Build Directory
+mkdir -p ${MODPKG_BUILD_DIR}
+cd ${MODPKG_BUILD_DIR}
 
 # Untar the tarball
-tar --strip-components 1 -xzvf ${TAR_DIR}/${tar_file_name}
+tar --strip-components 1 -xvf ${URL_TARGET}
+
+# ===================================================
+#                    Build + Install
+# ===================================================
 
 # Create installation directory
-mkdir -p ${LIB_INSTALL_DIR}
+mkdir -p ${MODPKG_INSTALL_DIR}
 
 # Move Unpacked into installation directory
-mv ${LIB_BUILD_DIR}/* ${LIB_INSTALL_DIR}/.
+mv ${MODPKG_BUILD_DIR}/* ${MODPKG_INSTALL_DIR}/.
+
+# ===================================================
+#                       Module File
+# ===================================================
 
 # Create Module File
-mkdir -p ${MODULE_DIR}/base/${PKG}
-cat << EOF > ${MODULE_DIR}/base/${PKG}/${PKG_VERSION}.lua
-
+mkdir -p ${MODPKG_MODULE_DIR}
+cat << EOF > ${MODPKG_MODULE_DIR}/${PKG_VERSION}.lua
 help([[ ${PKG} version ${PKG_VERSION} ]])
 family("cmake")
 
--- Conflicting modules
+-- Conflicts
 
--- Modulepath for packages built by this compiler
+-- Dependencies
 
--- Environment Paths
-prepend_path("PATH",            "${LIB_INSTALL_DIR}/bin")
+-- Modulepath for packages built with this library
 
 -- Environment Variables
+local base = "${MODPKG_INSTALL_DIR}"
+
+setenv("CMAKE_ROOT", base)
+
+-- Environment Paths
+prepend_path("PATH", pathJoin(base, "bin"))
 EOF
