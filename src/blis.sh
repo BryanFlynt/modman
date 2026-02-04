@@ -30,6 +30,7 @@ NTHREAD=8
 
 # Load build environment
 module purge
+module load ${COMPILER}/${COMPILER_VERSION}
 
 # Clean if they already exist
 rm -rf ${MODPKG_BUILD_DIR}
@@ -39,22 +40,22 @@ rm -rf ${MODPKG_INSTALL_DIR}
 #                       Download
 # ===================================================
 
-# The path is redirected plus contains Python version and other information
-# Therefore, the user should just downloaded the tar.gz and place in downloads directory.
+# Split version into parts 
+IFS='.' read -ra PARTS <<< "${PKG_VERSION}"  # PARTS=("2" "4" "1")
 
-if [ ${PKG_VERSION} = "6.0.1" ]; then
-    URL_TARGET="${MODPKG_DOWNLOAD_DIR}/ParaView-6.0.1-MPI-Linux-Python3.12-x86_64.tar.gz"
-else
-    printf "ERROR: Version not recognized\n"
-    exit 1
-fi
+URL_ROOT="https://github.com/flame/blis/archive/refs/tags"
+URL_NAME="${PARTS[0]}.${PARTS[1]}"
+URL_EXT="tar.gz"
 
+PACKAGE_NAME="${URL_NAME}.${URL_EXT}"
+URL_DOWNLOAD="${URL_ROOT}/${PACKAGE_NAME}"
 
-# If the URL_TARGET is not already downloaded error
+# The actual download name does not contain blis so we rename
+URL_TARGET="${MODPKG_DOWNLOAD_DIR}/blis-${PKG_VERSION}.${URL_EXT}"
+
 if [ ! -f "${URL_TARGET}" ]; then
-    printf "ERROR: Paraview *.tar.gz not found in download directory\n"
-    printf "Please place the requested version within: %s\n" ${MODPKG_DOWNLOAD_DIR}
-    exit 1
+    wget ${URL_DOWNLOAD} --directory-prefix=${MODPKG_DOWNLOAD_DIR}
+    mv ${MODPKG_DOWNLOAD_DIR}/${PACKAGE_NAME} ${URL_TARGET}
 fi
 
 # ===================================================
@@ -72,11 +73,14 @@ tar --strip-components 1 -xvf ${URL_TARGET}
 #                    Build + Install
 # ===================================================
 
-# Create installation directory
-mkdir -p ${MODPKG_INSTALL_DIR}
+# Do an out of source build by making a temporary build directory
+mkdir -p ${MODPKG_BUILD_DIR}/build_by_modman
+cd ${MODPKG_BUILD_DIR}/build_by_modman
 
-# Move Unpacked into installation directory
-mv ${MODPKG_BUILD_DIR}/* ${MODPKG_INSTALL_DIR}/.
+../configure --prefix=${MODPKG_INSTALL_DIR} auto
+
+make -j ${NTHREAD}
+make install
 
 # ===================================================
 #                       Module File
@@ -86,19 +90,22 @@ mv ${MODPKG_BUILD_DIR}/* ${MODPKG_INSTALL_DIR}/.
 mkdir -p ${MODPKG_MODULE_DIR}
 cat << EOF > ${MODPKG_MODULE_DIR}/${PKG_VERSION}.lua
 help([[ ${PKG} version ${PKG_VERSION} ]])
-family("${PKG}")
+family("blis")
 
 -- Conflicts
 
 -- Dependencies
+prereq("${COMPILER}/${COMPILER_VERSION}")
 
 -- Modulepath for packages built with this library
 
 -- Environment Variables
 local base = "${MODPKG_INSTALL_DIR}"
 
-setenv("PARAVIEW_ROOT", base)
+setenv("BLIS_ROOT",             base)
 
 -- Environment Paths
-prepend_path("PATH",            pathJoin(base, "bin"))
+prepend_path("CPATH",           pathJoin(base, "include"))
+prepend_path("LIBRARY_PATH",    pathJoin(base, "lib"))
+prepend_path("LD_LIBRARY_PATH", pathJoin(base, "lib"))
 EOF

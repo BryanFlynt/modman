@@ -30,6 +30,8 @@ NTHREAD=8
 
 # Load build environment
 module purge
+module load ${COMPILER}/${COMPILER_VERSION}
+module load cmake
 
 # Clean if they already exist
 rm -rf ${MODPKG_BUILD_DIR}
@@ -39,22 +41,19 @@ rm -rf ${MODPKG_INSTALL_DIR}
 #                       Download
 # ===================================================
 
-# The path is redirected plus contains Python version and other information
-# Therefore, the user should just downloaded the tar.gz and place in downloads directory.
+# Split version into parts 
+IFS='.' read -ra PARTS <<< "${PKG_VERSION}"  # PARTS=("2" "4" "1")
 
-if [ ${PKG_VERSION} = "6.0.1" ]; then
-    URL_TARGET="${MODPKG_DOWNLOAD_DIR}/ParaView-6.0.1-MPI-Linux-Python3.12-x86_64.tar.gz"
-else
-    printf "ERROR: Version not recognized\n"
-    exit 1
-fi
+URL_ROOT="https://github.com/wxWidgets/wxWidgets/releases/download"
+URL_DIR="v${PKG_VERSION}"
+URL_NAME="wxWidgets-${PKG_VERSION}"
+URL_EXT="tar.bz2"
 
+URL_DOWNLOAD="${URL_ROOT}/${URL_DIR}/${URL_NAME}.${URL_EXT}"
+URL_TARGET="${MODPKG_DOWNLOAD_DIR}/${URL_NAME}.${URL_EXT}"
 
-# If the URL_TARGET is not already downloaded error
 if [ ! -f "${URL_TARGET}" ]; then
-    printf "ERROR: Paraview *.tar.gz not found in download directory\n"
-    printf "Please place the requested version within: %s\n" ${MODPKG_DOWNLOAD_DIR}
-    exit 1
+    wget ${URL_DOWNLOAD} --directory-prefix=${MODPKG_DOWNLOAD_DIR}
 fi
 
 # ===================================================
@@ -72,11 +71,18 @@ tar --strip-components 1 -xvf ${URL_TARGET}
 #                    Build + Install
 # ===================================================
 
-# Create installation directory
-mkdir -p ${MODPKG_INSTALL_DIR}
+# Do an out of source build by making a temporary build directory
+mkdir -p ${MODPKG_BUILD_DIR}/build_by_modman
+cd ${MODPKG_BUILD_DIR}/build_by_modman
 
-# Move Unpacked into installation directory
-mv ${MODPKG_BUILD_DIR}/* ${MODPKG_INSTALL_DIR}/.
+
+cmake -G "Unix Makefiles" \
+      -D CMAKE_INSTALL_PREFIX=${MODPKG_INSTALL_DIR} \
+      -D CMAKE_BUILD_TYPE=Release \
+      -D wxBUILD_TYPE=gtk3 \
+      ${MODPKG_BUILD_DIR}
+
+cmake --parallel ${NTHREAD} --build . --target install
 
 # ===================================================
 #                       Module File
@@ -85,20 +91,23 @@ mv ${MODPKG_BUILD_DIR}/* ${MODPKG_INSTALL_DIR}/.
 # Create Module File
 mkdir -p ${MODPKG_MODULE_DIR}
 cat << EOF > ${MODPKG_MODULE_DIR}/${PKG_VERSION}.lua
-help([[ ${PKG} version ${PKG_VERSION} ]])
-family("${PKG}")
 
--- Conflicts
+help([[ ${PKG} version ${PKG_VERSION} ]])
+family("wxwidgets")
+
+-- Conflicting modules
 
 -- Dependencies
+prereq("${COMPILER}/${COMPILER_VERSION}")
 
 -- Modulepath for packages built with this library
 
 -- Environment Variables
 local base = "${MODPKG_INSTALL_DIR}"
 
-setenv("PARAVIEW_ROOT", base)
+setenv("WXWIDGETS_ROOT", base)
 
 -- Environment Paths
-prepend_path("PATH",            pathJoin(base, "bin"))
+prepend_path("LIBRARY_PATH",    pathJoin(base, "lib64"))
+prepend_path("LD_LIBRARY_PATH", pathJoin(base, "lib64"))
 EOF

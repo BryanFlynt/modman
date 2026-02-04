@@ -7,7 +7,7 @@ unpack_only : cmake
 
 compilers : gcc
 
-libraries : hwloc ucx libevent
+libraries : hwloc ucx libevent blis
 
 mpi_compilers : openmpi boost
 
@@ -130,6 +130,17 @@ boost-1.90.0-gcc-15.2.0 : ${MODMAN_MODULE_DIR}/compiler/gcc/15.2.0/boost/1.90.0.
 
 ${MODMAN_MODULE_DIR}/compiler/gcc/15.2.0/boost/1.90.0.lua :
 	${MODMAN_SRC_DIR}/build.sh boost 1.90.0 gcc 15.2.0
+
+# -----------------------------------------------
+# Blis
+# -----------------------------------------------
+
+blis : blis-2.0.0-gcc-15.2.0
+
+blis-2.0.0-gcc-15.2.0 : ${MODMAN_MODULE_DIR}/compiler/gcc/15.2.0/blis/2.0.0.lua
+
+${MODMAN_MODULE_DIR}/compiler/gcc/15.2.0/blis/2.0.0.lua :
+	${MODMAN_SRC_DIR}/build.sh blis 2.0.0 gcc 15.2.0
 
 #
 # **********************************************************
