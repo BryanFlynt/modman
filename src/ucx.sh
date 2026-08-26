@@ -44,7 +44,7 @@ rm -rf ${MODPKG_INSTALL_DIR}
 IFS='.' read -ra PARTS <<< "${PKG_VERSION}"  # PARTS=("2" "4" "1")
 
 URL_ROOT="https://github.com/openucx/ucx/releases/download"
-URL_DIR="${PKG_VERSION}"
+URL_DIR="v${PKG_VERSION}"
 URL_NAME="${PKG}-${PKG_VERSION}"
 URL_EXT="tar.gz"
 
@@ -65,6 +65,15 @@ cd ${MODPKG_BUILD_DIR}
 
 # Untar the tarball
 tar --strip-components 1 -xzvf ${URL_TARGET}
+
+# ===================================================
+#                        Patch
+# ===================================================
+
+# Patch the source
+if [ ${PKG_VERSION} = "1.22.0" ]; then
+    sed -i 's/pragma omp master/pragma omp masked/g' ${MODPKG_BUILD_DIR}/src/tools/perf/perftest.c
+fi
 
 # ===================================================
 #                    Build + Install

@@ -5,7 +5,7 @@ all : unpack_only compilers libraries mpi_compilers libraries_w_mpi
 
 unpack_only : cmake
 
-compilers : gcc
+compilers : gcc oneapi
 
 libraries : hwloc ucx libevent blis
 
@@ -31,23 +31,23 @@ cleanall : clean
 # CMake
 # -----------------------------------------------
 
-cmake : cmake-4.2.2
+cmake : cmake-4.4.2
 
-cmake-4.2.2 : ${MODMAN_MODULE_DIR}/base/cmake/4.2.2.lua
+cmake-4.4.2 : ${MODMAN_MODULE_DIR}/base/cmake/4.4.2.lua
 
-${MODMAN_MODULE_DIR}/base/cmake/4.2.2.lua:
-	${MODMAN_SRC_DIR}/build.sh cmake 4.2.2
+${MODMAN_MODULE_DIR}/base/cmake/4.4.2.lua:
+	${MODMAN_SRC_DIR}/build.sh cmake 4.4.2
 
 # -----------------------------------------------
 # Paraview
 # -----------------------------------------------
 
-paraview : paraview-6.0.1
+paraview : paraview-6.1.1
 
-paraview-6.0.1 : ${MODMAN_MODULE_DIR}/base/paraview/6.0.1.lua
+paraview-6.1.1 : ${MODMAN_MODULE_DIR}/base/paraview/6.1.1.lua
 
-${MODMAN_MODULE_DIR}/base/paraview/6.0.1.lua:
-	${MODMAN_SRC_DIR}/build.sh paraview 6.0.1
+${MODMAN_MODULE_DIR}/base/paraview/6.1.1.lua:
+	${MODMAN_SRC_DIR}/build.sh paraview 6.1.1
 
 #
 # **********************************************************
@@ -59,23 +59,39 @@ ${MODMAN_MODULE_DIR}/base/paraview/6.0.1.lua:
 # GCC
 # -----------------------------------------------
 
-gcc : gcc-15.2.0
+gcc : gcc-16.2.0 gcc-16.2.0
 
-gcc-15.2.0 : ${MODMAN_MODULE_DIR}/base/gcc/15.2.0.lua
+gcc-16.2.0 : ${MODMAN_MODULE_DIR}/base/gcc/16.2.0.lua
 
-${MODMAN_MODULE_DIR}/base/gcc/15.2.0.lua:
-	${MODMAN_SRC_DIR}/build.sh gcc 15.2.0
+${MODMAN_MODULE_DIR}/base/gcc/16.2.0.lua:
+	${MODMAN_SRC_DIR}/build.sh gcc 16.2.0
+
+gcc-15.3.0 : ${MODMAN_MODULE_DIR}/base/gcc/15.3.0.lua
+
+${MODMAN_MODULE_DIR}/base/gcc/15.3.0.lua:
+	${MODMAN_SRC_DIR}/build.sh gcc 15.3.0
+
+# -----------------------------------------------
+# Intel OneAPI
+# -----------------------------------------------
+
+oneapi : oneapi-2026.1.0
+
+oneapi-2026.1.0 : ${MODMAN_MODULE_DIR}/base/oneapi/2026.1.0.lua
+
+${MODMAN_MODULE_DIR}/base/oneapi/2026.1.0.lua :
+	${MODMAN_SRC_DIR}/build.sh oneapi 2026.1.0
 
 # -----------------------------------------------
 # LLVM
 # -----------------------------------------------
 
-llvm : llvm-21.1.8
+llvm : llvm-22.1.8
 
-llvm-21.1.8 : ${MODMAN_MODULE_DIR}/base/llvm/21.1.8.lua
+llvm-22.1.8 : ${MODMAN_MODULE_DIR}/base/llvm/22.1.8.lua
 
-${MODMAN_MODULE_DIR}/base/llvm/21.1.8.lua:
-	${MODMAN_SRC_DIR}/build.sh llvm 21.1.8
+${MODMAN_MODULE_DIR}/base/llvm/22.1.8.lua:
+	${MODMAN_SRC_DIR}/build.sh llvm 22.1.8
 
 #
 # **********************************************************
@@ -87,34 +103,49 @@ ${MODMAN_MODULE_DIR}/base/llvm/21.1.8.lua:
 # HWLOC 
 # -----------------------------------------------
 
-hwloc : hwloc-2.12.2-gcc-15.2.0
+hwloc : hwloc-2.13.0-gcc-16.2.0 hwloc-2.13.0-gcc-15.3.0
 
-hwloc-2.12.2-gcc-15.2.0 : ${MODMAN_MODULE_DIR}/compiler/gcc/15.2.0/hwloc/2.12.2.lua
+hwloc-2.13.0-gcc-16.2.0 : ${MODMAN_MODULE_DIR}/compiler/gcc/16.2.0/hwloc/2.13.0.lua
 
-${MODMAN_MODULE_DIR}/compiler/gcc/15.2.0/hwloc/2.12.2.lua :
-	${MODMAN_SRC_DIR}/build.sh hwloc 2.12.2 gcc 15.2.0
+${MODMAN_MODULE_DIR}/compiler/gcc/16.2.0/hwloc/2.13.0.lua :
+	${MODMAN_SRC_DIR}/build.sh hwloc 2.13.0 gcc 16.2.0
+
+hwloc-2.13.0-gcc-15.3.0 : ${MODMAN_MODULE_DIR}/compiler/gcc/15.3.0/hwloc/2.13.0.lua
+
+${MODMAN_MODULE_DIR}/compiler/gcc/15.3.0/hwloc/2.13.0.lua :
+	${MODMAN_SRC_DIR}/build.sh hwloc 2.13.0 gcc 15.3.0
 
 # -----------------------------------------------
 # UCX
 # -----------------------------------------------
 
-ucx : ucx-1.20.0-gcc-15.2.0
+ucx : ucx-1.22.0-gcc-16.2.0 ucx-1.22.0-gcc-15.3.0
 
-ucx-1.20.0-gcc-15.2.0 : ${MODMAN_MODULE_DIR}/compiler/gcc/15.2.0/ucx/1.20.0.lua
+ucx-1.22.0-gcc-16.2.0 : ${MODMAN_MODULE_DIR}/compiler/gcc/16.2.0/ucx/1.22.0.lua
 
-${MODMAN_MODULE_DIR}/compiler/gcc/15.2.0/ucx/1.20.0.lua :
-	${MODMAN_SRC_DIR}/build.sh ucx 1.20.0 gcc 15.2.0
+${MODMAN_MODULE_DIR}/compiler/gcc/16.2.0/ucx/1.22.0.lua :
+	${MODMAN_SRC_DIR}/build.sh ucx 1.22.0 gcc 16.2.0
+
+ucx-1.22.0-gcc-15.3.0 : ${MODMAN_MODULE_DIR}/compiler/gcc/15.3.0/ucx/1.22.0.lua
+
+${MODMAN_MODULE_DIR}/compiler/gcc/15.3.0/ucx/1.22.0.lua :
+	${MODMAN_SRC_DIR}/build.sh ucx 1.22.0 gcc 15.3.0
 
 # -----------------------------------------------
 # libevent
 # -----------------------------------------------
 
-libevent : libevent-2.1.12-gcc-15.2.0
+libevent : libevent-2.1.13-gcc-16.2.0 libevent-2.1.13-gcc-15.3.0
 
-libevent-2.1.12-gcc-15.2.0 : ${MODMAN_MODULE_DIR}/compiler/gcc/15.2.0/libevent/2.1.12.lua
+libevent-2.1.13-gcc-16.2.0 : ${MODMAN_MODULE_DIR}/compiler/gcc/16.2.0/libevent/2.1.13.lua
 
-${MODMAN_MODULE_DIR}/compiler/gcc/15.2.0/libevent/2.1.12.lua :
-	${MODMAN_SRC_DIR}/build.sh libevent 2.1.12 gcc 15.2.0
+${MODMAN_MODULE_DIR}/compiler/gcc/16.2.0/libevent/2.1.13.lua :
+	${MODMAN_SRC_DIR}/build.sh libevent 2.1.13 gcc 16.2.0
+
+libevent-2.1.13-gcc-15.3.0 : ${MODMAN_MODULE_DIR}/compiler/gcc/15.3.0/libevent/2.1.13.lua
+
+${MODMAN_MODULE_DIR}/compiler/gcc/15.3.0/libevent/2.1.13.lua :
+	${MODMAN_SRC_DIR}/build.sh libevent 2.1.13 gcc 15.3.0
 
 # -----------------------------------------------
 # Boost
@@ -124,23 +155,33 @@ boost : boost-serial boost-mpi
 
 boost-serial : boost-gcc
 
-boost-gcc : boost-1.90.0-gcc-15.2.0
+boost-gcc : boost-1.92.0-gcc-16.2.0 boost-1.92.0-gcc-15.3.0
 
-boost-1.90.0-gcc-15.2.0 : ${MODMAN_MODULE_DIR}/compiler/gcc/15.2.0/boost/1.90.0.lua
+boost-1.92.0-gcc-16.2.0 : ${MODMAN_MODULE_DIR}/compiler/gcc/16.2.0/boost/1.92.0.lua
 
-${MODMAN_MODULE_DIR}/compiler/gcc/15.2.0/boost/1.90.0.lua :
-	${MODMAN_SRC_DIR}/build.sh boost 1.90.0 gcc 15.2.0
+${MODMAN_MODULE_DIR}/compiler/gcc/16.2.0/boost/1.92.0.lua :
+	${MODMAN_SRC_DIR}/build.sh boost 1.92.0 gcc 16.2.0
+
+boost-1.92.0-gcc-15.3.0 : ${MODMAN_MODULE_DIR}/compiler/gcc/15.3.0/boost/1.92.0.lua
+
+${MODMAN_MODULE_DIR}/compiler/gcc/15.3.0/boost/1.92.0.lua :
+	${MODMAN_SRC_DIR}/build.sh boost 1.92.0 gcc 15.3.0
 
 # -----------------------------------------------
 # Blis
 # -----------------------------------------------
 
-blis : blis-2.0.0-gcc-15.2.0
+blis : blis-2.1.0-gcc-16.2.0 blis-2.1.0-gcc-15.3.0
 
-blis-2.0.0-gcc-15.2.0 : ${MODMAN_MODULE_DIR}/compiler/gcc/15.2.0/blis/2.0.0.lua
+blis-2.1.0-gcc-16.2.0 : ${MODMAN_MODULE_DIR}/compiler/gcc/16.2.0/blis/2.1.0.lua
 
-${MODMAN_MODULE_DIR}/compiler/gcc/15.2.0/blis/2.0.0.lua :
-	${MODMAN_SRC_DIR}/build.sh blis 2.0.0 gcc 15.2.0
+${MODMAN_MODULE_DIR}/compiler/gcc/16.2.0/blis/2.1.0.lua :
+	${MODMAN_SRC_DIR}/build.sh blis 2.1.0 gcc 16.2.0
+
+blis-2.1.0-gcc-15.3.0 : ${MODMAN_MODULE_DIR}/compiler/gcc/15.3.0/blis/2.1.0.lua
+
+${MODMAN_MODULE_DIR}/compiler/gcc/15.3.0/blis/2.1.0.lua :
+	${MODMAN_SRC_DIR}/build.sh blis 2.1.0 gcc 15.3.0
 
 #
 # **********************************************************
@@ -152,12 +193,17 @@ ${MODMAN_MODULE_DIR}/compiler/gcc/15.2.0/blis/2.0.0.lua :
 # OpenMPI
 # -----------------------------------------------
 
-openmpi : openmpi-5.0.9-gcc-15.2.0
+openmpi : openmpi-5.0.10-gcc-16.2.0 openmpi-5.0.10-gcc-15.3.0
 
-openmpi-5.0.9-gcc-15.2.0 : ${MODMAN_MODULE_DIR}/compiler/gcc/15.2.0/openmpi/5.0.9.lua
+openmpi-5.0.10-gcc-16.2.0 : ${MODMAN_MODULE_DIR}/compiler/gcc/16.2.0/openmpi/5.0.10.lua
 
-${MODMAN_MODULE_DIR}/compiler/gcc/15.2.0/openmpi/5.0.9.lua :
-	${MODMAN_SRC_DIR}/build.sh openmpi 5.0.9 gcc 15.2.0
+${MODMAN_MODULE_DIR}/compiler/gcc/16.2.0/openmpi/5.0.10.lua :
+	${MODMAN_SRC_DIR}/build.sh openmpi 5.0.10 gcc 16.2.0
+
+openmpi-5.0.10-gcc-15.3.0 : ${MODMAN_MODULE_DIR}/compiler/gcc/15.3.0/openmpi/5.0.10.lua
+
+${MODMAN_MODULE_DIR}/compiler/gcc/15.3.0/openmpi/5.0.10.lua :
+	${MODMAN_SRC_DIR}/build.sh openmpi 5.0.10 gcc 15.3.0
 
 #
 # **********************************************************
@@ -171,20 +217,33 @@ ${MODMAN_MODULE_DIR}/compiler/gcc/15.2.0/openmpi/5.0.9.lua :
 
 boost-mpi : boost-mpi-gcc
 
-boost-mpi-gcc : boost-1.90.0-openmpi-5.0.9-gcc-15.2.0
+boost-mpi-gcc : boost-1.92.0-openmpi-5.0.10-gcc-16.2.0 boost-1.92.0-openmpi-5.0.10-gcc-15.3.0
 
-boost-1.90.0-openmpi-5.0.9-gcc-15.2.0 : ${MODMAN_MODULE_DIR}/mpi/openmpi/5.0.9/gcc/15.2.0/boost/1.90.0.lua
+boost-1.92.0-openmpi-5.0.10-gcc-16.2.0 : ${MODMAN_MODULE_DIR}/mpi/openmpi/5.0.10/gcc/16.2.0/boost/1.92.0.lua
 
-${MODMAN_MODULE_DIR}/mpi/openmpi/5.0.9/gcc/15.2.0/boost/1.90.0.lua :
-	${MODMAN_SRC_DIR}/build.sh boost 1.90.0 gcc 15.2.0 openmpi 5.0.9
+${MODMAN_MODULE_DIR}/mpi/openmpi/5.0.10/gcc/16.2.0/boost/1.92.0.lua :
+	${MODMAN_SRC_DIR}/build.sh boost 1.92.0 gcc 16.2.0 openmpi 5.0.10
+
+boost-1.92.0-openmpi-5.0.10-gcc-15.3.0 : ${MODMAN_MODULE_DIR}/mpi/openmpi/5.0.10/gcc/15.3.0/boost/1.92.0.lua
+
+${MODMAN_MODULE_DIR}/mpi/openmpi/5.0.10/gcc/15.3.0/boost/1.92.0.lua :
+	${MODMAN_SRC_DIR}/build.sh boost 1.92.0 gcc 15.3.0 openmpi 5.0.10
 
 # -----------------------------------------------
 # HDF5
 # -----------------------------------------------
 
-hdf5 : hdf5-2.0.0-gcc-15.2.0
+hdf5 : hdf5-2.2.0-gcc-16.2.0 hdf5-2.2.0-gcc-15.3.0
 
-hdf5-2.0.0-gcc-15.2.0 : ${MODMAN_MODULE_DIR}/gcc/15.2.0/hdf5/2.0.0.lua
+hdf5-2.2.0-gcc-16.2.0 : ${MODMAN_MODULE_DIR}/gcc/16.2.0/hdf5/2.2.0.lua
 
-${MODMAN_MODULE_DIR}/gcc/15.2.0/hdf5/2.0.0.lua :
-	${MODMAN_SRC_DIR}/build.sh hdf5 2.0.0 gcc 15.2.0
+${MODMAN_MODULE_DIR}/gcc/16.2.0/hdf5/2.2.0.lua :
+	${MODMAN_SRC_DIR}/build.sh hdf5 2.2.0 gcc 16.2.0
+
+hdf5-2.2.0-gcc-15.3.0 : ${MODMAN_MODULE_DIR}/gcc/15.3.0/hdf5/2.2.0.lua
+
+${MODMAN_MODULE_DIR}/gcc/15.3.0/hdf5/2.2.0.lua :
+	${MODMAN_SRC_DIR}/build.sh hdf5 2.2.0 gcc 15.3.0
+
+
+

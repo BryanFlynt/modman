@@ -152,7 +152,7 @@ prepend_path("LD_LIBRARY_PATH", "${stdlib_base_dir}")
 -- Environment Variables
 local base = "${MODPKG_INSTALL_DIR}"
 
-setenv("CPP", pathJoin(base, "bin/clang-cpp""))
+setenv("CPP", pathJoin(base, "bin/clang-cpp"))
 setenv("CC",  pathJoin(base, "bin/clang"))
 setenv("CXX", pathJoin(base, "bin/clang++"))
 setenv("FC",  pathJoin(base, "bin/flang"))

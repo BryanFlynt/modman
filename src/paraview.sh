@@ -44,6 +44,10 @@ rm -rf ${MODPKG_INSTALL_DIR}
 
 if [ ${PKG_VERSION} = "6.0.1" ]; then
     URL_TARGET="${MODPKG_DOWNLOAD_DIR}/ParaView-6.0.1-MPI-Linux-Python3.12-x86_64.tar.gz"
+
+elif [ ${PKG_VERSION} = "6.1.1" ]; then
+    URL_TARGET="${MODPKG_DOWNLOAD_DIR}/ParaView-6.1.1-MPI-Linux-Python3.12-x86_64.tar.gz"
+  
 else
     printf "ERROR: Version not recognized\n"
     exit 1

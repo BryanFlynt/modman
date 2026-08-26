@@ -124,7 +124,7 @@ family("mpi")
 prereq("${COMPILER}/${COMPILER_VERSION}")
 
 -- Modulepath for packages built by this compiler
-prepend_path("MODULEPATH", "${MODULE_DIR}/mpi/${PKG}/${PKG_VERSION}/${COMPILER}/${COMPILER_VERSION}")
+prepend_path("MODULEPATH", "${MODMAN_MODULE_DIR}/mpi/${PKG}/${PKG_VERSION}/${COMPILER}/${COMPILER_VERSION}")
 
 -- Environment Variables
 local base = "${MODPKG_INSTALL_DIR}"

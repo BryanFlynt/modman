@@ -74,7 +74,7 @@ tar --strip-components 1 -xzvf ${URL_TARGET}
 mkdir -p ${MODPKG_BUILD_DIR}/build_by_modman
 cd ${MODPKG_BUILD_DIR}/build_by_modman
 
-${MODPKG_BUILD_DIR}/configure --prefix=${MODPKG_INSTALL_DIR}
+${MODPKG_BUILD_DIR}/configure --disable-openssl --prefix=${MODPKG_INSTALL_DIR}
 
 make -j ${NTHREAD}
 #make check
